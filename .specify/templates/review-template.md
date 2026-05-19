@@ -1,20 +1,21 @@
-# Review: [FEATURE NAME]
+# Review: [SLICE NAME]
 
-**Feature Slug**: `[feature-slug]`  
-**Reviewer**: [Name or role]  
-**Date**: [DATE]  
+**Module Slug**: `[module-slug]`
+**Slice Slug**: `phase{N}-{NN}-[slice-slug]`
+**Reviewer**: [Name or role]
+**Date**: [DATE]
 **Status**: `draft | final`
 
 ## Inputs Reviewed
 
-- `specs/[feature-slug]/spec.md`
-- `specs/[feature-slug]/open-questions.md`
-- `specs/[feature-slug]/plan.md`
-- `specs/[feature-slug]/tasks.md`
-- `specs/[feature-slug]/qa-checklist.md`
-- `specs/[feature-slug]/runtime-notes.md`
-- `specs/[feature-slug]/schema-impact.md` if present
-- `specs/[feature-slug]/contract-notes.md` if present
+- `specs/[module-slug]/slices/phase{N}-{NN}-[slice-slug]/spec.md`
+- `specs/[module-slug]/slices/phase{N}-{NN}-[slice-slug]/open-questions.md`
+- `specs/[module-slug]/slices/phase{N}-{NN}-[slice-slug]/plan.md`
+- `specs/[module-slug]/slices/phase{N}-{NN}-[slice-slug]/tasks.md`
+- `specs/[module-slug]/slices/phase{N}-{NN}-[slice-slug]/qa-checklist.md`
+- `specs/[module-slug]/slices/phase{N}-{NN}-[slice-slug]/runtime-notes.md`
+- `specs/[module-slug]/slices/phase{N}-{NN}-[slice-slug]/schema-impact.md` if present
+- `specs/[module-slug]/slices/phase{N}-{NN}-[slice-slug]/contract-notes.md` if present
 - ACL / QUERY / JOB notes if present
 
 ## Review Scope

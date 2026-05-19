@@ -1,13 +1,15 @@
-# Delivery Summary: [FEATURE NAME]
+# Slice Delivery Summary: [SLICE NAME]
 
-**Feature Slug**: `[feature-slug]`  
-**Date**: [DATE]  
-**Status**: `implemented | done with limitations | blocked`  
+**Module Slug**: `[module-slug]`
+**Slice Slug**: `phase{N}-{NN}-[slice-slug]`
+**Date**: [DATE]
+**Status**: `implemented | done with limitations | blocked`
 **Impact Class**: `IC0 | IC1 | IC2 | IC3 | IC4 | IC5`
+**Module Impact Class** (parent module): `M0 | M1 | M2 | M3`
 
 ## Outcome Delivered
 
-[State what was actually delivered.]
+[State what was actually delivered. Should match the single acceptance criterion from `spec.md`.]
 
 ## What Changed
 
@@ -22,14 +24,19 @@
 
 ## Artifact Summary
 
-- **Spec**: `specs/[feature-slug]/spec.md`
-- **Open Questions**: `specs/[feature-slug]/open-questions.md`
-- **Plan**: `specs/[feature-slug]/plan.md`
-- **Tasks**: `specs/[feature-slug]/tasks.md`
-- **QA**: `specs/[feature-slug]/qa-checklist.md`
-- **Runtime**: `specs/[feature-slug]/runtime-notes.md`
-- **Review**: `specs/[feature-slug]/review.md`
+Slice-level (in `specs/[module-slug]/slices/phase{N}-{NN}-[slice-slug]/`):
+- **Spec**: `spec.md`
+- **Open Questions**: `open-questions.md`
+- **Plan**: `plan.md`
+- **Tasks**: `tasks.md`
+- **QA**: `qa-checklist.md`
+- **Runtime**: `runtime-notes.md`
+- **Review**: `review.md`
 - **Specialist Artifacts**: [List or `none`]
+
+Module-level (parent module context):
+- **Slice Map entry updated**: `specs/[module-slug]/slice-map.md` — status changed from `slice-ready` to `merged`
+- **Module risks impact** (if any): `specs/[module-slug]/module-risks.md`
 
 ## Verification Summary
 

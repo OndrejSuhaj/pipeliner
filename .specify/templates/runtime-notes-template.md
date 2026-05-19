@@ -1,8 +1,9 @@
-# Runtime Notes: [FEATURE NAME]
+# Runtime Notes: [SLICE NAME]
 
-**Feature Slug**: `[feature-slug]`  
-**Date**: [DATE]  
-**Related Spec**: `specs/[feature-slug]/spec.md`  
+**Module Slug**: `[module-slug]`
+**Slice Slug**: `phase{N}-{NN}-[slice-slug]`
+**Date**: [DATE]
+**Related Spec**: `specs/[module-slug]/slices/phase{N}-{NN}-[slice-slug]/spec.md`
 **Impact Class**: `IC0 | IC1 | IC2 | IC3 | IC4 | IC5`
 
 ## Runtime Status

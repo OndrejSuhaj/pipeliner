@@ -1,8 +1,9 @@
-# Tasks: [FEATURE NAME]
+# Tasks: [SLICE NAME]
 
-**Feature Slug**: `[feature-slug]`  
-**Input**: `specs/[feature-slug]/spec.md`, `specs/[feature-slug]/plan.md`  
-**Prerequisites**: spec complete, plan complete when required, triggered specialist artifacts available when required
+**Module Slug**: `[module-slug]`
+**Slice Slug**: `phase{N}-{NN}-[slice-slug]`
+**Input**: `specs/[module-slug]/slices/phase{N}-{NN}-[slice-slug]/spec.md`, `specs/[module-slug]/slices/phase{N}-{NN}-[slice-slug]/plan.md`
+**Prerequisites**: Gate B0 slice-readiness passed, spec complete, plan complete when required, triggered specialist artifacts available when required
 
 ## Task Rules
 
@@ -47,8 +48,8 @@
 - [ ] T018 [US1] [MOBILE] Update `[exact/path]` if mobile is impacted
 
 ### Verification Tasks
-- [ ] T019 [US1] [QA] Add or update acceptance checks in `specs/[feature-slug]/qa-checklist.md`
-- [ ] T020 [US1] [RUNTIME] Add runtime verification notes in `specs/[feature-slug]/runtime-notes.md`
+- [ ] T019 [US1] [QA] Add or update acceptance checks in `specs/[module-slug]/slices/phase{N}-{NN}-[slice-slug]/qa-checklist.md`
+- [ ] T020 [US1] [RUNTIME] Add runtime verification notes in `specs/[module-slug]/slices/phase{N}-{NN}-[slice-slug]/runtime-notes.md`
 
 ### Review Tasks
 - [ ] T021 [US1] [REVIEW] Confirm implementation stays within approved scope

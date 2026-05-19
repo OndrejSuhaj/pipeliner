@@ -1,10 +1,11 @@
-# Contract Notes: [FEATURE NAME]
+# Contract Notes: [SLICE NAME]
 
-**Feature Slug**: `[feature-slug]`  
-**Date**: [DATE]  
-**Related Spec**: `specs/[feature-slug]/spec.md`  
-**Related Plan**: `specs/[feature-slug]/plan.md`  
-**Related Schema Impact**: `specs/[feature-slug]/schema-impact.md`  
+**Module Slug**: `[module-slug]`
+**Slice Slug**: `phase{N}-{NN}-[slice-slug]`
+**Date**: [DATE]
+**Related Spec**: `specs/[module-slug]/slices/phase{N}-{NN}-[slice-slug]/spec.md`
+**Related Plan**: `specs/[module-slug]/slices/phase{N}-{NN}-[slice-slug]/plan.md`
+**Related Schema Impact**: `specs/[module-slug]/slices/phase{N}-{NN}-[slice-slug]/schema-impact.md`
 **Status**: `draft | confirmed | blocked`
 
 ## Purpose

@@ -1,9 +1,10 @@
-# QA Checklist: [FEATURE NAME]
+# QA Checklist: [SLICE NAME]
 
-**Feature Slug**: `[feature-slug]`  
-**Date**: [DATE]  
-**Spec**: `specs/[feature-slug]/spec.md`  
-**Plan**: `specs/[feature-slug]/plan.md`  
+**Module Slug**: `[module-slug]`
+**Slice Slug**: `phase{N}-{NN}-[slice-slug]`
+**Date**: [DATE]
+**Spec**: `specs/[module-slug]/slices/phase{N}-{NN}-[slice-slug]/spec.md`
+**Plan**: `specs/[module-slug]/slices/phase{N}-{NN}-[slice-slug]/plan.md`
 **Impact Class**: `IC0 | IC1 | IC2 | IC3 | IC4 | IC5`
 
 ## Status Legend

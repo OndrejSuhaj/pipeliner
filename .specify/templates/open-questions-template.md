@@ -1,8 +1,9 @@
-# Open Questions: [FEATURE NAME]
+# Open Questions: [SLICE NAME]
 
-**Feature Slug**: `[feature-slug]`  
-**Related Spec**: `specs/[feature-slug]/spec.md`  
-**Last Updated**: [DATE]  
+**Module Slug**: `[module-slug]`
+**Slice Slug**: `phase{N}-{NN}-[slice-slug]`
+**Related Spec**: `specs/[module-slug]/slices/phase{N}-{NN}-[slice-slug]/spec.md`
+**Last Updated**: [DATE]
 **Status**: `open | partial | resolved`
 
 ## Usage Rule

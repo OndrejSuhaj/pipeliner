@@ -1,12 +1,16 @@
-# Feature Specification: [FEATURE NAME]
+# Slice Specification: [SLICE NAME]
 
-**Feature Slug**: `phase{P}-{NN}-[feature-slug]`  
-**Created**: [DATE]  
-**Last Updated**: [DATE]  
-**Status**: Draft  
-**Input**: [Original user request or linked source]  
+**Module Slug**: `[module-slug]` (from `docs/program/module-map.md`)
+**Slice Slug**: `phase{N}-{NN}-[slice-slug]`
+**Spec Folder**: `specs/[module-slug]/slices/phase{N}-{NN}-[slice-slug]/`
+**Created**: [DATE]
+**Last Updated**: [DATE]
+**Status**: Draft
+**Input**: [Original user request or linked source]
 
-> **Naming**: Determine `{P}` from the current phase (default `2`), `{NN}` by finding the highest existing sequential number in `specs/phase{P}-*` and adding 1 (zero-padded, starting `01`). See `guardrails.md § 6.4`.
+> **Naming**: Determine `{N}` from the module's current phase (default `1` for new modules), `{NN}` by finding the highest existing sequential number in `specs/[module-slug]/slices/phase{N}-*` and adding 1 (zero-padded, starting `01`). See `guardrails.md § 6.4`.
+
+> **Slice-readiness**: Before entering Mode B, this slice must pass Gate B0 (slice-readiness check). The §17.3 prerequisites are recorded in `specs/[module-slug]/slice-map.md`. See `mode-b` workflow.
 
 ## Outcome
 

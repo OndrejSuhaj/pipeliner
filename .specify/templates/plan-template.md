@@ -1,9 +1,12 @@
-# Implementation Plan: [FEATURE NAME]
+# Slice Implementation Plan: [SLICE NAME]
 
-**Feature Slug**: `[feature-slug]`  
-**Date**: [DATE]  
-**Spec**: `specs/[feature-slug]/spec.md`  
-**Related Questions**: `specs/[feature-slug]/open-questions.md`  
+**Module Slug**: `[module-slug]`
+**Slice Slug**: `phase{N}-{NN}-[slice-slug]`
+**Date**: [DATE]
+**Spec**: `specs/[module-slug]/slices/phase{N}-{NN}-[slice-slug]/spec.md`
+**Module Plan**: `specs/[module-slug]/module-plan.md` (parent module's plan)
+**Slice Map**: `specs/[module-slug]/slice-map.md` (slice-readiness prerequisites)
+**Related Questions**: `specs/[module-slug]/slices/phase{N}-{NN}-[slice-slug]/open-questions.md`
 
 ## Summary
 

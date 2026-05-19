@@ -2,7 +2,7 @@
 artifact: slice-seed
 mode: C
 status: draft
-candidate_slice_slug: <phaseN-NN-feature-slug-or-tbd>
+candidate_slice_slug: <module-slug>/phaseN-NN-slice-slug-or-tbd
 source_comment_id: <comment-id>
 seed_type: existing-slice-extension | new-slice-candidate
 created_at: <YYYY-MM-DD>
@@ -12,7 +12,7 @@ created_at: <YYYY-MM-DD>
 
 ## Seed Identity
 
-- **Candidate Slice Slug:** `<phaseN-NN-feature-slug-or-tbd>`
+- **Candidate Slice Slug:** `<module-slug>/phaseN-NN-slice-slug-or-tbd`
 - **Source Comment ID:** `<comment-id>`
 - **Seed Type:** `existing-slice-extension | new-slice-candidate`
 
