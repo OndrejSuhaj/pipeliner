@@ -780,9 +780,9 @@ The following artifacts are expected to derive from this document:
 * `local-tooling-contract.md`
 * `CLAUDE.md` skeleton
 * core role specs beginning with `ConstitutionGuard.md`
-* module orchestration role specs (`agents/modules/**`)
-* UX canonical role specs (`agents/ux/**`)
-* program bootstrap role specs (`agents/program/**`)
+* module orchestration role specs (`docs/roles/modules/**`)
+* UX canonical role specs (`docs/roles/ux/**`)
+* program bootstrap role specs (`docs/roles/program/**`)
 * `_ar/<tier>/<layer>/_REGISTRY.md` per canonical layer (numbering and status tracking)
 * `.specify/templates/slice-manifest-template.md` (slice manifest schema)
 * `.specify/templates/source-amendment-template.md` (Mode C amendment schema)

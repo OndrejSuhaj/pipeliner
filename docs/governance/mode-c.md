@@ -260,7 +260,7 @@ Read next only as needed:
 - the selected issue/comment context
 - the current upstream artifact being challenged
 - `docs/program/module-map.md` for module attribution
-- relevant role file(s) in `agents/issues/**`
+- relevant role file(s) in `docs/roles/issues/**`
 - exact layer-specific rules/template files only after canonical layer resolution
 
 Do not broad-scan the repository.
@@ -303,7 +303,7 @@ A stable intake target exists.
 Normalize the issue/comment and classify what kind of controlled follow-up it implies.
 
 ### Owned by
-`agents/issues/CommentIntakeGuard`
+`docs/roles/issues/CommentIntakeGuard`
 
 ### Expected decisions
 - doc-fix only,
@@ -337,7 +337,7 @@ Normalize the issue/comment and classify what kind of controlled follow-up it im
 Resolve which canonical documentation layer is actually affected.
 
 ### Owned by
-`agents/issues/CanonicalLayerResolver`
+`docs/roles/issues/CanonicalLayerResolver`
 
 ### Common mappings
 - entity meaning, lifecycle, invariants, relationships → `EN`
@@ -368,8 +368,8 @@ A resolved primary canonical layer and any secondary affected layers.
 Read the exact layer-specific authoring rule/template only if needed.
 
 ### Owned by
-- `agents/issues/ToolingRuleResolver`
-- `agents/issues/ToolingTemplateResolver`
+- `docs/roles/issues/ToolingRuleResolver`
+- `docs/roles/issues/ToolingTemplateResolver`
 
 ### Allowed reads
 Only exact-file lookup after layer resolution, for example:
@@ -397,7 +397,7 @@ See `docs/governance/local-tooling-contract.md`.
 Create or amend the necessary upstream documentation before any slice promotion.
 
 ### Owned by
-`agents/issues/DocumentationAmendmentAuthor`
+`docs/roles/issues/DocumentationAmendmentAuthor`
 
 ### Typical outputs
 - amendment to existing canonical doc,
@@ -429,7 +429,7 @@ Create or amend the necessary upstream documentation before any slice promotion.
 Prepare future Mode B work only when the result justifies it.
 
 ### Owned by
-`agents/issues/SliceSeedAuthor`
+`docs/roles/issues/SliceSeedAuthor`
 
 ### When used
 Only for:
@@ -457,7 +457,7 @@ Only for:
 
 ---
 
-## Default Agent Set for `agents/issues/**`
+## Default Agent Set for `docs/roles/issues/**`
 
 Mode C should use a small, explicit set of issue-focused agents.
 

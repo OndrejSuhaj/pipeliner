@@ -303,7 +303,7 @@ Agents using local tooling must follow these rules:
 5. stop when conflict or missing guidance matters,
 6. never silently convert local authoring help into repository truth.
 
-For `agents/issues/**`, the normal split is:
+For `docs/roles/issues/**`, the normal split is:
 
 - `CanonicalLayerResolver`  
   decides the target layer

@@ -72,7 +72,7 @@ Mode M inherits the repository principles and adds the following local disciplin
    Mode M reads only the module-relevant subset of `_ar/**`. Program-wide baseline reading is a Mode P activity.
 
 7. **Mode M may author module-scope `_ar/` content**
-   Gate M1a authors module-scope canonical refinements; Gate M1b/M2/M3 author module-scope UC, FN, ES, WIRE, COMP, COPY in `_ar/`. Module-scope baseline roles live in `agents/modules/`.
+   Gate M1a authors module-scope canonical refinements; Gate M1b/M2/M3 author module-scope UC, FN, ES, WIRE, COMP, COPY in `_ar/`. Module-scope baseline roles live in `docs/roles/modules/`.
 
 ---
 
@@ -148,7 +148,7 @@ Read next only as needed:
 - `_ar/UX/IA/IA-<project>.md` (project IA — required reading when module has user-facing surfaces)
 - existing `specs/<module>/*` artifacts (when refreshing)
 - module-scope subset of `_ar/**` (filter by `modules:` frontmatter)
-- relevant role files in `agents/modules/**`, `agents/ux/**`, `agents/optional/**` (specialist routing)
+- relevant role files in `docs/roles/modules/**`, `docs/roles/ux/**`, `docs/roles/optional/**` (specialist routing)
 - exact layer-specific rules/template files only after canonical layer resolution
 
 Do not broad-scan the repository.
@@ -163,7 +163,7 @@ Do not broad-scan `toolingDocs/` or `toolingTemplates/`.
 
 **Purpose:** Confirm the exact module being framed and its scope boundary against `module-map.md`.
 
-**Owned by:** operator + `ModuleFramer` (in `agents/modules/`)
+**Owned by:** operator + `ModuleFramer` (in `docs/roles/modules/`)
 
 **Required result:** Stable module-id, scope boundary confirmed against `module-map.md`, dependencies on core and other modules explicitly named.
 
@@ -195,7 +195,7 @@ Gate M1 has two sub-gates that must complete sequentially: M1a (baseline) before
 
 **Purpose:** Establish module-scope baseline trust — module-scope terminology refinements (on top of program-wide glossary from Mode P), module-scope source authority verification, module-scope canonical conflicts.
 
-**Owned by:** `ModuleCorpusCurator`, `ModuleTerminologyResolver`, `ModuleConflictMapper` (from `agents/modules/**`).
+**Owned by:** `ModuleCorpusCurator`, `ModuleTerminologyResolver`, `ModuleConflictMapper` (from `docs/roles/modules/**`).
 
 **Required result:** Module-scope baseline refinements exist on top of program-wide baseline; module-scope conflicts are surfaced; module terminology is stable enough for analytical authoring.
 
@@ -224,7 +224,7 @@ Gate M1 has two sub-gates that must complete sequentially: M1a (baseline) before
 
 **Purpose:** Author the module-brief and initial analytical seeds (EN, BR, ES, ARCH) on top of the module baseline.
 
-**Owned by:** `ModuleFramer` + analytical role calls (EN/BR/ES/ARCH authors from `agents/core/` and `agents/optional/`)
+**Owned by:** `ModuleFramer` + analytical role calls (EN/BR/ES/ARCH authors from `docs/roles/core/` and `docs/roles/optional/`)
 
 **Required result:** `module-brief.md` complete; central analytical entities and rules drafted in `_ar/BA/`; module architecture rámec aligned with `architecture-overview.md`.
 
@@ -249,7 +249,7 @@ Gate M1 has two sub-gates that must complete sequentially: M1a (baseline) before
 
 **Purpose:** Build the user-facing model of the module. Project-level IA (from Mode P Gate P-UX) is consumed and module-scope screens are detailed via wireframes. UC connects UI to deterministic behavior; QUERY/JOB cover read-side and background contracts.
 
-**Owned by:** `WireframeAuthor` (from `agents/ux/`) + analytical role calls (UC, QUERY, JOB, CS authors)
+**Owned by:** `WireframeAuthor` (from `docs/roles/ux/`) + analytical role calls (UC, QUERY, JOB, CS authors)
 
 **Required result:** Module-scope wireframes authored; UC coverage for every interactive screen; QUERY/JOB for every non-trivial read/background contract.
 
@@ -349,7 +349,7 @@ Gate M1 has two sub-gates that must complete sequentially: M1a (baseline) before
 
 ---
 
-## Default Agent Set for `agents/modules/**`
+## Default Agent Set for `docs/roles/modules/**`
 
 Mode M uses a small, explicit set of module-level agents.
 
@@ -381,7 +381,7 @@ Cross-cutting. Audits `module-risks.md` at M1, M3, M4.
 
 ---
 
-## Default Agent Set for `agents/ux/**`
+## Default Agent Set for `docs/roles/ux/**`
 
 Mode M Gate M2 and M3 invoke UX canonical-layer roles.
 

@@ -131,7 +131,7 @@ Read next only as needed:
 - (re-frame variant) existing `docs/program/*` artifacts
 - (re-frame variant) existing `specs/<module>/module-brief.md` for each affected module
 - (re-frame variant) existing program-wide `_ar/BA/**` and `_ar/UX/IA/**` (foundational docs may need amendment)
-- relevant role files in `agents/program/**`
+- relevant role files in `docs/roles/program/**`
 
 Do not broad-scan the repository.
 Mode P writes program-wide foundational docs into `_ar/` (P1 baseline, P-UX project IA). Module-scope `_ar/` content is Mode M territory — do not author it from Mode P.
@@ -239,7 +239,7 @@ Mode P writes program-wide foundational docs into `_ar/` (P1 baseline, P-UX proj
 
 **Trigger:** Program has user-facing surfaces. Skip when project is headless / API-only.
 
-**Owned by:** UX lead + `IAAuthor` (from `agents/ux/**`)
+**Owned by:** UX lead + `IAAuthor` (from `docs/roles/ux/**`)
 
 **Required result:** Project-level IA exists in `_ar/UX/IA/`.
 
@@ -315,7 +315,7 @@ Mode P writes program-wide foundational docs into `_ar/` (P1 baseline, P-UX proj
 
 ---
 
-## Default Agent Set for `agents/program/**`
+## Default Agent Set for `docs/roles/program/**`
 
 Mode P uses a small, explicit set of program-level agents.
 
@@ -341,7 +341,7 @@ Owns Gate P2. Drafts the module decomposition with dependencies and integration 
 
 ### Optional
 
-#### `IAAuthor` (from `agents/ux/**`)
+#### `IAAuthor` (from `docs/roles/ux/**`)
 Owns Gate P-UX. Used when the project has user-facing surfaces.
 
 #### `ImplementationStreamsAuthor`

@@ -34,7 +34,7 @@ Follow this order:
 11. canonical authored documentation (`_ar/**`)
 12. module-level orchestration (`specs/<module>/{module-brief,module-plan,slice-map,module-risks,…}.md`)
 13. slice-level artifacts (`specs/<module>/slices/<slice>/*`)
-14. `agents/**`
+14. role specs (`docs/roles/**`) and executable subagents (`.claude/agents/**`)
 
 If artifacts conflict, the higher artifact wins.
 Do not silently reinterpret or weaken a higher artifact.
@@ -79,7 +79,7 @@ Read next only as needed:
 - relevant `_ar/BA/**` and `_ar/UX/**` canonical authored docs (filter by slice manifest `touches:` or module `modules:` frontmatter; never broad-scan)
 - relevant `specs/<module>/module-brief.md`, `module-plan.md`, `slice-map.md`, `module-risks.md` for module / slice-level work
 - relevant files in `specs/<module>/slices/<slice>/`
-- relevant role files in `agents/**` (`agents/program/**`, `agents/modules/**`, `agents/ux/**`, plus existing `agents/core/**`, `agents/issues/**`, `agents/optional/**`)
+- relevant role files in `docs/roles/**` (program, modules, ux, core, issues, optional)
 
 Do not scan the repo broadly by default.
 Do not replace missing knowledge with guesses.
@@ -364,22 +364,22 @@ Keep in `CLAUDE.md`:
 - safe use of local authoring support
 - shared vocabulary
 
-Keep in `agents/core/**`:
+Keep in `docs/roles/core/**`:
 - core delivery roles for Mode B (cross-mode reusable)
 
-Keep in `agents/program/**`:
+Keep in `docs/roles/program/**`:
 - Mode P program bootstrap and Gate P1 program-wide baseline roles (ProgramBootstrapper, ArchitectureOverviewAuthor, ModuleMapAuthor, ImplementationStreamsAuthor, ProgramCorpusCurator, ProgramTerminologyResolver, ProgramConflictMapper)
 
-Keep in `agents/modules/**`:
+Keep in `docs/roles/modules/**`:
 - Mode M module orchestration and Gate M1a module-scope baseline roles (ModuleFramer, ModulePlanAuthor, SliceMapAuthor, ModuleStagingVerifier, ModuleRiskAuditor, ModuleCorpusCurator, ModuleTerminologyResolver, ModuleConflictMapper)
 
-Keep in `agents/ux/**`:
+Keep in `docs/roles/ux/**`:
 - UX canonical-layer roles (IAAuthor for Mode P Gate P-UX; WireframeAuthor, ComponentSpecAuthor, CopySpecAuthor for Mode M Gate M2/M3)
 
-Keep in `agents/issues/**`:
+Keep in `docs/roles/issues/**`:
 - Mode C roles for comment intake, canonical layer resolution, documentation amendment, and slice seeding
 
-Keep in `agents/optional/**`:
+Keep in `docs/roles/optional/**`:
 - optional specialists or supporting roles not always active
 
 Keep in governance docs:
@@ -411,7 +411,7 @@ Self-escalation across model tiers is not used. If a subagent fails a lane gate,
 
 Program-level artifacts must always be created by a worktree subagent, never inline in the main session.
 
-When starting a new project (or re-framing through Gate P-R), spawn the `program-bootstrap` subagent (registered in `.claude/agents/program-bootstrap.md`, colour blue, model opus).
+When starting a new project (or re-framing through Gate P-R), spawn the `program-bootstrap` subagent (registered in `.claude/docs/roles/program-bootstrap.md`, colour blue, model opus).
 
 Use `description: "Program Bootstrap: {project-id}"`.
 
@@ -425,7 +425,7 @@ When starting a new module or refreshing module framing, spawn the `module-orche
 
 Use `description: "Module Orchestrator: {module-id}"`.
 
-The module-orchestrator produces `module-brief.md`, `module-plan.md`, `slice-map.md`, `module-risks.md`, and authors module-scope canonical content in `_ar/BA/**` and `_ar/UX/**`. Gate M1a module-scope baseline uses `ModuleCorpusCurator`, `ModuleTerminologyResolver`, `ModuleConflictMapper` from `agents/modules/`. UX artifact authoring (wireframes, components, copy) uses dedicated UX subagents in `agents/ux/**` invoked separately. Project-level IA is consumed from `_ar/UX/IA/IA-<project>.md` (authored by Mode P Gate P-UX, not Mode M).
+The module-orchestrator produces `module-brief.md`, `module-plan.md`, `slice-map.md`, `module-risks.md`, and authors module-scope canonical content in `_ar/BA/**` and `_ar/UX/**`. Gate M1a module-scope baseline uses `ModuleCorpusCurator`, `ModuleTerminologyResolver`, `ModuleConflictMapper` from `docs/roles/modules/`. UX artifact authoring (wireframes, components, copy) uses dedicated UX subagents in `docs/roles/ux/**` invoked separately. Project-level IA is consumed from `_ar/UX/IA/IA-<project>.md` (authored by Mode P Gate P-UX, not Mode M).
 
 ### Slice-readiness verification
 

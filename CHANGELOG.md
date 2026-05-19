@@ -24,9 +24,9 @@ Structural rewrite of the framework's authority model:
 
 - `_ar/BA/{EN,UC,BR,ARCH,FN,ES,JOB,QUERY,ACL,API,CS,MSG}/_REGISTRY.md` — 12 BA layer registries
 - `_ar/UX/{IA,WIRE,COMP,COPY}/_REGISTRY.md` — 4 UX layer registries
-- `agents/program/**` — 7 program-tier roles (incl. ProgramCorpusCurator, ProgramTerminologyResolver, ProgramConflictMapper absorbing legacy onboarding roles at program scope)
-- `agents/modules/**` — 8 module-tier roles (incl. ModuleCorpusCurator, ModuleTerminologyResolver, ModuleConflictMapper absorbing legacy onboarding roles at module scope)
-- `agents/ux/**` — 4 UX canonical-layer roles (IAAuthor, WireframeAuthor, ComponentSpecAuthor, CopySpecAuthor)
+- `docs/roles/program/**` — 7 program-tier roles (incl. ProgramCorpusCurator, ProgramTerminologyResolver, ProgramConflictMapper absorbing legacy onboarding roles at program scope)
+- `docs/roles/modules/**` — 8 module-tier roles (incl. ModuleCorpusCurator, ModuleTerminologyResolver, ModuleConflictMapper absorbing legacy onboarding roles at module scope)
+- `docs/roles/ux/**` — 4 UX canonical-layer roles (IAAuthor, WireframeAuthor, ComponentSpecAuthor, CopySpecAuthor)
 - `toolingDocs/rules-{IA,WIRE,COMP,COPY}.md` + `toolingTemplates/template-{IA,WIRE,COMP,COPY}.md` — UX layer authoring rules and templates
 - `.specify/templates/slice-manifest-template.md`
 

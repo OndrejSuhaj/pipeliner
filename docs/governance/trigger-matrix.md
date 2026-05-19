@@ -156,7 +156,7 @@ Use when:
 
 Primary intent:
 - declare the module as a bounded delivery stream,
-- establish module-scope baseline trust (Gate M1a — owned by `agents/modules/Module{Corpus,Terminology,Conflict}*` roles),
+- establish module-scope baseline trust (Gate M1a — owned by `docs/roles/modules/Module{Corpus,Terminology,Conflict}*` roles),
 - coordinate analytical, UX, and architectural inputs into a coherent module-level plan,
 - author module-scope canonical content in `_ar/`,
 - author a slice map enabling parallel Mode B delivery,
@@ -213,16 +213,16 @@ Activated only when specific impact conditions exist.
 Activated when actual code work is in scope.
 
 ### 6.5 Baseline roles
-- **Program-wide baseline** → `agents/program/Program{Corpus,Terminology,Conflict}*` (Mode P Gate P1)
-- **Module-scope baseline** → `agents/modules/Module{Corpus,Terminology,Conflict}*` (Mode M Gate M1a)
+- **Program-wide baseline** → `docs/roles/program/Program{Corpus,Terminology,Conflict}*` (Mode P Gate P1)
+- **Module-scope baseline** → `docs/roles/modules/Module{Corpus,Terminology,Conflict}*` (Mode M Gate M1a)
 
-### 6.6 Program-level roles (`agents/program/**`)
+### 6.6 Program-level roles (`docs/roles/program/**`)
 Used only in Mode P program bootstrap, re-frame, and program-wide baseline (Gate P1).
 
-### 6.7 Module-level orchestration roles (`agents/modules/**`)
+### 6.7 Module-level orchestration roles (`docs/roles/modules/**`)
 Used only in Mode M module declaration, framing, planning, module-scope baseline (Gate M1a), and release readiness.
 
-### 6.8 UX canonical roles (`agents/ux/**`)
+### 6.8 UX canonical roles (`docs/roles/ux/**`)
 Used in Mode P Gate P-UX (IAAuthor) and Mode M Gate M2 / M3 (WireframeAuthor, ComponentSpecAuthor, CopySpecAuthor).
 
 ---
@@ -257,7 +257,7 @@ It may be waived only when low-risk handling is justified explicitly.
 
 ---
 
-## 8. Mode C issue roles (`agents/issues/**`)
+## 8. Mode C issue roles (`docs/roles/issues/**`)
 
 The following roles belong to comment intake and documentation amendment work.
 
@@ -415,13 +415,13 @@ Mode C must not open implementation lanes.
 
 Baseline roles are split into two parallel families by tier:
 
-**Program-wide baseline (`agents/program/**`)** — invoked by Mode P Gate P1:
+**Program-wide baseline (`docs/roles/program/**`)** — invoked by Mode P Gate P1:
 - `ProgramCorpusCurator` (was `CorpusCurator` at repo scope)
 - `ProgramTerminologyResolver` (was `TerminologyResolver` at repo scope)
 - `ProgramConflictMapper` (was `ConflictMapper` at repo scope)
 - `ArchitectureOverviewAuthor` (was `ArchitectureBaselineMapper`, refocused on program-level)
 
-**Module-scope baseline (`agents/modules/**`)** — invoked by Mode M Gate M1a:
+**Module-scope baseline (`docs/roles/modules/**`)** — invoked by Mode M Gate M1a:
 - `ModuleCorpusCurator`
 - `ModuleTerminologyResolver`
 - `ModuleConflictMapper`
@@ -436,7 +436,7 @@ Trigger module-scope baseline roles when:
 
 They must not be activated for ordinary feature work just because more context would be nice to have.
 
-## 11.5 Program-level roles (`agents/program/**`)
+## 11.5 Program-level roles (`docs/roles/program/**`)
 
 The following roles belong only to Mode P program bootstrap and re-frame work.
 
@@ -474,7 +474,7 @@ Trigger only when:
 Primary outputs:
 - `docs/program/implementation-streams.md`
 
-## 11.6 Module-level orchestration roles (`agents/modules/**`)
+## 11.6 Module-level orchestration roles (`docs/roles/modules/**`)
 
 The following roles belong only to Mode M module declaration, framing, planning, and release readiness work.
 
@@ -519,7 +519,7 @@ Trigger cross-cutting at M1, M3, M4.
 Primary outputs:
 - `specs/<module>/module-risks.md` (initial draft, refresh, final state)
 
-## 11.7 UX canonical roles (`agents/ux/**`)
+## 11.7 UX canonical roles (`docs/roles/ux/**`)
 
 The following roles authorize content for IA, WIRE, COMP, COPY canonical layers introduced in Batch 1.
 
@@ -844,7 +844,7 @@ Stop if:
 
 ### 14.5.1 Gate M1a — Module Baseline
 
-Primary roles (module scope, from `agents/modules/**`):
+Primary roles (module scope, from `docs/roles/modules/**`):
 - `ModuleCorpusCurator`
 - `ModuleTerminologyResolver`
 - `ModuleConflictMapper`
@@ -862,7 +862,7 @@ Stop if:
 ### 14.5.2 Gate M1b — Module Framing
 
 Primary role:
-- `ModuleFramer` + analytical role calls (EN/BR/ES/ARCH authors from `agents/core/` and `agents/optional/`)
+- `ModuleFramer` + analytical role calls (EN/BR/ES/ARCH authors from `docs/roles/core/` and `docs/roles/optional/`)
 
 Output expectation:
 - `specs/<module>/module-brief.md` (full sections)
@@ -875,7 +875,7 @@ Stop if:
 ### 14.5.3 Gate M2 — Behavior & UX Framing
 
 Primary roles:
-- `IAAuthor` and `WireframeAuthor` (from `agents/ux/**`)
+- `IAAuthor` and `WireframeAuthor` (from `docs/roles/ux/**`)
 - analytical role calls (UC, QUERY, JOB, CS authors)
 
 Output expectation:
