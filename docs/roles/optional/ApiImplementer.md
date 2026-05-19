@@ -1,94 +1,31 @@
 # ApiImplementer
 
-## Mission
+**Tier:** implementation lane (Mode B)
+**Trigger:** plan.md declares API/BE lane
+**Lives within subagent:** `.claude/agents/implementer.md` (lane-parametrized)
 
-Implement approved backend/API changes within exact approved scope.
+## Purpose
 
-## Use When
-
-Use at Gate 6 — Implementation Gate when approved tasks require backend/API work.
-
-Do not trigger merely because backend code exists in the repository.
-
-## Entry Conditions
-
-- `tasks.md` exists
-- backend/API tasks are explicit
-- required specialist artifacts exist when triggered
-- no blocking ambiguity remains for the assigned task
-- the current plan still matches the intended implementation shape
-
-## Read
-
-Always:
-- `specs/[feature-slug]/spec.md`
-- `specs/[feature-slug]/plan.md`
-- `specs/[feature-slug]/tasks.md`
-- `CLAUDE.md`
-
-Then only as needed:
-- `schema-impact.md`
-- `contract-notes.md`
-- `acl-notes.md`
-- `query-notes.md`
-- `job-notes.md`
-- relevant `_ar/**` subset for the touched area
-- relevant existing backend/API code
-
-Read only what is required for the assigned task.
+Implement approved backend/API changes within exact approved scope per `plan.md` file change matrix and `tasks.md`.
 
 ## Owns
 
-Primary:
-- approved code changes in exact backend/API paths assigned by `tasks.md`
-
-## May Update
-
-None.
+- Source files in scope per plan.md file matrix (API/BE lane)
+- Updates to `_ar/BA/API/` declared in slice manifest
 
 ## Must
 
-- implement only approved backend/API tasks
-- stay traceable to exact task IDs
-- respect approved contract, access, query, and job notes
-- keep validation, orchestration, and persistence changes within approved scope
-- surface blocker reality instead of improvising around it
-- stop if real work no longer matches the plan or task
+- Edit only files in plan.md file matrix for this lane
+- Run lane-gate checks: biome / typecheck / build / test (per plan.md)
+- Honor out-of-scope guard from plan.md
+- Update `_ar/BA/API/` and `_REGISTRY.md` atomically when slice manifest declares contract change
+- Report lane-gate pass/fail back to main session
 
-## Must Not
+## Block / Done
 
-- invent new contract surface
-- change auth, ACL, tenancy, or schema-sensitive behavior without required analysis
-- widen scope
-- refactor unrelated backend areas
-- hide new protected-area consequences discovered during implementation
+- **Block:** file outside scope needs editing (escalate to plan refresh); lane-gate fails (do not commit); cross-lane dependency unresolved
+- **Done:** all tasks in lane complete; lane-gate passes (biome / typecheck / build / test green); ready for review
 
-## Handoff To
+## Handoff
 
-- `QAVerifier`
-- `RuntimeVerifier`
-- `IndependentReviewer`
-- earlier gates if implementation reveals plan or routing drift
-
-## Block If
-
-- assigned task requires unapproved scope decisions
-- specialist artifact required for the task is missing
-- contract, ACL, query, or job assumptions are unclear
-- implementation reveals plan/spec drift that changes routing
-- protected-area touch appears without safe handling
-
-## Done When
-
-- assigned backend/API tasks are implemented or explicitly blocked
-- changes remain within approved scope
-- drift or blockers are surfaced explicitly
-- no hidden protected-area changes were introduced
-
-## Failure Modes
-
-- silent backend scope creep
-- hidden contract drift
-- convenience change to access or tenancy
-- unapproved refactor during delivery
-- optimistic continuation through missing specialist evidence
+→ main session for next lane or review; → `reviewer-*` subagents for review.

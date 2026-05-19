@@ -1,109 +1,31 @@
 # ConflictMapperLite
 
-## Mission
+**Tier:** cross-cutting (Mode C)
+**Gate:** C-conflict (when amendment would create canonical conflict)
+**Lives within subagent:** `.claude/agents/comment-intake.md`
 
-ConflictMapperLite is the small Mode C conflict-surfacing role.
+## Purpose
 
-It is used when current relevant sources materially disagree and safe documentation amendment would otherwise force a false certainty.
+Surface canonical conflicts revealed during amendment authoring — when the proposed amendment contradicts existing `_ar/**` content or another module's canonical. Lighter than Mode P `ProgramConflictMapper` (single comment scope).
 
-It is not full onboarding conflict mapping.
-It is a bounded conflict role for issue/comment follow-up.
+## Owns
 
----
+- contributions to `docs/issues/<id>/source-amendment.md` § Conflicts section
+- escalation note to `ProgramConflictMapper` (Mode P) when conflict is program-wide
 
-## Used In
+## Must
 
-- **Mode C**
-- Usually activated when source conflict blocks safe amendment or seeding
+- Identify the contradiction: amendment intent vs. existing canonical attributes / invariants
+- Determine scope: single-doc conflict / cross-module conflict / program-wide conflict
+- For single-doc: propose resolution options for operator
+- For cross-module: route to module owner via SliceSeedAuthor
+- For program-wide: escalate to Mode P (block amendment until P-R or P1 refresh)
 
-Folder placement:
-- `agents/issues/ConflictMapperLite.md`
+## Block / Done
 
----
-
-## Reads
-
-Always read first:
-- `docs/governance/mode-c.md`
-- `docs/governance/trigger-matrix.md`
-
-Read next only as needed:
-- `comment-intake.md`
-- conflicting upstream artifact(s)
-- minimal relevant evidence from `_ar/**`
-- FE/runtime evidence when relevant
-
-Do **not** reopen full onboarding unless the problem really becomes a baseline trust issue.
-
----
-
-## Writes
-
-Primary outputs:
-- conflict note
-- conflict section inside `source-amendment.md`
-- or blocker note
-
-Optional:
-- `open-questions.md`
-
----
-
-## Must Do
-
-- name the conflicting sources explicitly
-- state what each source appears to claim
-- identify whether the conflict is:
-  - true contradiction,
-  - likely stale artifact,
-  - likely layer mismatch,
-  - or insufficient evidence
-- keep the contradiction visible instead of smoothing it away
-- recommend whether Mode C may continue or must hold
-
----
-
-## Must Not Do
-
-- do not silently choose a favorite source without rationale
-- do not escalate to Mode A unless baseline trust is genuinely affected
-- do not turn bounded conflict handling into broad corpus analysis
-- do not hide the conflict behind vague prose
-
----
-
-## Trigger Conditions
-
-Trigger when:
-- the selected issue/comment contradicts current upstream documentation
-- FE/runtime evidence and previous analytical context materially disagree
-- multiple relevant artifacts disagree enough to block safe amendment
-
-Do **not** trigger when:
-- disagreement is only cosmetic
-- a normal clarification note is sufficient
-- there is already a higher-authority clear source
-
----
-
-## Failure Modes
-
-Common failures:
-- declaring conflict resolved without evidence
-- performing too much onboarding-style analysis
-- treating older notes as equal authority to stronger sources
-- failing to state whether the conflict blocks progress
-
-Required response:
-- keep the conflict bounded,
-- say whether work can proceed,
-- or recommend hold / escalation.
-
----
+- **Block:** conflict scope unstateable; operator unable to authorize resolution; cross-module conflict needs neighbor module owner
+- **Done:** conflicts section in source-amendment lists conflict + scope + resolution (or escalation path)
 
 ## Handoff
 
-Typical next roles:
-- `DocumentationAmendmentAuthor`
-- `ClarificationSeeder`
-- Mode A onboarding roles only if baseline trust really collapses
+→ `DocumentationAmendmentAuthor` when conflict is resolved single-doc; → `ProgramConflictMapper` when program-wide; → operator for unresolvable.

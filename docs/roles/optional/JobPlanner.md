@@ -1,93 +1,31 @@
 # JobPlanner
 
-## Mission
+**Tier:** specialist (triggered)
+**Trigger:** protected area — background execution (async jobs, queues, schedulers, retries, idempotency, imports/exports)
+**Lives within subagent:** spec-creator / implementer (when slice manifest signals JobPlanner trigger)
 
-Own background-execution analysis for changes that affect async jobs, queues, schedulers, retries, idempotency, imports/exports, or background correctness.
+## Purpose
 
-## Use When
-
-Use at Gate 4 — Contract / Specialist Gate when:
-- async jobs are added or changed
-- scheduler or queue behavior changes
-- retry or idempotency behavior changes
-- import/export flow is introduced or changed
-- background processing becomes part of feature correctness
-
-## Entry Conditions
-
-- `spec.md` exists
-- `plan.md` exists
-- background-execution impact has been identified
-- the feature is still bounded enough to analyze explicitly
-
-## Read
-
-Always:
-- `specs/[feature-slug]/spec.md`
-- `specs/[feature-slug]/open-questions.md`
-- `specs/[feature-slug]/plan.md`
-- `docs/governance/guardrails.md`
-- `docs/governance/trigger-matrix.md`
-- `docs/governance/definition-of-done.md`
-- `CLAUDE.md`
-
-Then only as needed:
-- `specs/[feature-slug]/contract-notes.md`
-- relevant `_ar/**` subset, mainly `JOB/`, `UC/`, `EN/`, `API/`
-- relevant baseline docs
-- relevant existing queue/job/import/export code in the repo
+Own background-execution analysis for changes affecting async jobs, queues, schedulers, retries, idempotency, imports/exports, or background correctness. Author `job-notes.md` and update `_ar/BA/JOB/`.
 
 ## Owns
 
-Primary:
-- `specs/[feature-slug]/job-notes.md`
-
-## May Update
-
-None.
+- `specs/<module>/slices/<slice>/job-notes.md`
+- updates to `_ar/BA/JOB/<JOB-id>.md`
 
 ## Must
 
-- state what background behavior is involved
-- define trigger conditions for the job or async flow
-- define retry and idempotency expectations when relevant
-- define failure and recovery expectations when relevant
-- state import/export correctness assumptions when relevant
-- make manual/runtime verification implications explicit
-- state what background behavior is intentionally unchanged
-- block continuation when async correctness matters but is unclear
+- Map change against existing job topology (per `_ar/BA/JOB/`)
+- Cover retry semantics (idempotency, max attempts, backoff)
+- Cover failure modes (dead-letter handling, manual replay, observability)
+- Verify side-effect safety on partial failure
+- Address scheduler concurrency and deadlock risks when applicable
 
-## Must Not
+## Block / Done
 
-- implement job logic
-- treat async behavior as incidental if feature correctness depends on it
-- hide retry/idempotency assumptions
-- pretend background failure modes are optional documentation
-- reduce job analysis to infrastructure names only
+- **Block:** idempotency unclear; retry strategy implicit; failure mode unhandled (no DLQ / manual replay path); scheduler concurrency unanalyzed
+- **Done:** job-notes.md covers retry + idempotency + failure modes + observability; JOB canonical doc updated
 
-## Handoff To
+## Handoff
 
-- `PlanAuthor` if async analysis changes delivery shape
-- `TaskDecomposer` when job-aware work is explicit enough for tasking
-- `RuntimeVerifier` later for runtime truth about what was actually exercised
-
-## Block If
-
-- retry/idempotency semantics are unclear
-- trigger conditions are unclear
-- correctness depends on background behavior that is not described explicitly
-- import/export semantics materially change but remain implicit
-
-## Done When
-
-- `job-notes.md` is explicit and usable
-- background correctness assumptions are explicit
-- unchanged async behavior is explicit
-- downstream task, QA, and runtime implications are clear
-
-## Failure Modes
-
-- hidden async behavior
-- retry/idempotency drift
-- background correctness implied but not stated
-- note too vague to guide implementation or runtime review
+→ `PlanAuthor` for plan integration; → `SchemaSteward` if job affects persistence; → operator for SLA / observability decisions.

@@ -1,96 +1,31 @@
 # AclPlanner
 
-## Mission
+**Tier:** specialist (triggered)
+**Trigger:** protected area — authorization / ACL / permissions / tenancy
+**Lives within subagent:** spec-creator / implementer (when slice manifest signals AclPlanner trigger)
 
-Own access-aware analysis for changes that affect roles, grants, visibility rules, permission semantics, or tenant/context-sensitive access behavior.
+## Purpose
 
-## Use When
-
-Use at Gate 4 — Contract / Specialist Gate when:
-- roles change
-- grants change
-- visibility rules change
-- permission semantics change
-- access scope changes
-- tenant or company context changes who can do what
-
-## Entry Conditions
-
-- `spec.md` exists
-- `plan.md` exists
-- access-sensitive impact was identified by ConstitutionGuard, PlanAuthor, or SchemaSteward
-- the feature is still bounded enough to analyze explicitly
-
-## Read
-
-Always:
-- `specs/[feature-slug]/spec.md`
-- `specs/[feature-slug]/open-questions.md`
-- `specs/[feature-slug]/plan.md`
-- `docs/governance/guardrails.md`
-- `docs/governance/trigger-matrix.md`
-- `docs/governance/definition-of-done.md`
-- `CLAUDE.md`
-
-Then only as needed:
-- `specs/[feature-slug]/contract-notes.md`
-- relevant `_ar/**` subset, mainly `ACL/`, `UC/`, `EN/`
-- relevant baseline docs
-- relevant existing permission logic in the repo
+Own access-aware analysis for changes affecting roles, grants, visibility rules, permission semantics, or tenant/context-sensitive access behavior. Author `acl-notes.md` and update `_ar/BA/ACL/`.
 
 ## Owns
 
-Primary:
-- `specs/[feature-slug]/acl-notes.md`
-
-## May Update
-
-None.
+- `specs/<module>/slices/<slice>/acl-notes.md`
+- updates to `_ar/BA/ACL/<ACL-id>.md`
 
 ## Must
 
-- state current access model relevant to the feature
-- state proposed access change or confirm no change
-- describe affected roles, grants, visibility rules, or contexts
-- make tenant/company scope implications explicit
-- state what access behavior is intentionally unchanged
-- state compatibility and rollout risk where relevant
-- identify where access checks must be enforced
-- block continuation when permission semantics are real but unclear
+- Map change against existing role/permission model (per `_ar/BA/ACL/`)
+- Identify which roles / tenants / contexts gain or lose access
+- Cover positive checks (intended access works) AND negative checks (excluded contexts blocked)
+- Verify tenant isolation (cross-tenant leakage impossible)
+- Surface implicit broadening as block (default-allow is the dangerous pattern)
 
-## Must Not
+## Block / Done
 
-- implement access logic
-- hide permission change inside UI wording
-- treat visibility change as cosmetic behavior
-- assume frontend-only enforcement is acceptable without authorization
-- smooth over tenant-scoping implications
+- **Block:** role model unclear for the change; tenant isolation can't be verified; access broadening implicit (not declared)
+- **Done:** acl-notes.md covers positive + negative checks per role/tenant; ACL canonical doc updated
 
-## Handoff To
+## Handoff
 
-- `PlanAuthor` if access analysis changes delivery shape
-- `TaskDecomposer` when access-aware work is explicit enough for tasking
-- `IndependentReviewer` later for explicit access review
-
-## Block If
-
-- affected roles or visibility rules cannot be stated clearly
-- tenant/context semantics are unclear
-- enforcement boundary is unclear
-- the feature changes access behavior implicitly but not explicitly
-- the change is broader than bounded delivery
-
-## Done When
-
-- `acl-notes.md` is explicit and usable
-- current vs changed access semantics are explicit
-- tenant/context implications are explicit
-- unchanged access assumptions are explicit
-- downstream tasks and review implications are clear
-
-## Failure Modes
-
-- hidden permission drift
-- UI-only framing of access change
-- missing tenant scoping consequence
-- access note too vague for implementation or review
+→ `PlanAuthor` for plan integration; → `SchemaSteward` if access change implies schema (e.g. new permission table); → operator for security-sensitive decisions.
