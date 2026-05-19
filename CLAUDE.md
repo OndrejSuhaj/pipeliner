@@ -650,9 +650,6 @@ Keep in `agents/modules/**`:
 Keep in `agents/ux/**`:
 - UX canonical-layer roles (IAAuthor for Mode P Gate P-UX; WireframeAuthor, ComponentSpecAuthor, CopySpecAuthor for Mode M Gate M2/M3)
 
-Keep in `agents/onboarding/**` (deprecated v2.0.0):
-- legacy roles from pre-v2.0.0 Mode A; superseded by agents/program/ and agents/modules/ Module/Program-prefixed variants. Folder retained until Batch 5 cleanup.
-
 Keep in `agents/issues/**`:
 - Mode C roles for comment intake, canonical layer resolution, documentation amendment, and slice seeding
 

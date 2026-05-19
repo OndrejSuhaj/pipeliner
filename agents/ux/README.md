@@ -7,18 +7,15 @@ Roles authored here own the UX canonical layers (`_ar/UX/{IA,WIRE,COMP,COPY}/`):
 - COMP — Component Spec (per component, Mode M Gate M3)
 - COPY — Copy Spec (per module scope, Mode M Gate M3)
 
-## Planned roles (authored in Batch 5; UX layer rules in Batch 4)
+## Roles in this folder
 
 | Role | Owner gate | Purpose |
 |---|---|---|
-| `IAAuthor` | Mode P Gate P-UX | Authors project-level IA in `_ar/UX/IA/IA-<project>.md` |
-| `WireframeAuthor` | Mode M Gate M2 | Authors `_ar/UX/WIRE/<WIRE-id>-<screen>.md` per screen |
-| `ComponentSpecAuthor` | Mode M Gate M3 | Authors `_ar/UX/COMP/<COMP-id>-<name>.md` per component |
-| `CopySpecAuthor` | Mode M Gate M3 | Authors `_ar/UX/COPY/<COPY-id>-<scope>.md` per module / scope |
+| [`IAAuthor`](IAAuthor.md) | Mode P Gate P-UX | Authors project-level IA in `_ar/UX/IA/IA-<project>.md` |
+| [`WireframeAuthor`](WireframeAuthor.md) | Mode M Gate M2 | Authors `_ar/UX/WIRE/WIRE<####>-<screen>.md` per screen |
+| [`ComponentSpecAuthor`](ComponentSpecAuthor.md) | Mode M Gate M3 | Authors `_ar/UX/COMP/COMP<####>-<name>.md` per component |
+| [`CopySpecAuthor`](CopySpecAuthor.md) | Mode M Gate M3 | Authors `_ar/UX/COPY/COPY-<scope>.md` per module or shared scope |
 
 ## Dependencies
 
-- Batch 4 (UX rules + templates in `toolingDocs/` and `toolingTemplates/`) lands BEFORE Batch 5 (these roles).
-- Batch 4 plan currently outdated — pending rewrite after Batch 2 lands (paths change from `specs/<module>/ux/` to `_ar/UX/`).
-
-Folder is currently a placeholder. Role bodies are authored in Batch 5.
+These roles consume UX layer authoring rules from [Batch 4](../../docs/governance/AMENDMENT-PLAN-batch-4.md) (`toolingDocs/rules-{IA,WIRE,COMP,COPY}.md` and `toolingTemplates/template-{IA,WIRE,COMP,COPY}.md`).
