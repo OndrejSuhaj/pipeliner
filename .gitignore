@@ -1,0 +1,92 @@
+# OS files
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+Desktop.ini
+
+# Claude Code worktrees
+.claude/worktrees/
+
+# Editor / IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+.project
+.settings/
+.classpath
+
+# Node
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+.pnpm-debug.log*
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.egg-info/
+dist/
+build/
+.env
+.venv/
+venv/
+env/
+
+# Logs
+*.log
+logs/
+
+# Environment / secrets
+.env
+.env.*
+!.env.example
+!.env.*.example
+
+# Build output
+dist/
+build/
+out/
+tmp/
+temp/
+.next/
+.turbo/
+.open-next/
+.wrangler/
+storybook-static/
+*.tsbuildinfo
+
+# Generated API docs (SpectaQL)
+packages/graphql-schema/docs/
+packages/graphql-schema/public/
+
+# Prisma
+apps/api/prisma/generated/
+
+# Coverage / test
+coverage/
+.nyc_output/
+*.lcov
+
+# Misc
+*.bak
+*.tmp
+*.orig
+
+# LLM run logs
+runs/
+
+# Local secrets
+.secrets/
+
+# Local file storage (transitional — to be replaced by RustFS local dir)
+apps/api/uploads/
+
+# Tooling docs and templates (now committed as real files)

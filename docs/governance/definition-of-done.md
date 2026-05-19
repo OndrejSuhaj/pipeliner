@@ -1,0 +1,578 @@
+# Definition of Done
+
+## 1. Purpose
+
+This document defines the operational meaning of “done” for feature delivery in the AI delivery package.
+
+It exists to prevent a weak interpretation of completion such as:
+
+- “the code exists”,
+- “the task list was checked off”,
+- “it probably works locally”,
+- or “the implementation looks plausible”.
+
+This document turns the constitutional completion standard into a practical delivery checklist.
+
+It is stricter than a coding completion rule and narrower than the constitution.
+
+---
+
+## 2. Relationship to other governance artifacts
+
+This document depends on:
+
+- `constitution.md`
+- `guardrails.md`
+- `impact-classes.md`
+- `trigger-matrix.md`
+
+Priority order remains:
+
+1. `constitution.md`
+2. `guardrails.md`
+3. `impact-classes.md`
+4. `trigger-matrix.md`
+5. `definition-of-done.md`
+6. feature artifacts
+7. agent instructions
+
+This document may refine completion criteria operationally.
+It may not weaken higher-level governance rules.
+
+---
+
+## 3. Core principle
+
+A feature is done only when it is:
+
+- specified,
+- planned,
+- implemented within scope,
+- reviewable,
+- and meaningfully verifiable.
+
+“Done” is therefore a delivery state, not just a coding state.
+
+---
+
+## 4. Done at different levels
+
+The package distinguishes several levels of completion.
+
+## 4.1 Not started
+
+The feature request exists, but no valid delivery artifact chain exists yet.
+
+## 4.2 In analysis
+
+The feature is being classified, specified, clarified, or planned.
+
+Implementation is not yet eligible or not yet complete enough to claim progress toward done.
+
+## 4.3 In implementation
+
+Implementation work is active, but the feature is not done because one or more required areas remain incomplete.
+
+## 4.4 Implemented but not done
+
+Code exists, but one or more of the following is still missing:
+
+- artifact consistency,
+- specialist analysis,
+- QA evidence,
+- runtime notes,
+- explicit review verdict,
+- or visibility of known blockers.
+
+This is a valid intermediate state.
+It must not be reported as done.
+
+## 4.5 Done with known limitations
+
+The feature satisfies the required delivery criteria, but still has visible, accepted limitations.
+
+Those limitations must be documented explicitly.
+
+## 4.6 Done
+
+The feature satisfies the required completion criteria for its impact level and routed path.
+
+## 4.7 Blocked
+
+The feature or a lane cannot safely proceed because a required condition for completion or continuation is missing.
+
+Blocked is not done.
+Blocked is not failure.
+Blocked is a control state.
+
+---
+
+## 5. Mandatory completion criteria for normal feature delivery
+
+A feature may be marked done only when all of the following are true.
+
+### 5.1 Scope is explicit
+
+The feature scope is described clearly enough that a reviewer can understand:
+
+- what was intended,
+- what was included,
+- what was excluded.
+
+Required artifact basis:
+- `spec.md`
+
+### 5.2 Impact was classified
+
+The feature has an explicit impact classification or equivalent impact decision.
+
+The classification must be plausible relative to actual work performed.
+
+### 5.3 Ambiguity was resolved or recorded
+
+Any ambiguity that materially affects:
+
+- scope,
+- acceptance criteria,
+- contract interpretation,
+- permissions,
+- tenancy,
+- or runtime behavior
+
+must be either:
+
+- resolved,
+- explicitly recorded,
+- or reflected in a limitation / blocker.
+
+### 5.4 A valid plan exists when required
+
+If the feature is not in the lowest safe handling path, a plan must exist and must reflect the real implementation shape.
+
+### 5.5 Required specialist analysis exists
+
+If routing triggered specialist roles, their required outputs must exist.
+
+Examples:
+- `schema-impact.md`
+- `contract-notes.md`
+- ACL notes
+- query/report notes
+- job/async notes
+
+### 5.6 Tasks were decomposed clearly enough to trace execution
+
+The implementation must be traceable to tasks or bounded execution units.
+
+### 5.7 Implementation stayed within approved scope
+
+No silent scope expansion occurred.
+
+If adjacent work was discovered, it was recorded separately rather than silently absorbed.
+
+### 5.8 Operational safety and configuration hygiene
+
+If the feature touches local runtime, Docker orchestration, scripts, migrations, seeders, configuration loading, or other infrastructure-sensitive behavior, it may be considered done only when all of the following are true:
+
+- no new hardcoded secrets were introduced in repository-tracked files
+- configuration handling remains explicit and consistent across app code and supporting scripts
+- internal services are not exposed more broadly than the approved scope requires
+- fatal failures are not surfaced through naive raw string response bodies
+- Docker-related delivery changes include reasonable hygiene for the supported workflow (for example `.dockerignore`, sane build context, and restart expectations when relevant)
+- any intentionally demo-only or local-only weakness is documented explicitly in runtime notes or limitation records
+
+If these conditions are not met, the feature may still be:
+- implemented but not done
+- done with known limitations
+- or blocked
+
+It must not be reported as fully done.
+
+### 5.9 QA thinking exists
+
+A feature must have explicit QA coverage in proportion to its risk.
+
+Minimum expectation:
+- `qa-checklist.md`
+
+### 5.10 Runtime notes exist
+
+The feature must have explicit runtime or local verification notes.
+
+Minimum expectation:
+- `runtime-notes.md`
+
+### 5.11 Review produced an explicit verdict
+
+Review must end in one explicit state:
+
+- `accept`
+- `revise`
+- `block`
+
+A feature cannot be done if the final review verdict is absent, unresolved, or still `revise` / `block`.
+
+### 5.12 Known blockers and limitations are visible
+
+If the feature is considered done with limitations, those limitations must be written explicitly.
+
+Nothing important may remain hidden behind optimistic wording.
+
+### 5.13 Slice atomicity
+
+A slice is atomic when:
+
+- it has exactly one acceptance criterion,
+- it produces exactly one user-observable outcome,
+- and its size fits the per-class caps in `impact-classes.md` § 13.1 and the global caps in `CLAUDE.md` § Slice Sizing Discipline.
+
+If "done" requires more than one acceptance criterion or more than one user-observable outcome, the slice was misclassified or under-decomposed. Reclassify and split before continuing toward done.
+
+A slice that has been split into sub-slices is not done until every sub-slice is independently `accept`-verdicted and merged. Sub-slices are not interchangeable with the parent slice's done state — each sub-slice carries its own acceptance criterion, its own review verdict, and its own merge.
+
+A slice that exceeds its size caps may not be reported as done even if all other criteria are met. Size cap violations are scope/structure failures, not quality failures, and resolve through splitting.
+
+---
+
+## 6. Completion criteria by impact class
+
+## 6.1 IC0 — Documentation / non-executable support change
+
+Done when:
+
+- scope is clear,
+- the documentation or support artifact is updated consistently,
+- no hidden runtime effect exists,
+- and review is sufficient for the intended scope.
+
+Usually not required:
+- runtime verification,
+- implementation lanes,
+- specialist routing.
+
+## 6.2 IC1 — Local presentation change
+
+Done when:
+
+- scope is explicit,
+- the UI or local presentation change is implemented,
+- contract assumptions remain unchanged,
+- QA checks exist,
+- runtime notes exist,
+- review confirms no hidden protected-area impact.
+
+## 6.3 IC2 — Bounded feature change without protected-area impact
+
+Done when:
+
+- normal feature criteria are met,
+- implementation is traceable to tasks,
+- QA and runtime checks exist,
+- and no hidden contract/protected-area drift remains.
+
+## 6.4 IC3 — Contract or shared-behavior change
+
+Done when:
+
+- normal feature criteria are met,
+- required schema/contract analysis exists,
+- shared behavior change is visible and reviewed,
+- cross-surface implications are acknowledged,
+- and review confirms contract consistency.
+
+## 6.5 IC4 — Protected-area or cross-boundary change
+
+Done when:
+
+- all normal criteria are met,
+- all required specialist routes were completed,
+- protected-area impact is visible in artifacts,
+- unresolved risk is either closed or explicitly accepted,
+- runtime and review evidence are strong enough to justify delivery confidence.
+
+IC4 should be harder to call done than IC1–IC3.
+
+## 6.6 IC5 — Strategic / architecture-sensitive change
+
+IC5 is generally not considered done as a normal feature.
+
+It is first considered done only when it has been:
+
+- decomposed,
+- governance-reviewed,
+- and translated into smaller deliverable work.
+
+Implementation-level done should apply to the resulting lower-impact slices, not to IC5 as a raw request.
+
+---
+
+## 7. Completion criteria by routed path
+
+## 7.1 Default feature route
+
+Required:
+- `spec.md`
+- `plan.md` when required
+- `tasks.md`
+- `qa-checklist.md`
+- `runtime-notes.md`
+- `review.md`
+
+## 7.2 Contract-aware route
+
+Additional required evidence:
+- `schema-impact.md`
+- `contract-notes.md`
+
+The change is not done if contract implications were real but undocumented.
+
+## 7.3 Access-aware route
+
+Additional required evidence:
+- visible access-impact notes,
+- explicit review of permission semantics.
+
+The change is not done if role or visibility impact exists only implicitly in code.
+
+## 7.4 Query-aware route
+
+Additional required evidence:
+- visible read-side or reporting notes,
+- explicit statement of changed filters, grouping, derived outputs, or result semantics.
+
+## 7.5 Job-aware route
+
+Additional required evidence:
+- background behavior notes,
+- retry or idempotency implications when relevant,
+- runtime notes that acknowledge async limits.
+
+## 7.6 Onboarding route
+
+Onboarding is done when the baseline is trustworthy enough for normal feature delivery.
+
+Typical required outputs:
+- source index,
+- authority map,
+- conflict register,
+- terminology baseline,
+- architecture baseline,
+- onboarding risk report.
+
+---
+
+## 8. Minimum evidence rules
+
+A feature is not done if any of the following applies:
+
+- code changed but spec does not reflect intent,
+- plan exists but no longer describes the actual work,
+- specialist-triggered areas have no corresponding artifact,
+- runtime notes do not state what was actually verified,
+- review does not provide a clear verdict,
+- or a significant limitation is known but undocumented.
+
+---
+
+## 9. QA completion rules
+
+QA is sufficient when it is proportionate to the routed risk.
+
+### Minimum QA expectation
+
+Every normal feature should have:
+- acceptance-oriented checks,
+- smoke-level verification thinking,
+- and explicit mention of what still requires manual confirmation.
+
+### Higher-risk expectation
+
+Features involving:
+- shared contracts,
+- permissions,
+- tenancy,
+- async processing,
+- or cross-client behavior
+
+require more explicit QA attention.
+
+A high-risk feature is not done if QA remains purely implied.
+
+---
+
+## 10. Runtime completion rules
+
+Runtime evidence is sufficient only when it states clearly:
+
+- whether the feature builds,
+- whether it runs,
+- whether it is locally verifiable,
+- what environment assumptions apply,
+- what was actually exercised,
+- and what remains unverified.
+
+A vague statement such as “should work locally” is insufficient.
+
+---
+
+## 11. Review completion rules
+
+Review is complete only when:
+
+- it checks more than formatting,
+- it considers spec and plan alignment,
+- it checks scope discipline,
+- it checks contract/protected-area safety when relevant,
+- and it ends with one explicit verdict.
+
+No feature is done if the final review verdict is still:
+- `revise`
+- or `block`.
+
+---
+
+## 12. Done with limitations
+
+A feature may be called done with limitations only when:
+
+- the limitations are visible,
+- the limitations do not invalidate the feature’s main intended outcome,
+- and the review accepts that state explicitly.
+
+Typical examples:
+- local verification is partial because an external provider is unavailable,
+- a manual QA step remains required,
+- a low-severity follow-up remains open but not blocking.
+
+This state must never be used to hide:
+- protected-area uncertainty,
+- broken contract assumptions,
+- or unreviewed scope drift.
+
+---
+
+## 13. What does not qualify as done
+
+The following do **not** qualify as done on their own:
+
+- code exists,
+- branch exists,
+- tests were generated,
+- tasks were checked off,
+- the feature compiles,
+- a reviewer left comments but no verdict,
+- or the implementation "probably" works.
+
+---
+
+## 14. Completion checklist template
+
+Use this template as a standard feature-level completion check.
+
+```md
+# Feature Completion Check
+
+## Scope
+- [ ] Scope is explicit in `spec.md`
+- [ ] In-scope / out-of-scope is clear
+
+## Classification
+- [ ] Impact classification exists
+- [ ] Classification still matches actual work performed
+
+## Clarification
+- [ ] Material ambiguities were resolved or recorded
+
+## Plan
+- [ ] Required plan exists
+- [ ] Plan still reflects actual implementation shape
+
+## Specialist Artifacts
+- [ ] Required specialist analysis exists
+- [ ] Contract / schema / ACL / QUERY / JOB impact is documented when relevant
+
+## Tasks
+- [ ] Implementation is traceable to tasks or bounded execution units
+- [ ] No silent scope expansion occurred
+
+## QA
+- [ ] QA checklist exists
+- [ ] Manual verification needs are visible
+
+## Runtime
+- [ ] Runtime notes exist
+- [ ] Build / run / verify status is explicit
+- [ ] Known environment blockers are visible
+
+## Review
+- [ ] Review exists
+- [ ] Final verdict is `accept`
+
+## Visibility
+- [ ] Known blockers or limitations are visible
+- [ ] Confidence is communicated honestly
+```
+
+---
+
+## 15. Completion outputs
+
+A feature marked done should have, at minimum, these visible completion outputs:
+
+- a final `review.md` with explicit verdict,
+- `runtime-notes.md`,
+- `qa-checklist.md`,
+- and all triggered specialist artifacts.
+
+A delivery summary may also exist, but it does not replace the required artifacts.
+
+---
+
+## 16. Common false-done patterns
+
+### 16.1 Code-complete but artifact-incomplete
+Implementation exists, but the feature has no valid runtime or review closure.
+
+### 16.2 Review without decision
+Comments exist, but no final verdict was given.
+
+### 16.3 QA implied but not visible
+The team assumes the change was tested, but nothing makes that testability legible.
+
+### 16.4 Contract change hidden in implementation
+The system behaves differently, but no contract-aware artifact was created.
+
+### 16.5 Limitation hidden as optimism
+The feature is called done even though verification or behavior gaps are known and undocumented.
+
+---
+
+## 17. Rules for future refinement
+
+When refining this document:
+
+- do not turn done into bureaucracy for trivial changes,
+- do not weaken protected-area completion requirements,
+- do not define done purely as coding completion,
+- and do not duplicate the constitution unnecessarily.
+
+Keep this document operational, practical, and auditable.
+
+---
+
+## 18. Current recommended usage
+
+Until pilot runs provide enough evidence to refine thresholds:
+
+- apply this DoD conservatively,
+- prefer visible incompleteness over premature done status,
+- and require stronger closure for IC3 and IC4 changes than for IC0 and IC1 changes.
+
+---
+
+## 19. Final stance
+
+This Definition of Done exists to make completion real.
+
+Its job is not to slow delivery down for ceremony.
+Its job is to ensure that when the package says “done”, that claim means something reviewable, testable, and honest.

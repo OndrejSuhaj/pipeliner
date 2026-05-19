@@ -1,0 +1,593 @@
+# Mode C — Comment Intake / Documentation Amendment / Slice Seeding
+
+## Purpose
+
+Mode C is a governed pre-delivery intake mode for operator-selected issues and comments.
+
+It exists to:
+- normalize an operator-selected comment or issue,
+- classify what kind of change it actually implies,
+- resolve the affected canonical documentation layer,
+- amend or create the necessary upstream documentation first,
+- and prepare a clean handoff into Mode B when the result should become a real feature slice.
+
+Mode C is **not** a replacement for Mode B.
+Mode C is **not** a delivery pipeline for implementation.
+Mode C is **not** allowed to bypass the repository authority hierarchy.
+
+---
+
+## Position in the Overall Operating Model
+
+The repository has three operating modes:
+
+- **Mode A — Repository Onboarding**
+- **Mode B — Feature Delivery** (default)
+- **Mode C — Comment Intake / Documentation Amendment / Slice Seeding**
+
+Mode C sits **before** normal feature delivery when the starting point is a selected issue/comment rather than a normal delivery request.
+
+Typical flow:
+
+`selected issue/comment → Mode C intake and amendment → explicit handoff → Mode B feature delivery`
+
+Mode C is appropriate when:
+- the operator selects a page-level or document-passage comment from the annotation layer,
+- a review note challenges current upstream documentation,
+- a comment suggests missing behavior, missing entity meaning, missing rule, or missing scenario coverage,
+- a comment may become a new slice, but first requires documentation normalization.
+
+Mode C is **not** appropriate when:
+- the work is already a clean feature request with enough scope clarity for normal Mode B,
+- the problem is baseline trust, corpus conflict, or terminology instability across the repository — use Mode A,
+- the operator wants implementation directly — that still belongs to Mode B.
+
+---
+
+## Core Principles
+
+Mode C inherits the repository principles and adds the following local discipline:
+
+1. **Comment is not source of truth**  
+   A selected issue/comment is input, not authority.
+
+2. **Documentation first when truth is challenged**  
+   If the comment changes or challenges current upstream understanding, create or amend the correct canonical document before seeding delivery work.
+
+3. **Canonical layer must be resolved before writing**  
+   Do not amend an EN-like problem as UC, or a BR-like problem as QUERY, just because the wording is vague.
+
+4. **Minimal sufficient routing still applies**  
+   Use only the roles and artifacts materially needed.
+
+5. **No implementation in Mode C**  
+   Mode C never implements product code, never opens implementation lanes, and never claims feature completion.
+
+6. **Mode C may seed, not deliver**  
+   Its highest outcome is a clean handoff package into future Mode B work.
+
+---
+
+## Typical Outcomes
+
+Every Mode C run must end in exactly one explicit outcome:
+
+- `closed_as_doc_fix`
+- `recorded_as_open_question`
+- `route_to_existing_slice`
+- `promote_to_new_slice_candidate`
+- `rejected`
+
+These outcomes mean:
+
+### `closed_as_doc_fix`
+The selected issue/comment only required documentation correction or clarification.
+
+### `recorded_as_open_question`
+The issue/comment exposed material ambiguity that cannot be safely normalized yet.
+
+### `route_to_existing_slice`
+The issue/comment belongs to an already existing feature slice or slice candidate.
+
+### `promote_to_new_slice_candidate`
+The issue/comment is normalized enough to seed a new future Mode B slice.
+
+### `rejected`
+The issue/comment does not justify controlled follow-up in the repository workflow.
+
+---
+
+## Non-Goals
+
+Mode C must not become:
+- a second implementation workflow,
+- a hidden backlog factory,
+- a free-form documentation rewrite mode,
+- an onboarding replacement,
+- a way to bypass constitution / guardrails / impact classification,
+- a universal issue tracker.
+
+---
+
+## Entry Conditions
+
+Mode C may start only when all of the following are true:
+- the operator explicitly selected an issue/comment,
+- the operator wants controlled follow-up rather than only discussion,
+- the starting point is not already a normal Mode B feature request,
+- there is enough context to identify the affected page / document / artifact,
+- the run can stay bounded.
+
+If these conditions are not met, stop and ask for clarification or route elsewhere.
+
+---
+
+## Comment Source Retrieval
+
+In this repository, operator-selected comments may be retrieved directly from the application database when needed.
+
+Current operational path:
+
+```bash
+docker compose exec db psql -U colter_service -d colter -c   "SELECT id, target_type, route_id, doc_id, passage_anchor, body, status, author_name, created_at FROM page_comments ORDER BY created_at DESC;"
+```
+
+This query:
+- connects to the PostgreSQL container as `colter_service`,
+- reads from `page_comments`,
+- bypasses RLS through the service role,
+- returns comments across companies and pages,
+- exposes:
+  - `id`
+  - `target_type`
+  - `route_id`
+  - `doc_id`
+  - `passage_anchor`
+  - `body`
+  - `status`
+  - `author_name`
+  - `created_at`
+
+Common filters:
+- open only:
+  ```sql
+  WHERE status = 'open'
+  ```
+- specific page:
+  ```sql
+  WHERE route_id = '/invoices'
+  ```
+- specific document:
+  ```sql
+  WHERE doc_id = 'ARCH/ARCH0003_Invoicing.md'
+  ```
+
+This retrieval path is an operator/support workflow input.
+It is not a claim that all comments are normally visible in product UI across companies.
+
+If the input came from direct database retrieval, the Mode C run must still bind itself to:
+- one explicit selected comment row,
+- or one explicitly bounded filtered set.
+
+Do **not** process “all comments” as one undifferentiated intake.
+
+---
+
+## Inputs
+
+Typical Mode C inputs:
+- selected issue/comment identifier,
+- comment text,
+- anchor context:
+  - page route,
+  - document identifier,
+  - or document passage context,
+- relevant current upstream artifact, if known,
+- operator intent, if provided.
+
+Optional supporting inputs:
+- FE evidence,
+- screenshot,
+- relevant `_ar/**` excerpt,
+- existing spec or slice reference,
+- prior review note.
+
+---
+
+## Comment Status vs Mode C Outcome
+
+The comment record status in `page_comments` is **not** the same thing as the Mode C workflow outcome.
+
+Current application comment statuses may include:
+- `open`
+- `resolved`
+- `wontfix`
+
+Mode C outcomes remain:
+- `closed_as_doc_fix`
+- `recorded_as_open_question`
+- `route_to_existing_slice`
+- `promote_to_new_slice_candidate`
+- `rejected`
+
+Mode C must not silently reinterpret one as the other.
+If an operator workflow wants an explicit mapping, that mapping must be written down.
+
+---
+
+## Required Read Order in Mode C
+
+Always read first:
+- `.specify/memory/constitution.md`
+- `docs/governance/guardrails.md`
+- `docs/governance/trigger-matrix.md`
+- `docs/governance/definition-of-done.md`
+- this file
+
+Read next only as needed:
+- `docs/governance/impact-classes.md`
+- `docs/governance/local-tooling-contract.md` when local tooling is used
+- the selected issue/comment context
+- the current upstream artifact being challenged
+- relevant role file(s) in `agents/issues/**`
+- exact layer-specific rules/template files only after canonical layer resolution
+
+Do not broad-scan the repository.
+Do not broad-scan `toolingDocs/` or `toolingTemplates/`.
+
+---
+
+## Mode C Gate Sequence
+
+## Gate C0 — Operator Selection
+
+### Purpose
+Confirm the exact selected issue/comment and operator intent.
+
+Selected issue/comment may come from:
+- annotation layer UI,
+- markdown viewer context,
+- or direct operator retrieval from `page_comments` in the application database.
+
+### Required result
+A stable intake target exists.
+
+### Minimum output
+- selected issue/comment reference
+- target context
+- operator intent
+- initial one-paragraph problem statement
+
+### Stop if
+- the operator did not actually select a bounded issue/comment,
+- the starting point is too vague,
+- the context cannot be identified,
+- or the run is trying to process “all comments” as one backlog blob.
+
+---
+
+## Gate C1 — Intake Classification
+
+### Purpose
+Normalize the issue/comment and classify what kind of controlled follow-up it implies.
+
+### Owned by
+`agents/issues/CommentIntakeGuard`
+
+### Expected decisions
+- doc-fix only,
+- open question,
+- existing-slice extension,
+- new-slice candidate,
+- reject.
+
+### Minimum output artifact
+`comment-intake.md`
+
+### Required contents
+- issue/comment reference
+- normalized summary
+- target context
+- why the issue matters
+- provisional classification
+- provisional impact seed
+- protected-area suspicion if any
+- recommendation
+
+### Stop if
+- the normalized problem cannot be stated clearly,
+- the comment actually contains multiple separate problems that must be split first.
+
+---
+
+## Gate C2 — Canonical Layer Resolution
+
+### Purpose
+Resolve which canonical documentation layer is actually affected.
+
+### Owned by
+`agents/issues/CanonicalLayerResolver`
+
+### Common mappings
+- entity meaning, lifecycle, invariants, relationships → `EN`
+- actor-triggered behavior and numbered flow → `UC`
+- deterministic system/domain rule → `BR`
+- FE-first runtime evidence or reconstruction scenario → `CS`
+- capability description → `FN`
+- interface contract → `API`
+- access model → `ACL`
+- read-side behavior → `QUERY`
+- background contract → `JOB`
+- external system boundary → `ES`
+- transactional message contract → `MSG`
+- structural system view → `ARCH`
+
+### Minimum output
+A resolved primary canonical layer and any secondary affected layers.
+
+### Stop if
+- no safe primary layer can be determined,
+- multiple layers conflict materially and need clarification first.
+
+---
+
+## Gate C2.5 — Tooling Resolution
+
+### Purpose
+Read the exact layer-specific authoring rule/template only if needed.
+
+### Owned by
+- `agents/issues/ToolingRuleResolver`
+- `agents/issues/ToolingTemplateResolver`
+
+### Allowed reads
+Only exact-file lookup after layer resolution, for example:
+- `toolingDocs/rules-EN.md`
+- `toolingTemplates/template-EN.md`
+
+### Forbidden reads
+- scanning all rules,
+- scanning all templates,
+- using local tooling as authority,
+- inventing layer rules when both tooling and fallback are missing.
+
+### Stop if
+- local tooling is needed and missing,
+- no repository fallback exists,
+- safe authoring cannot continue.
+
+See `docs/governance/local-tooling-contract.md`.
+
+---
+
+## Gate C3 — Documentation Amendment
+
+### Purpose
+Create or amend the necessary upstream documentation before any slice promotion.
+
+### Owned by
+`agents/issues/DocumentationAmendmentAuthor`
+
+### Typical outputs
+- amendment to existing canonical doc,
+- new draft canonical doc,
+- correction note,
+- conflict note,
+- or explicit open question when amendment is unsafe.
+
+### Required behavior
+- follow the resolved canonical layer,
+- follow layer-specific restrictions,
+- keep implementation details out when the layer forbids them,
+- preserve uncertainty instead of smoothing it away,
+- never treat the issue/comment as authority by itself.
+
+### Minimum output artifact
+`source-amendment.md` or equivalent upstream amendment artifact
+
+### Stop if
+- the upstream change would silently cross into protected-area design,
+- the amendment would require unsupported claims,
+- the evidence is too weak.
+
+---
+
+## Gate C4 — Slice Seeding / Handoff
+
+### Purpose
+Prepare future Mode B work only when the result justifies it.
+
+### Owned by
+`agents/issues/SliceSeedAuthor`
+
+### When used
+Only for:
+- `route_to_existing_slice`
+- `promote_to_new_slice_candidate`
+
+### Minimum outputs
+- `slice-seed.md` when a new slice candidate is created
+- `mode-b-handoff.md` when a future Mode B run should start from the Mode C result
+
+### Required contents
+- normalized problem statement
+- documentation delta summary
+- recommended slice slug or target existing slice
+- likely impact class
+- likely protected areas
+- likely specialist triggers
+- recommended next step:
+  - `Mode B, Gate 1–3 only`
+  - or `Mode B, Gate 1–5 only`
+
+### Stop if
+- the result is still too ambiguous for safe seeding,
+- the change is actually strategic / architecture-sensitive and needs governance escalation first.
+
+---
+
+## Default Agent Set for `agents/issues/**`
+
+Mode C should use a small, explicit set of issue-focused agents.
+
+### Required
+
+#### `CommentIntakeGuard`
+Normalizes the selected issue/comment and classifies it.
+
+#### `CanonicalLayerResolver`
+Determines which canonical documentation layer is affected.
+
+#### `DocumentationAmendmentAuthor`
+Creates or amends upstream documentation using the resolved layer.
+
+#### `SliceSeedAuthor`
+Prepares the future Mode B seed/handoff when promotion is justified.
+
+### Conditional
+
+#### `ToolingRuleResolver`
+Reads the exact local authoring rules file when needed.
+
+#### `ToolingTemplateResolver`
+Reads the exact local authoring template file when needed.
+
+#### `ClarificationSeeder`
+Used when ambiguity materially blocks safe intake or amendment.
+
+#### `ConflictMapperLite`
+Used when current sources materially conflict and the conflict must be surfaced before proceeding.
+
+---
+
+## Required Artifacts in Mode C
+
+These artifacts are Mode C-specific and do not replace Mode B artifacts.
+
+Document source-amendment.md is not sufficient by itself when the target is an existing canonical doc and the amendment is actionable.
+
+### Always when applicable
+- `comment-intake.md`
+- `source-amendment.md` or equivalent amendment artifact
+
+### When ambiguity is material
+- `open-questions.md`
+
+### When future delivery is justified
+- `slice-seed.md`
+- `mode-b-handoff.md`
+
+Mode C must not create:
+- `spec.md`
+- `plan.md`
+- `tasks.md`
+- `qa-checklist.md`
+- `runtime-notes.md`
+- `review.md`
+
+unless the run is explicitly handed off and restarted as Mode B.
+
+---
+##  Canonical application rule
+
+If the amendment type is correction-note or clarification-amendment and target_doc_id points to an existing canonical document, the amendment must be applied to that canonical document within Gate C3.
+
+If the amendment type is new-draft-artifact, canonical application is not required in the same step.
+
+If the amendment type is conflict-note, canonical application is forbidden until the conflict is resolved.
+
+---
+
+## Routing and Impact Guidance
+
+Mode C still follows repository routing discipline:
+- classify by **effect**, not by wording,
+- use **minimal sufficient routing**,
+- **highest risk wins**,
+- escalate uncertainty rather than guessing.
+
+Typical impact posture:
+- documentation-only correction may remain `IC0`,
+- bounded clarification with no protected-area touch may remain lightweight,
+- if the issue/comment implies contract, ACL, QUERY, JOB, schema, tenancy, or architecture effects, surface that in the handoff rather than pretending it is doc-only.
+
+If protected areas are implicated, Mode C may identify them but must not silently design the downstream solution.
+
+---
+
+## Hard Stops in Mode C
+
+Stop or block when:
+- the selected issue/comment is unclear,
+- canonical layer cannot be resolved,
+- tooling guidance is required but unavailable,
+- upstream sources materially conflict,
+- protected-area implications exist but are being hand-waved,
+- the work is actually strategic and should not be seeded casually,
+- the operator is trying to use Mode C as a shortcut around Mode B.
+- the amendment text exists, but canonical application is still pending without explicit reason.
+
+Blocked is a valid Mode C state.
+
+---
+
+## Handoff to Mode B
+
+A Mode C result may hand off into Mode B only when:
+- the issue/comment has been normalized,
+- the upstream documentation delta is visible,
+- the likely scope is bounded enough,
+- the next delivery step is explicit,
+- and the operator wants promotion.
+
+Mode C handoff should state one of:
+- `Start Mode B Gate 1–3 only`
+- `Start Mode B Gate 1–5 only`
+- `Attach to existing slice`
+- `Hold until open questions are resolved`
+
+Mode C never creates a branch by itself.
+Mode C never opens implementation lanes by itself.
+Normal git gates remain a Mode B concern.
+
+---
+
+## Relationship to the Source Corpus
+
+Mode C may use `_ar/**` only in a bounded way.
+
+Rules:
+- read only the subset needed for the selected issue/comment,
+- treat FE/runtime evidence carefully,
+- preserve inconsistencies and open questions,
+- do not use broad corpus reading unless the work has actually turned into a baseline problem.
+
+When the affected layer is `CS`, keep FE evidence primary and avoid overclaiming backend truth from UI alone.
+
+---
+
+## Quality Bar
+
+A good Mode C result is:
+- bounded,
+- explicit,
+- evidence-aware,
+- layer-correct,
+- honest about uncertainty,
+- and easy to hand off.
+
+A bad Mode C result is:
+- vague,
+- over-architected,
+- silently authoritative,
+- implementation-shaped without documentation normalization,
+- or indistinguishable from a hidden backlog entry.
+
+---
+
+## Example Short Prompts
+
+- `Mode C, Gate C0-C2 only for selected issue 17`
+- `Mode C, create comment-intake.md and resolve canonical layer`
+- `Mode C, amend upstream EN draft only`
+- `Mode C, prepare slice-seed and mode-b-handoff only`
