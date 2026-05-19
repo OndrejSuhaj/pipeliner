@@ -1,6 +1,6 @@
 # Amendment Plan — Batch 5: Agent Role Bodies (program, modules, ux)
 
-**Status**: ✅ Completed — Batch 5 applied 2026-05-19 across 3 commits (Stage A `f2dae5b`, Stage B `57761dd`, Stage C pending)
+**Status**: ✅ Completed — Batch 5 applied 2026-05-19 across 3 commits (Stage A `f2dae5b`, Stage B `57761dd`, Stage C `ddc5716`)
 **Scope**: Author 19 agent role files in `agents/program/`, `agents/modules/`, `agents/ux/`; delete legacy `agents/onboarding/` folder
 **Method**: Direct editing (Cesta A) — framework amendment, no feature branch
 **Version bump**: constitution stays v2.0.0
