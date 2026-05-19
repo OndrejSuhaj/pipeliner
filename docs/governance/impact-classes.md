@@ -30,8 +30,14 @@ Priority order:
 3. `impact-classes.md`
 4. `trigger-matrix.md`
 5. `definition-of-done.md`
-6. feature artifacts
-7. agent instructions
+6. `mode-c.md` when Mode C is active
+7. `mode-m.md` when Mode M is active
+8. `mode-p.md` when Mode P is active
+9. `local-tooling-contract.md` when local tooling is used
+10. program-level artifacts (`docs/program/*`)
+11. module-level artifacts (`specs/<module>/*`)
+12. slice-level feature artifacts
+13. agent instructions
 
 If this document conflicts with a higher artifact, the higher artifact wins.
 
@@ -275,7 +281,87 @@ When a slice would naturally exceed its class cap, the correct response is split
 
 ---
 
-## 14. Final Stance
+## 14. Module-Level Impact Classification
+
+Module-level work (Mode M) has its own impact classification parallel to slice-level IC0–IC5. Module-level impact answers a different question: how much rigor does **the whole module's framing and orchestration** require?
+
+| Class | Meaning |
+|---|---|
+| `M0` | bounded local module — single business capability, no protected-area touch, single client surface |
+| `M1` | standard module — multiple capabilities, contract surface within module, no protected-area touch |
+| `M2` | contract-bearing module — exposes shared contract surface to other modules or external clients |
+| `M3` | protected-area module — module owns or touches one or more protected areas (auth, ACL, tenancy, schema-critical, jobs, integrations, infrastructure, architecture boundaries) |
+
+### 14.1 M0 — Bounded Local Module
+
+Use `M0` when the module:
+- delivers a single bounded business capability,
+- does not expose contract to other modules,
+- does not touch any protected area,
+- and has a single user-facing surface (or none).
+
+Typical posture:
+- module-brief and slice-map are sufficient,
+- specialist routing rarely needed at module level,
+- Mode M Gate M1a baseline is bounded and small.
+
+### 14.2 M1 — Standard Module
+
+Use `M1` when the module:
+- delivers multiple capabilities,
+- has internal contract surface,
+- does not touch protected areas,
+- is the default class for normal modules.
+
+Typical posture:
+- module-plan must explicitly declare internal contract surfaces,
+- slice-map must reflect realistic sequencing.
+
+### 14.3 M2 — Contract-Bearing Module
+
+Use `M2` when the module:
+- exposes shared contract to other modules or external clients,
+- introduces shared types, GraphQL schema fragments, or cross-module APIs,
+- affects how other modules consume its behavior.
+
+Typical posture:
+- `SchemaSteward` is invoked at Mode M Gate M3,
+- `module-plan.md` documents contract surfaces explicitly,
+- cross-module integration verification is required at Gate M4.
+
+### 14.4 M3 — Protected-Area Module
+
+Use `M3` when the module:
+- owns or touches one or more protected areas,
+- is a cross-boundary risk by nature (auth module, billing module, identity module, etc.),
+- has heightened blast radius for any slice within it.
+
+Typical posture:
+- specialist routing (`AclPlanner`, `SchemaSteward`, `JobPlanner`) at module level, not just slice level,
+- module-risks.md is mandatory and substantive,
+- Mode M Gate M4 release readiness has higher scrutiny,
+- individual slices inside the module are often IC3 or IC4.
+
+### 14.5 Relationship between module class and slice class
+
+Module class constrains but does not determine slice class:
+
+- `M0` module typically contains IC0–IC2 slices,
+- `M1` module typically contains IC0–IC3 slices,
+- `M2` module typically contains IC1–IC3 slices, with occasional IC4,
+- `M3` module routinely contains IC3–IC4 slices, occasionally IC5 that must decompose.
+
+A slice in an `M3` module is not automatically `IC4`. Slice class is determined by the slice's own effect.
+
+### 14.6 Reclassification at module level
+
+If module-level work reveals higher impact than declared (e.g. `M1` module turns out to expose contract → escalate to `M2`), reclassify explicitly in `module-brief.md`.
+
+If module-level work reveals strategic / architecture-sensitive scope (analog to slice-level `IC5`), escalate back to Mode P Gate P-R rather than continuing as a module.
+
+---
+
+## 15. Final Stance
 
 Impact classes exist to apply proportional rigor.
 

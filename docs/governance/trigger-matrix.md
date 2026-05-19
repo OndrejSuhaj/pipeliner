@@ -416,23 +416,147 @@ Mode C must not open implementation lanes.
 
 ---
 
-## 11. Onboarding-only roles
+## 11. Onboarding roles (Mode A + Mode M Gate M1a reuse)
 
-The following roles belong only to repository onboarding or baseline repair:
+The following roles belong to repository onboarding or baseline repair, and are also invoked with **module scope** from Mode M Gate M1a:
 
 - `CorpusCurator`
 - `ConflictMapper`
 - `TerminologyResolver`
 - `ArchitectureBaselineMapper`
 
-Trigger these roles only when:
-- the project is being onboarded,
+Trigger these roles when:
+- the project is being onboarded (Mode A, repo scope),
 - baseline trust is weak,
 - artifact authority is unclear,
 - terminology is unstable,
-- or a major documentation conflict blocks normal feature delivery.
+- a major documentation conflict blocks normal feature delivery,
+- or Mode M Gate M1a needs module-scope baseline trust (terminology, source authority, conflict register within the module's scope).
 
 They must not be activated for ordinary feature work just because more context would be nice to have.
+
+The roles themselves are shared. Mode A invokes them with **repo scope**; Mode M Gate M1a invokes them with **module scope** (explicit `scope: module:<name>` parameter). No duplicate `Module*Onboarding` agent catalog.
+
+## 11.5 Program-level roles (`agents/program/**`)
+
+The following roles belong only to Mode P program bootstrap and re-frame work.
+
+### `ProgramBootstrapper`
+
+Trigger when:
+- Gate P-R is being authorized (re-frame variant),
+- Gate P0 is being executed (program declaration).
+
+Primary outputs:
+- `docs/program/re-frame-authorization.md` (when re-framing)
+- `docs/program/project-brief.md`
+
+### `ArchitectureOverviewAuthor`
+
+Trigger when:
+- Gate P1 is being executed (program-level architecture overview).
+
+Primary outputs:
+- `docs/program/architecture-overview.md`
+
+### `ModuleMapAuthor`
+
+Trigger when:
+- Gate P2 is being executed (module decomposition).
+
+Primary outputs:
+- `docs/program/module-map.md`
+
+### `ImplementationStreamsAuthor`
+
+Trigger only when:
+- Gate P3 is being executed (parallel delivery coordination model is non-trivial).
+
+Primary outputs:
+- `docs/program/implementation-streams.md`
+
+## 11.6 Module-level orchestration roles (`agents/modules/**`)
+
+The following roles belong only to Mode M module declaration, framing, planning, and release readiness work.
+
+### `ModuleFramer`
+
+Trigger when:
+- Gate M0 is being executed (module declaration),
+- Gate M1b is being executed (module framing — module-brief + initial analysis).
+
+Primary outputs:
+- `specs/<module>/module-brief.md`
+- coordination of analytical role calls for EN/BR/ES/ARCH at module level
+
+### `ModulePlanAuthor`
+
+Trigger when:
+- Gate M3 architecture component is being executed.
+
+Primary outputs:
+- `specs/<module>/module-plan.md`
+
+### `SliceMapAuthor`
+
+Trigger when:
+- Gate M3 slice map component is being executed.
+
+Primary outputs:
+- `specs/<module>/slice-map.md` (with §17.3 slice-readiness prerequisites per slice)
+
+### `ModuleStagingVerifier`
+
+Trigger when:
+- Gate M4 is being executed (module release readiness).
+
+Primary outputs:
+- `specs/<module>/module-staging-readiness.md`
+
+### `ModuleRiskAuditor`
+
+Trigger cross-cutting at M1, M3, M4.
+
+Primary outputs:
+- `specs/<module>/module-risks.md` (initial draft, refresh, final state)
+
+## 11.7 UX canonical roles (`agents/ux/**`)
+
+The following roles authorize content for IA, WIRE, COMP, COPY canonical layers introduced in Batch 1.
+
+### `IAAuthor`
+
+Trigger when:
+- Gate M2 needs information-architecture authoring.
+
+Primary outputs:
+- `specs/<module>/ux/ia.md` (canonical IA layer)
+
+### `WireframeAuthor`
+
+Trigger when:
+- Gate M2 needs screen-level layout and interaction spec.
+
+Primary outputs:
+- `specs/<module>/ux/wireframes.md` (canonical WIRE layer)
+
+### `ComponentSpecAuthor`
+
+Trigger only when:
+- Gate M3 declares a module-level reusable component vocabulary.
+
+Primary outputs:
+- `specs/<module>/ux/components.md` (canonical COMP layer)
+
+### `CopySpecAuthor`
+
+Trigger only when:
+- Gate M3 declares non-trivial module-level text content.
+
+Primary outputs:
+- `specs/<module>/ux/copy.md` (canonical COPY layer)
+
+Note: rules and templates for IA, WIRE, COMP, COPY layers arrive in Batch 4 of the foundation amendment. Until then, the canonical layers are registered but their authoring rules are pending.
 
 ---
 
@@ -463,6 +587,31 @@ Output expectation:
 ---
 
 ## 13. Gate routing matrix — Mode B
+
+## 13.0 Gate B0 — Slice Readiness Gate
+
+Mandatory for every Mode B run. First step in the sequence, before the constitution check.
+
+Primary role:
+- `SliceReadinessVerifier` (read-only, model haiku)
+
+Reads from:
+- `specs/<module>/slice-map.md` (slice prerequisites recorded by Mode M Gate M3)
+- `specs/<module>/module-brief.md` (for module context)
+- relevant analytical and UX artifacts referenced by the slice prerequisites
+
+Output expectation:
+- pass/fail verdict against §17.3 slice-ready done criteria:
+  1. analytical inputs are sufficient,
+  2. UX inputs are sufficient,
+  3. technical dependencies on core and other modules are explicit and resolved,
+  4. scope fits within slice sizing discipline,
+  5. acceptance criterion is single and user-observable,
+  6. assigned implementer lane(s) are clear.
+
+Stop if:
+- the slice is not in `slice-map.md`,
+- any of the six prerequisites fails (route back to Mode M).
 
 ## 13.1 Gate 1 — Constitution Gate
 
@@ -672,6 +821,189 @@ Output expectation:
 
 ---
 
+## 14.5 Gate routing matrix — Mode M
+
+### 14.5.0 Gate M0 — Module Declaration
+
+Primary question:
+- which module from `module-map.md` is being framed, and is its scope confirmed?
+
+Primary role:
+- `ModuleFramer`
+
+Typical inputs:
+- module slug from `docs/program/module-map.md`
+- operator confirmation of module scope
+- existing repo baseline (`docs/baseline/*`)
+
+Output expectation:
+- `specs/<module>/module-brief.md` § Declaration section
+- module-id, scope summary, dependencies, integration boundaries
+
+Stop if:
+- the module is not in `module-map.md` (run Mode P first),
+- `module-map.md` does not exist,
+- module-level Mode A baseline (`docs/baseline/*`) is required but missing.
+
+### 14.5.1 Gate M1a — Module Baseline
+
+Primary roles (invoked with module scope):
+- `CorpusCurator`
+- `TerminologyResolver`
+- `ConflictMapper`
+- `ArchitectureBaselineMapper` (optional)
+
+Output expectation:
+- `specs/<module>/baseline/authority-map.md`
+- `specs/<module>/glossary/module-glossary.md`
+- `specs/<module>/baseline/conflict-register.md` (when module-scope conflicts exist)
+
+Stop if:
+- module-scope `_ar/<module>/**` content cannot be safely read,
+- module-scope conflicts cannot be resolved.
+
+### 14.5.2 Gate M1b — Module Framing
+
+Primary role:
+- `ModuleFramer` + analytical role calls (EN/BR/ES/ARCH authors from `agents/core/` and `agents/optional/`)
+
+Output expectation:
+- `specs/<module>/module-brief.md` (full sections)
+- `specs/<module>/analysis/EN/*`, `analysis/BR/*`, `analysis/ES/*`, `analysis/ARCH/*` as relevant
+
+Stop if:
+- central entities conflict with existing EN in neighboring modules,
+- ARCH rámec conflicts with `docs/program/architecture-overview.md`.
+
+### 14.5.3 Gate M2 — Behavior & UX Framing
+
+Primary roles:
+- `IAAuthor` and `WireframeAuthor` (from `agents/ux/**`)
+- analytical role calls (UC, QUERY, JOB, CS authors)
+
+Output expectation:
+- `specs/<module>/ux/ia.md` (canonical IA layer)
+- `specs/<module>/ux/wireframes.md` (canonical WIRE layer)
+- `specs/<module>/analysis/UC/*`, `analysis/QUERY/*`, `analysis/JOB/*`, `analysis/CS/*` as relevant
+
+Stop if:
+- IA has no link to UC,
+- wireframe shows element without data or function backing in analysis.
+
+### 14.5.4 Gate M3 — Module Architecture & Slice Map
+
+Primary roles:
+- `ModulePlanAuthor`
+- `SliceMapAuthor`
+- `ModuleRiskAuditor`
+- `ComponentSpecAuthor` (when relevant)
+- `CopySpecAuthor` (when relevant)
+
+Output expectation:
+- `specs/<module>/module-plan.md`
+- `specs/<module>/slice-map.md` (with §17.3 prerequisites per slice)
+- `specs/<module>/module-risks.md`
+- `specs/<module>/ux/components.md` (when module has reusable components)
+- `specs/<module>/ux/copy.md` (when module has non-trivial text content)
+
+Stop if:
+- slice map violates slice sizing discipline without split decomposition,
+- protected-area decisions are pre-empted without specialist analysis,
+- dependency cycle exists in slice map.
+
+### 14.5.5 Gate M4 — Module Release Readiness
+
+Primary roles:
+- `ModuleStagingVerifier`
+- `ModuleRiskAuditor`
+
+Output expectation:
+- `specs/<module>/module-staging-readiness.md`
+- updated `slice-map.md` with final slice statuses
+- updated `module-risks.md` with remaining open risks
+- explicit release recommendation: `release` | `defer` | `block`
+
+Stop if:
+- any slice is `in-progress`,
+- cross-module integration reveals contract conflict,
+- staging verification is unreachable.
+
+## 14.6 Gate routing matrix — Mode P
+
+### 14.6.0 Gate P-R — Re-frame Authorization
+
+Triggered only when `docs/program/project-brief.md` already exists and Mode P is being re-invoked.
+
+Primary role:
+- `ProgramBootstrapper`
+
+Output expectation:
+- `docs/program/re-frame-authorization.md`
+- explicit re-frame rationale, affected artifacts, downstream module impact, operator authorization
+
+Stop if:
+- operator did not explicitly confirm re-frame intent,
+- re-frame would silently invalidate existing module work,
+- rationale is vague ("update", "refresh", "cleanup" without specifics).
+
+### 14.6.1 Gate P0 — Program Declaration
+
+Primary role:
+- `ProgramBootstrapper`
+
+Output expectation:
+- `docs/program/project-brief.md` (new) or amended (re-frame variant)
+- program name, business purpose, scope, key constraints, success criteria, risks
+
+Stop if:
+- business purpose cannot be stated clearly,
+- scope boundary is undefined.
+
+### 14.6.2 Gate P1 — Architecture Overview
+
+Primary role:
+- `ArchitectureOverviewAuthor`
+
+Output expectation:
+- `docs/program/architecture-overview.md`
+- architectural style, external systems, integration boundaries, non-functional constraints, ADR-style decisions
+
+Stop if:
+- architectural style is undecided,
+- external system boundaries are vague,
+- non-functional requirements are unspecified for protected-area-sensitive systems.
+
+### 14.6.3 Gate P2 — Module Decomposition
+
+Primary role:
+- `ModuleMapAuthor`
+
+Output expectation:
+- `docs/program/module-map.md`
+- list of modules with slugs, scope summaries, dependencies, integration boundaries, ownership, entry sequence
+- (re-frame variant) explicit list of modules added/removed/split/merged/scope-changed
+
+Stop if:
+- modules have overlapping or undefined scope,
+- dependency graph has cycles,
+- integration boundaries are unresolved.
+
+### 14.6.4 Gate P3 — Implementation Streams (optional)
+
+Triggered only when parallel delivery is non-trivial.
+
+Primary role:
+- `ImplementationStreamsAuthor`
+
+Output expectation:
+- `docs/program/implementation-streams.md`
+- stream identifiers, parallelism model, cross-stream integration, shared resource constraints
+
+Stop if:
+- parallelism model is incoherent with module dependency graph.
+
+---
+
 ## 15. Routing by impact class
 
 ## 15.1 IC0 — Documentation / non-executable support change
@@ -793,8 +1125,21 @@ The following signal-based routing rules supplement class-based routing.
 
 | Signal | Route / Trigger |
 |---|---|
+| New project being established | Mode P + `ProgramBootstrapper` |
+| Existing program needs structural change | Mode P Gate P-R + `ProgramBootstrapper` |
+| New module declared in `module-map.md` | Mode M + `ModuleFramer` |
+| Module needs baseline trust | Mode M Gate M1a + onboarding roles (module scope) |
+| Module needs IA / screen map | Mode M Gate M2 + `IAAuthor` |
+| Module needs wireframe authoring | Mode M Gate M2 + `WireframeAuthor` |
+| Module needs reusable component vocabulary | Mode M Gate M3 + `ComponentSpecAuthor` |
+| Module needs UX copy authoring | Mode M Gate M3 + `CopySpecAuthor` |
+| Module nearing release | Mode M Gate M4 + `ModuleStagingVerifier` |
+| Slice prerequisites need verification | Mode B Gate B0 + `SliceReadinessVerifier` |
+| Slice-readiness fails | back to Mode M (M1 / M2 / M3 depending on missing prerequisite) |
 | Selected issue/comment requiring controlled follow-up | Mode C |
 | Comment challenges upstream documentation truth | Mode C + `CanonicalLayerResolver` |
+| Comment challenges module-level artifact | Mode C → Mode M |
+| Comment challenges program-level artifact | Mode C → Mode P Gate P-R |
 | Comment needs exact layer rules/template | Mode C + tooling resolvers |
 | New or changed GraphQL field / type / mutation / query | `SchemaSteward` |
 | New role, grant, visibility rule, or permission condition | `AclPlanner` |
@@ -802,7 +1147,8 @@ The following signal-based routing rules supplement class-based routing.
 | New queue, retry rule, import/export, scheduler, background correctness | `JobPlanner` |
 | Mobile scope or cross-client shared-contract consequence | `MobileImplementer` |
 | Ambiguity that affects planning, safe execution, or safe amendment | clarification role |
-| Baseline conflict or unclear source authority | Mode A onboarding roles |
+| Baseline conflict or unclear source authority (repo scope) | Mode A onboarding roles |
+| Baseline conflict or unclear source authority (module scope) | Mode M Gate M1a (onboarding roles with module scope) |
 
 ---
 
@@ -811,25 +1157,33 @@ The following signal-based routing rules supplement class-based routing.
 Operator-selected comments may come from:
 - annotation layer UI,
 - markdown viewer context,
-- or direct retrieval from the application database.
+- or direct retrieval from the application database (when the project ships an annotation feature with persisted comments).
 
-Repository-specific operational example:
-- retrieve rows from `page_comments`
-- columns may include:
-  - `id`
-  - `target_type`
-  - `route_id`
-  - `doc_id`
-  - `passage_anchor`
-  - `body`
-  - `status`
-  - `author_name`
-  - `created_at`
+Generic retrieval pattern (project-agnostic):
+- the project's comment store exposes rows for operator selection,
+- columns typically include:
+  - identifier
+  - target type / route / document anchor
+  - body
+  - status
+  - author
+  - timestamp
+- the project's CLAUDE.md or `mode-c.md` overlay declares the exact retrieval command (e.g. SQL query, API call, or annotation export).
 
 Routing rules:
+- the retrieval mechanism is project-specific; routing into Mode C is framework-level,
 - direct database retrieval still routes to Mode C when controlled follow-up is required,
 - one Mode C run must bind itself to one explicit selected comment row or one explicitly bounded filtered set,
-- do not process “all comments” as one backlog blob.
+- do not process "all comments" as one backlog blob.
+
+### 17.1 Module-aware comment routing
+
+When the project has multiple modules (declared in `docs/program/module-map.md`):
+- the comment must be attributable to one module (via the comment's anchor — route, doc-id, or explicit module reference),
+- Mode C routes the resulting amendment to the correct module's `specs/<module>/` tree when applicable,
+- if the comment challenges a program-level artifact (`docs/program/*`), Mode C escalates to Mode P Gate P-R,
+- if the comment challenges a module-level artifact (`specs/<module>/module-brief.md`, `module-plan.md`, etc.), Mode C escalates to Mode M for amendment,
+- if the comment seeds a new slice, the slice-seed lands in the target module's `slice-map.md` (Mode M Gate M3 refresh).
 
 Important distinction:
 - comment record status in the application is not the same as Mode C outcome classification.
@@ -883,6 +1237,12 @@ Escalate when any of the following occurs:
 | Canonical documentation layer unresolved | clarification or block |
 | Tooling support required but unavailable | fallback or block |
 | Comment intake becoming hidden feature delivery | stop and hand off explicitly to Mode B |
+| Slice-readiness check fails (Gate B0) | route back to Mode M (M1 / M2 / M3 depending on missing prerequisite) |
+| Module work reveals program-level structural issue | escalate to Mode P Gate P-R |
+| Module work reveals repo-wide baseline collapse | escalate to Mode A |
+| Mode P re-run without explicit structural rationale | block until Gate P-R authorization |
+| Module declared but not in `module-map.md` | block; run Mode P first |
+| Cross-module dependency cycle detected | block; resolve at Mode P level |
 
 ---
 

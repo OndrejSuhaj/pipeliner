@@ -25,6 +25,9 @@ This document depends on:
 - `guardrails.md`
 - `impact-classes.md`
 - `trigger-matrix.md`
+- `mode-c.md` when Mode C is active
+- `mode-m.md` when Mode M is active
+- `mode-p.md` when Mode P is active
 
 Priority order remains:
 
@@ -33,8 +36,14 @@ Priority order remains:
 3. `impact-classes.md`
 4. `trigger-matrix.md`
 5. `definition-of-done.md`
-6. feature artifacts
-7. agent instructions
+6. `mode-c.md` when Mode C is active
+7. `mode-m.md` when Mode M is active
+8. `mode-p.md` when Mode P is active
+9. `local-tooling-contract.md` when local tooling is used
+10. program-level artifacts (`docs/program/*`)
+11. module-level artifacts (`specs/<module>/*`)
+12. slice-level feature artifacts
+13. agent instructions
 
 This document may refine completion criteria operationally.
 It may not weaken higher-level governance rules.
@@ -43,7 +52,7 @@ It may not weaken higher-level governance rules.
 
 ## 3. Core principle
 
-A feature is done only when it is:
+A feature (slice) is done only when it is:
 
 - specified,
 - planned,
@@ -51,7 +60,17 @@ A feature is done only when it is:
 - reviewable,
 - and meaningfully verifiable.
 
-“Done” is therefore a delivery state, not just a coding state.
+"Done" is therefore a delivery state, not just a coding state.
+
+This document defines four distinct levels of "done", each operating at its own tier:
+
+- **slice-level done** — a single Mode B slice is complete (the primary subject of §§ 5–11)
+- **slice-ready done** — a slice is ready to enter Mode B Gate B0 (§ 5b)
+- **module-definition done** — a module is delivery-ready (§ 5c)
+- **module-release readiness** — a module is release-ready (§ 5d)
+- **program-definition done** — the program is bootstrap-ready (§ 5e)
+
+These levels are not interchangeable. A module being "delivery-ready" does not mean its slices are done; it means slices may begin. A program being "bootstrap-ready" does not mean any module is framed; it means Mode M may begin.
 
 ---
 
@@ -231,6 +250,122 @@ If "done" requires more than one acceptance criterion or more than one user-obse
 A slice that has been split into sub-slices is not done until every sub-slice is independently `accept`-verdicted and merged. Sub-slices are not interchangeable with the parent slice's done state — each sub-slice carries its own acceptance criterion, its own review verdict, and its own merge.
 
 A slice that exceeds its size caps may not be reported as done even if all other criteria are met. Size cap violations are scope/structure failures, not quality failures, and resolve through splitting.
+
+---
+
+## 5b. Slice-ready done (Mode B Gate B0)
+
+A slice is **ready to enter Mode B Gate B0** when its prerequisites recorded in `slice-map.md` are satisfied. This is a precondition for Mode B, not the same as slice delivery done.
+
+Per constitution § 17.3, all six criteria must hold:
+
+### 5b.1 Analytical inputs are sufficient
+EN, UC, BR, QUERY, JOB analytical artifacts required by the slice exist at the module level (in `specs/<module>/analysis/`) and cover the slice's behavior.
+
+### 5b.2 UX inputs are sufficient
+Wireframes covering the slice's screens exist in `specs/<module>/ux/wireframes.md`. Relevant component and copy coverage exists when applicable.
+
+### 5b.3 Technical dependencies are explicit and resolved
+Dependencies on core and other modules are named in `slice-map.md`. Each is either resolved (target exists) or explicitly accepted as risk.
+
+### 5b.4 Scope fits within slice sizing discipline
+The planned slice fits the per-class cap from `impact-classes.md` § 13.1 and CLAUDE.md § Slice Sizing Discipline.
+
+### 5b.5 Acceptance criterion is single and user-observable
+The slice has exactly one acceptance criterion tied to one user-observable outcome.
+
+### 5b.6 Assigned implementer lane(s) are clear
+The slice declares which implementer lane(s) (ApiImplementer, WebImplementer, MobileImplementer) will execute it.
+
+A failed slice-ready check returns the slice to Mode M:
+- missing analytical input → M1b refresh,
+- missing UX input → M2 refresh,
+- missing architectural decision → M3 refresh.
+
+Slice-ready done is verified by `SliceReadinessVerifier` (read-only subagent) at Mode B Gate B0.
+
+---
+
+## 5c. Module-definition done (Mode M)
+
+A module is **delivery-ready** when slices in its slice map may safely begin entering Mode B Gate B0. This is a precondition for slice work, not the same as module release.
+
+Per constitution § 17.2, all seven criteria must hold:
+
+### 5c.1 Module-brief defines scope and boundaries
+`specs/<module>/module-brief.md` declares scope, dependencies on core and other modules, integration boundaries, non-goals.
+
+### 5c.2 Module baseline exists (Gate M1a)
+`specs/<module>/baseline/authority-map.md` and `specs/<module>/glossary/module-glossary.md` exist. Where module-scope conflicts exist, `specs/<module>/baseline/conflict-register.md` also exists.
+
+### 5c.3 Initial analytical minimum exists
+EN, BR, UC analytical inputs sufficient for the module's central capability are in `specs/<module>/analysis/`. ES and ARCH are present when relevant.
+
+### 5c.4 IA and wireframes exist for user-facing modules
+When the module has user-facing surfaces, `specs/<module>/ux/ia.md` and `specs/<module>/ux/wireframes.md` exist and align with UC coverage.
+
+### 5c.5 Module-plan and slice-map exist
+`specs/<module>/module-plan.md` records architecture, technologies, delivery sequence. `specs/<module>/slice-map.md` lists all slices with prerequisites per §5b.
+
+### 5c.6 Module-risks records known risks
+`specs/<module>/module-risks.md` exists and records risks, unresolved dependencies, and mitigation plan.
+
+### 5c.7 Slice-readiness prerequisites are explicit per slice
+Each slice in `slice-map.md` has its §5b prerequisites recorded, so Mode B Gate B0 can verify them.
+
+Module-definition done is the precondition for **any** slice entering Mode B. It is not a release decision.
+
+---
+
+## 5d. Module-release readiness (Mode M Gate M4)
+
+A module is **release-ready** when all delivery work for the module is complete and staging verification confirms it.
+
+Per constitution § 17.4, all five criteria must hold:
+
+### 5d.1 All slices are merged or explicitly deferred
+Every slice in `slice-map.md` has status `merged` or `deferred` (with deferral reason).
+
+### 5d.2 Staging verification evidence exists
+`specs/<module>/module-staging-readiness.md` records deployed slice list, staging URL, manual verification evidence.
+
+### 5d.3 Open risks and gaps are visible
+`specs/<module>/module-risks.md` is updated with remaining open risks and known gaps.
+
+### 5d.4 Cross-module integration is verified
+When the module exposes contract to other modules or external clients, cross-module integration tests or manual verification evidence exists.
+
+### 5d.5 Release recommendation is explicit
+The module-staging-readiness records an explicit recommendation: `release` | `defer` | `block`. Release is a human decision; this document records the framework's recommendation.
+
+Module-release readiness is not the same as program completion. A program contains multiple modules, each going through its own release cycle.
+
+---
+
+## 5e. Program-definition done (Mode P)
+
+A program is **bootstrap-ready** when downstream Mode A and Mode M may safely begin.
+
+Per constitution § 17.1, all five criteria must hold:
+
+### 5e.1 Project-brief exists
+`docs/program/project-brief.md` declares scope, business purpose, key constraints, success criteria.
+
+### 5e.2 Architecture-overview exists
+`docs/program/architecture-overview.md` records architectural assumptions, external systems, integration boundaries, non-functional constraints, ADR-style decisions.
+
+### 5e.3 Module-map exists
+`docs/program/module-map.md` declares all modules with their slugs, scope summaries, dependencies, integration boundaries, ownership, and entry sequence.
+
+### 5e.4 Implementation-streams exists when parallel delivery is non-trivial
+`docs/program/implementation-streams.md` exists when modules will be delivered in parallel and coordination is non-trivial.
+
+### 5e.5 All declared modules have a clear owner and entry path
+Each module in `module-map.md` has a named owner (the role / person leading its Mode M) and a declared entry sequence (which module's Mode M starts first).
+
+Program-definition done is a precondition for **any** module entering Mode M. It is not a delivery completion claim.
+
+When Mode P is re-run for structural change (Gate P-R), the re-frame authorization (`docs/program/re-frame-authorization.md`) must accompany the amended artifacts.
 
 ---
 
@@ -465,12 +600,18 @@ The following do **not** qualify as done on their own:
 
 ---
 
-## 14. Completion checklist template
+## 14. Completion checklist templates
 
-Use this template as a standard feature-level completion check.
+Use these templates as standard completion checks at each tier.
+
+### 14.1 Slice-level (Mode B) completion check
 
 ```md
-# Feature Completion Check
+# Slice Completion Check
+
+## Slice-readiness (Gate B0)
+- [ ] Slice is declared in `slice-map.md`
+- [ ] All six §5b prerequisites verified by `SliceReadinessVerifier`
 
 ## Scope
 - [ ] Scope is explicit in `spec.md`
@@ -511,6 +652,135 @@ Use this template as a standard feature-level completion check.
 ## Visibility
 - [ ] Known blockers or limitations are visible
 - [ ] Confidence is communicated honestly
+```
+
+### 14.2 Slice-ready (pre-Mode B) check
+
+```md
+# Slice-Ready Check (Mode B Gate B0)
+
+## Analytical inputs
+- [ ] EN / UC / BR / QUERY / JOB inputs sufficient for slice behavior
+- [ ] Inputs live in `specs/<module>/analysis/`
+
+## UX inputs
+- [ ] Wireframes cover the slice's screens
+- [ ] Relevant components / copy coverage exists when applicable
+
+## Technical dependencies
+- [ ] Cross-module dependencies named in `slice-map.md`
+- [ ] Each dependency is resolved or explicitly accepted as risk
+
+## Sizing
+- [ ] Planned scope fits per-class slice size cap
+- [ ] No split required (or split-recommendation exists)
+
+## Acceptance criterion
+- [ ] Single criterion declared
+- [ ] Single user-observable outcome
+
+## Implementer lane
+- [ ] Lane(s) assigned in `slice-map.md`
+
+## Verdict
+- [ ] pass / fail recorded by `SliceReadinessVerifier`
+```
+
+### 14.3 Module-definition (Mode M) check
+
+```md
+# Module-Definition Check
+
+## Declaration
+- [ ] Module is declared in `module-map.md`
+- [ ] Module-brief defines scope, boundaries, dependencies, non-goals
+
+## Baseline (Gate M1a)
+- [ ] `authority-map.md` exists
+- [ ] `module-glossary.md` exists
+- [ ] `conflict-register.md` exists (when conflicts surfaced)
+
+## Framing (Gate M1b)
+- [ ] EN / BR / UC inputs sufficient for module's central capability
+- [ ] ES inputs exist when relevant
+- [ ] ARCH inputs align with `architecture-overview.md`
+
+## UX (Gate M2, when user-facing)
+- [ ] `ia.md` exists
+- [ ] `wireframes.md` exists
+- [ ] IA aligned with UC coverage
+
+## Plan (Gate M3)
+- [ ] `module-plan.md` exists
+- [ ] `slice-map.md` lists all slices with prerequisites
+- [ ] `module-risks.md` records known risks
+- [ ] `components.md` and `copy.md` exist when relevant
+
+## Slice prerequisites
+- [ ] Each slice has §5b prerequisites recorded
+- [ ] Slice sizing discipline respected
+- [ ] No dependency cycles
+```
+
+### 14.4 Module-release readiness (Mode M Gate M4) check
+
+```md
+# Module-Release Readiness Check
+
+## Slice closure
+- [ ] All slices in `slice-map.md` are `merged` or `deferred`
+- [ ] Deferred slices have explicit deferral reason
+
+## Staging
+- [ ] `module-staging-readiness.md` records deployed slices
+- [ ] Staging URL captured
+- [ ] Manual verification evidence present
+
+## Risks
+- [ ] `module-risks.md` updated with open risks
+- [ ] Known gaps visible
+
+## Integration
+- [ ] Cross-module integration verified (when applicable)
+- [ ] Contract consistency checked across module boundary
+
+## Recommendation
+- [ ] Release recommendation explicit: `release` | `defer` | `block`
+- [ ] Operator authorization required if `release`
+```
+
+### 14.5 Program-definition (Mode P) check
+
+```md
+# Program-Definition Check
+
+## Brief
+- [ ] `project-brief.md` declares scope, purpose, constraints, success criteria
+- [ ] Risks and assumptions visible
+
+## Architecture
+- [ ] `architecture-overview.md` records style, external systems, integration boundaries
+- [ ] Non-functional constraints captured
+- [ ] ADR-style decisions recorded
+
+## Module map
+- [ ] `module-map.md` declares all modules with slugs, scope, dependencies
+- [ ] Integration boundaries explicit
+- [ ] No dependency cycles
+- [ ] Entry sequence declared
+
+## Implementation streams (optional)
+- [ ] `implementation-streams.md` exists if parallel delivery non-trivial
+- [ ] Cross-stream coordination model declared
+
+## Ownership
+- [ ] Each module has named owner
+- [ ] Entry path into Mode M is clear
+
+## Re-frame (when applicable)
+- [ ] `re-frame-authorization.md` records explicit rationale
+- [ ] Affected artifacts named
+- [ ] Downstream module impact acknowledged
 ```
 
 ---

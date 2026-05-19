@@ -27,6 +27,9 @@ If this document conflicts with:
 - `impact-classes.md`,
 - `trigger-matrix.md`,
 - `definition-of-done.md`,
+- `mode-c.md`,
+- `mode-m.md`,
+- `mode-p.md`,
 - feature-level documents,
 - or agent instructions,
 
@@ -38,8 +41,15 @@ Priority order:
 2. `guardrails.md`
 3. `impact-classes.md`
 4. `trigger-matrix.md`
-5. feature artifacts
-6. agent instructions
+5. `definition-of-done.md`
+6. `mode-c.md` when Mode C is active
+7. `mode-m.md` when Mode M is active
+8. `mode-p.md` when Mode P is active
+9. `local-tooling-contract.md` when local tooling is used
+10. program-level artifacts (`docs/program/*`)
+11. module-level artifacts (`specs/<module>/*`)
+12. slice-level feature artifacts
+13. agent instructions
 
 ---
 
@@ -112,6 +122,26 @@ No agent may alter shared behavior or contract assumptions without explicit cont
 
 Missing information must not be hidden behind confident language.
 
+### 5.9 No module start without program prerequisites
+
+No Mode M run may start without the target module being declared in `docs/program/module-map.md`. If `module-map.md` is missing or does not contain the module, route to Mode P first.
+
+### 5.10 No slice start without slice-readiness pass
+
+No Mode B run may proceed past Gate B0 if slice-readiness verification fails. The slice must return to Mode M (M1 / M2 / M3 depending on missing prerequisite) before re-entering Mode B.
+
+### 5.11 No Mode P re-frame without Gate P-R
+
+If `docs/program/project-brief.md` already exists, Mode P may not amend any program-level artifact without first authorizing the re-frame through Gate P-R. Re-frame rationale must be explicit, named, and operator-confirmed.
+
+### 5.12 No Mode M baseline skip
+
+Mode M Gate M1b (module framing) may not start without Gate M1a (module baseline) completion. Module-glossary and authority-map must exist before module-brief authoring proceeds.
+
+### 5.13 No branch without slice-readiness
+
+No git branch may be created for a slice before Mode B Gate B0 has passed for that slice. Branch creation is bound to slice-readiness; bypassing the check produces unauthorized branches.
+
 ---
 
 ## 6. Artifact prerequisites
@@ -141,30 +171,42 @@ If the required artifact for a triggered risk area does not exist, the affected 
 
 ## 6.4 Spec folder naming convention
 
-Every new spec folder must follow the format:
+Every new slice spec folder must follow the format:
 
 ```
-phase{P}-{NN}-{feature-slug}
+specs/<module>/slices/phase{N}-{NN}-{slice-slug}/
 ```
 
 Where:
 
-- `{P}` is the current phase number (manually managed by the operator; default is `2` until changed),
+- `<module>` is the module slug declared in `docs/program/module-map.md`,
+- `{N}` is the current phase number for the module (manually managed; default is `1` for new modules),
 - `{NN}` is a zero-padded two-digit sequential number starting from `01`,
-- `{feature-slug}` is a kebab-case descriptor of the feature.
+- `{slice-slug}` is a kebab-case descriptor of the slice.
 
-The sequential number `{NN}` must be one higher than the highest existing `{NN}` within the current phase prefix in `specs/`.
+The sequential number `{NN}` must be one higher than the highest existing `{NN}` within the current phase prefix in `specs/<module>/slices/`.
 
-If no folder with the current phase prefix exists yet, numbering starts at `01`.
-
-Existing spec folders created before this convention are not renamed.
+If no folder with the current phase prefix exists yet in the module, numbering starts at `01`.
 
 Examples:
 
-- First spec in phase2: `phase2-01-invoice-export-pdf`
-- Second spec in phase2: `phase2-02-dashboard-widgets`
+- First slice in module `payments` phase 1: `specs/payments/slices/phase1-01-card-tokenization/`
+- Second slice in same module: `specs/payments/slices/phase1-02-refund-flow/`
+- First slice in module `core`: `specs/core/slices/phase1-01-event-bus-bootstrap/`
 
-The phase number changes only when the operator explicitly declares a new phase.
+The phase number changes only when the module's Mode M Gate M3 declares a new phase in `slice-map.md`.
+
+Module-level artifacts live directly in `specs/<module>/` (not in `slices/`):
+- `specs/<module>/module-brief.md`
+- `specs/<module>/module-plan.md`
+- `specs/<module>/slice-map.md`
+- `specs/<module>/module-risks.md`
+- `specs/<module>/baseline/`
+- `specs/<module>/glossary/`
+- `specs/<module>/analysis/`
+- `specs/<module>/ux/`
+
+Existing spec folders created before this convention are not renamed.
 
 ---
 
@@ -293,6 +335,54 @@ Without explicit escalation, agents must not:
 - split or merge domain responsibilities,
 - introduce redesign hidden as delivery work,
 - or rewrite major interaction patterns.
+
+---
+
+## 8b. Program-level guardrails
+
+### 8b.1 No silent module decomposition change
+
+Adding, removing, splitting, merging, or renaming modules in `docs/program/module-map.md` requires Mode P Gate P-R authorization. Mode B and Mode M may not amend the module map.
+
+### 8b.2 No silent program-scope expansion
+
+Mode P scope expansions (new business capability not previously declared) require explicit Gate P-R rationale. Casual additions are prohibited.
+
+### 8b.3 No architectural style change without escalation
+
+`docs/program/architecture-overview.md` architectural style is structural. Changes require Mode P re-frame, not Mode M or Mode B amendment.
+
+### 8b.4 No cross-stream coordination drift
+
+When `docs/program/implementation-streams.md` exists, parallelism model is authoritative. Mode M and Mode B may not silently re-sequence streams without Mode P update.
+
+---
+
+## 8c. Module-level guardrails
+
+### 8c.1 No module-brief silent expansion
+
+`specs/<module>/module-brief.md` scope is bounded by `module-map.md`. Mode M may not expand module scope silently. If expansion is needed, escalate to Mode P.
+
+### 8c.2 No slice-map bypass
+
+Slices not declared in `specs/<module>/slice-map.md` may not enter Mode B. If a slice is needed, add it through Mode M Gate M3 refresh first.
+
+### 8c.3 No Gate M1a skip on fresh module
+
+Mode M Gate M1a (module baseline) is mandatory for new modules. Even if repo-level baseline (`docs/baseline/*`) is strong, module-scope terminology and authority must be established.
+
+### 8c.4 No silent contract change between modules
+
+When module A exposes contract to module B, contract changes in A's `module-plan.md` require explicit notification and Gate M3 refresh in module B if applicable. Cross-module contract drift is hidden architecture drift.
+
+### 8c.5 No slice-readiness shortcuts
+
+`SliceReadinessVerifier` (Gate B0) is read-only. Its pass/fail verdict is final. Adjustments to prerequisites happen in Mode M, not by overriding Gate B0.
+
+### 8c.6 No mixed-tier amendment
+
+A single Mode M run may amend module-level artifacts. It may not silently amend program-level (Mode P territory) or slice-level (Mode B territory) artifacts.
 
 ---
 

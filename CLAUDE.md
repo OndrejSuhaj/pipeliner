@@ -764,7 +764,7 @@ Each feature slice follows a branch lifecycle tied to the delivery workflow.
 
 ### Remote
 
-Remote repository: `https://github.com/argo22com/arg-emitee-vibe.git`
+Remote repository: `https://github.com/OndrejSuhaj/pipeliner.git`
 
 Local and remote must stay 1:1. Push only when the user explicitly requests it.
 
