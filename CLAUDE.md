@@ -44,68 +44,18 @@ If the conflict is material, stop and surface it.
 
 ## Operating Modes
 
-### Mode P — Program Bootstrap
+Four modes. Pick by **effect**, not by wording. Highest risk wins. Full mode definitions in constitution §5 and `docs/governance/mode-{p,m,b,c}.md`.
 
-Use when a new project is being established within this framework, or when an existing program requires structural re-framing (new module, module split, scope rewrite).
+| Mode | Use when | Authors | Does NOT |
+|---|---|---|---|
+| **P — Program Bootstrap** | new project; structural re-framing | `docs/program/*`, program-wide `_ar/` foundational seeds, project IA | author module-tier or slice-tier artifacts |
+| **M — Module Orchestration** | module declared in `module-map.md` is being established / re-framed / released | `specs/<module>/{module-brief,module-plan,slice-map,module-risks,…}.md`, module-scope `_ar/` content | implement product code; create branches |
+| **B — Feature Delivery (default)** | bounded feature, change request, module enhancement, slice | `specs/<module>/slices/<slice>/*`; `_ar/**` docs declared in slice manifest | introduce first doc in a canonical layer for a module (Mode M does that) |
+| **C — Comment Intake / Doc Amendment** | operator-selected issue/comment challenges upstream truth | `comment-intake.md`, `source-amendment.md`, `slice-seed.md` | implement product changes; create branches |
 
-Purpose:
-- declare program scope and business purpose,
-- establish program-level architectural assumptions and constraints,
-- decompose the program into bounded implementation streams (modules),
-- declare cross-module dependencies and integration boundaries.
+Slice entry: Mode B Gate B0 (slice-readiness) is hard prerequisite. If it fails, return to Mode M.
 
-Mode P runs once per project. Re-runs require Gate P-R authorization before any existing program artifact may be amended. Do not re-run Mode P for routine planning.
-
-Mode P does not author module-level or slice-level artifacts.
-
-### Mode B — Feature Delivery (Default)
-
-Use for normal work on features, change requests, module enhancements, and bounded implementation slices.
-
-This is the standard delivery pipeline:
-constitution check → specify → clarify → plan → tasks → implement → QA/runtime → independent review
-
-Mode B owns normal feature delivery and implementation.
-Do not bypass it with ad hoc shortcuts.
-
-### Mode C — Comment Intake / Documentation Amendment / Slice Seeding
-
-Use when the operator explicitly selects an issue/comment from the annotation layer or another structured review source and wants to convert it into controlled upstream follow-up.
-
-Purpose:
-- normalize the comment,
-- classify what kind of change it actually implies,
-- resolve the affected canonical documentation layer,
-- amend or create the necessary upstream documentation first,
-- and prepare a handoff package for future Mode B work when appropriate.
-
-Mode C is a pre-delivery intake mode, not a replacement for Mode B.
-Mode C does not implement product changes.
-Mode C does not create branches, merge code, or claim delivery completion.
-
-Typical Mode C outcomes:
-- `closed_as_doc_fix`
-- `recorded_as_open_question`
-- `route_to_existing_slice`
-- `promote_to_new_slice_candidate`
-- `rejected`
-
-If the desired work becomes a real feature, continue in Mode B.
-
-### Mode M — Module Orchestration
-
-Use when a new module declared in `module-map.md` is being established, when a module needs re-framing before further slice delivery, or when a module nears release and requires release-readiness verification.
-
-Purpose:
-- declare the module as a bounded delivery stream,
-- establish module-scope baseline trust (terminology, source authority, module-scope conflicts) at Gate M1a — owned by `agents/modules/Module{Corpus,Terminology,Conflict}*` roles,
-- frame analytical, UX, and architectural inputs into a coherent module-level plan,
-- author a slice map enabling safe parallel Mode B delivery,
-- verify module-release readiness.
-
-Mode M sits between Mode P and Mode B for each module. It does not implement product code. Each downstream slice continues through Mode B, entering through Gate B0 (slice-readiness check).
-
-Mode M reads only the module-relevant subset of `_ar/**` (filtered by `modules:` frontmatter). Program-wide corpus reading is a Mode P Gate P1 activity.
+`_ar/**` reading: filter by `modules:` frontmatter (Mode M, Mode B) or by slice manifest `touches:` (Mode B). Program-wide corpus reading is Mode P Gate P1 only.
 
 ---
 
@@ -192,110 +142,33 @@ If the operator-selected input is a comment/issue rather than a delivery request
 
 ### Mode P — Program Bootstrap Workflow
 
-Follow this sequence:
+Detailed gate sequences live in `docs/governance/mode-{p,m,c}.md`. Quick reference:
 
-1. (when re-framing) Gate P-R — re-frame authorization with explicit rationale
-2. Gate P0 — draft or amend `docs/program/project-brief.md`
-3. Gate P1 — draft or amend `docs/program/architecture-overview.md`
-4. Gate P2 — draft or amend `docs/program/module-map.md`
-5. (optional) Gate P3 — draft `docs/program/implementation-streams.md` when parallel delivery is non-trivial
+**Mode P:** Gate P-R (re-frame, when applicable) → P0 (project-brief) → P1 (architecture-overview + program-wide baseline) → P-UX (project IA, when user-facing) → P2 (module-map) → P3 (implementation-streams, optional).
 
-Mode P never authors module-level or slice-level artifacts.
-Mode P never creates branches.
-Re-runs require Gate P-R before any existing program artifact may be amended.
+**Mode M:** M0 (module declaration) → M1a (module-scope baseline) → M1b (module-brief + initial `_ar/BA/` seeds) → M2 (WIRE + UC/QUERY/JOB/CS) → M3 (module-plan + slice-map + module-risks + module-scope COMP/COPY/API/ACL) → M4 (module release readiness).
 
-### Mode M — Module Orchestration Workflow
+**Mode B:** Gate B0 (slice-readiness check, hard prerequisite) → constitution check → specify (incl. slice manifest `touches:` block in `spec.md` frontmatter) → clarify → plan → tasks → implement (may author/amend `_ar/` docs declared in manifest; `_REGISTRY.md` updates atomic) → QA/runtime → independent review (must address each declared `_ar/` change).
 
-Follow this sequence:
+**Mode C:** comment intake → canonical layer resolution → documentation amendment (apply to canonical doc when no conflict blocks it) → outcome decision (doc fix / open question / existing slice extension / new slice candidate / reject) → Mode B handoff package when promoted.
 
-1. Gate M0 — module declaration against `module-map.md`
-2. Gate M1a — module-scope baseline (owned by `agents/modules/Module{Corpus,Terminology,Conflict}*` roles)
-3. Gate M1b — module framing (`module-brief.md` + initial canonical seeds: EN, BR, ES, ARCH in `_ar/BA/`)
-4. Gate M2 — behavior & UX framing (WIRE in `_ar/UX/WIRE/`, UC/QUERY/JOB/CS in `_ar/BA/`)
-5. Gate M3 — module architecture and slice map (`module-plan.md`, `slice-map.md`, `module-risks.md`, plus COMP/COPY in `_ar/UX/`, API/ACL in `_ar/BA/` when relevant)
-6. Gate M4 — module release readiness (`module-staging-readiness.md`) — only when all slices are merged or deferred
-
-Mode M never implements product code.
-Mode M never creates branches.
-Each downstream slice continues through Mode B Gate B0.
-
-### Mode B — Feature Delivery Workflow
-
-Follow this sequence:
-
-1. Gate B0 — slice-readiness check (verify §17.3 prerequisites from `slice-map.md`)
-2. classify the request and confirm Mode B
-3. run constitution check
-4. create or refine `spec.md` (must include slice manifest `touches:` block in frontmatter listing all `_ar/` docs the slice creates, updates, or references)
-5. resolve or record material ambiguity
-6. create or refine `plan.md` when required
-7. trigger specialist analysis when required
-8. create or refine `tasks.md`
-9. implement only approved scoped tasks (may author/amend `_ar/` docs declared in slice manifest; `_REGISTRY.md` updates atomic with new doc_ids)
-10. create or refine `qa-checklist.md`
-11. create or refine `runtime-notes.md`
-12. produce `review.md` with explicit verdict (must address each declared `_ar/` change)
-
-Gate B0 is a hard prerequisite. If slice-readiness fails, the slice returns to Mode M (M1 / M2 / M3 depending on missing prerequisite).
-Implementation without specification is forbidden.
-Implementation without plan is forbidden when plan is required.
-Implementation without required specialist artifacts is forbidden.
-`_ar/` changes outside slice manifest declaration are scope violations and must be blocked at review.
-
-### Mode C — Comment Intake / Slice Seeding Workflow
-
-Follow this sequence:
-
-1. confirm operator intent and selected comment/issue
-2. classify the comment and normalize the problem
-3. resolve the affected canonical documentation layer
-4. resolve exact local tooling files only if needed
-5. create the upstream documentation amendment, then apply it to the canonical document using always English when the amendment targets an existing canonical document and no conflict/blocked state prevents application
-(Mode C Gate C3 is not complete for correction or clarification amendments until the canonical document is updated, unless the run is explicitly blocked, conflict-noted, or producing a new draft artifact instead of patching an existing canonical file.)
-6. decide outcome:
-   - doc fix only
-   - open question
-   - existing slice extension
-   - new slice candidate
-   - reject / close
-7. if promoted, prepare a Mode B handoff package
-
-Mode C must not:
-- implement feature code,
-- create a feature branch,
-- skip the documentation amendment step when upstream truth is affected,
-- or jump directly into normal feature delivery without an explicit handoff.
+Hard rules:
+- Implementation without specification is forbidden.
+- `_ar/` changes outside slice manifest declaration are scope violations and must be blocked at review.
+- Mode P/M/C never create branches.
+- Mode B Gate B0 failure routes back to Mode M (M1/M2/M3 per missing prerequisite).
 
 ---
 
 ## Canonical Authored Documentation (`_ar/**`)
 
-`_ar/**` is the canonical authored documentation library for the project. It is the **single source of truth** for analytical and UX canonical content.
+`_ar/**` is the single source of truth for canonical authored content. Flat by layer:
+- `_ar/BA/{EN,UC,BR,ARCH,FN,ES,JOB,QUERY,ACL,API,CS,MSG}/`
+- `_ar/UX/{IA,WIRE,COMP,COPY}/`
 
-Structure:
-- `_ar/BA/<layer>/` — business analysis canonical layer (EN, UC, BR, ARCH, FN, ES, JOB, QUERY, ACL, API, CS, MSG)
-- `_ar/UX/<layer>/` — user experience canonical layer (IA, WIRE, COMP, COPY)
-- each layer folder has `_REGISTRY.md` tracking reserved `doc_ids`, status (`reserved` | `draft` | `canonical` | `deprecated`), and owning mode
+Format spec (authority per mode, status lifecycle, atomicity, frontmatter): `docs/governance/registry-format.md`.
 
-Each canonical doc has frontmatter declaring:
-- `doc_id` (e.g. `EN0001`, `WIRE0014`)
-- `canonical_layer` (e.g. `EN`, `WIRE`)
-- `status`
-- `modules:` (list of module slugs that reference this doc)
-- `references:` (list of cross-layer `doc_id`s this doc points to)
-
-Authority to author:
-- **Mode P** (Gate P1): program-wide foundational docs (project-level IA in `_ar/UX/IA/`, foundational EN/ARCH/BR shared by all modules)
-- **Mode M** (Gate M1a / M1b / M2 / M3): module-scope docs (UC, FN, ES, WIRE, COMP, COPY refinements for the module)
-- **Mode B**: docs declared in slice manifest (`touches:` block in `spec.md`) — may create new `doc_ids` and amend existing docs, **may not** introduce the first doc in a canonical layer for a module
-- **Mode C**: amendments via `source-amendment.md` artifact
-
-Reading:
-- Filter by slice manifest `touches:` or module `modules:` frontmatter
-- Never broad-scan `_ar/**` outside Mode P Gate P1 (program-wide baseline)
-- Cross-references between docs use `doc_id` (e.g. `references: [UC0001, EN0014]`) — must resolve to existing docs (no dangling refs)
-
-`_ar/**` IS the canonical authored truth; no derived baseline layer is used.
+Reading: filter by slice manifest `touches:` or doc `modules:` frontmatter. Never broad-scan `_ar/**` outside Mode P Gate P1.
 
 ---
 
@@ -355,44 +228,15 @@ Protected-area changes must never be hidden inside a “small”, “local”, �
 
 ## Scope Rule
 
-All work must remain traceable to:
-- the request,
-- the selected mode,
-- the approved spec and plan in Mode B,
-- or the approved comment-intake and amendment path in Mode C,
-- and the assigned tasks when tasks exist.
+All work traces to: the request, the selected mode, the approved spec/plan (Mode B), or the approved amendment (Mode C). Adjacent work discovered during delivery is recorded as follow-up / risk / debt / future candidate, never silently absorbed. If the change no longer fits as one bounded unit, reclassify, split, seed a future slice, or block.
 
-Do not widen scope silently.
-Do not add unrelated cleanup, refactors, or documentation rewrite during delivery.
-Do not absorb adjacent issues into the feature by default.
-
-If adjacent work is discovered, record it as:
-- follow-up,
-- risk,
-- debt,
-- future feature candidate,
-- or separate comment-intake outcome.
-
-If the change no longer fits as one bounded unit, reclassify, split, seed a future slice, or block it.
+Full rule: constitution §14.
 
 ---
 
 ## Lightweight Handling
 
-Use lightweight handling only when all of the following are true:
-- impact is clearly low,
-- no protected area is touched,
-- contract assumptions remain unchanged,
-- runtime verification is straightforward,
-- the lighter path is explicitly justified.
-
-Lightweight handling may reduce clarification depth, planning depth, and review overhead.
-It may not bypass:
-- constitution check,
-- scope discipline,
-- uncertainty honesty,
-- runtime note quality,
-- canonical layer resolution when upstream docs are being amended.
+Allowed only when ALL hold: impact is clearly low, no protected area touched, contract unchanged, runtime verification straightforward, the lighter path is explicitly justified. It may reduce clarification/planning/review depth but never bypasses constitution check, scope discipline, uncertainty honesty, runtime note quality, or canonical-layer resolution.
 
 ---
 
@@ -467,153 +311,43 @@ Do not continue through a blocked dependency as if it were resolved.
 
 ## Minimum Artifacts
 
-### For program initialization (Mode P), keep visible:
-- `docs/program/project-brief.md`
-- `docs/program/architecture-overview.md` (includes program-wide baseline section — terminology, source authority, conflicts)
-- `docs/program/module-map.md`
-- `docs/program/implementation-streams.md` when parallel delivery is non-trivial
-- `docs/program/re-frame-authorization.md` when Mode P is re-run
-- `_ar/BA/{EN,UC,BR,ARCH,FN,ES,JOB,QUERY,ACL,API,CS,MSG}/_REGISTRY.md` — registry skeletons (initialized empty)
-- `_ar/UX/{IA,WIRE,COMP,COPY}/_REGISTRY.md` — registry skeletons (initialized empty)
-- foundational `_ar/BA/EN/`, `_ar/BA/ARCH/`, `_ar/BA/BR/` content when program-wide entities/architecture/rules are identified
-- `_ar/UX/IA/IA-<project>.md` when program has user-facing surfaces (Gate P-UX)
-- `docs/program/spec/` — optional program-level working drafts (not authoritative)
+Full artifact law per tier: constitution §9. Quick reference:
 
-### For module orchestration (Mode M), keep visible:
-- `specs/<module>/module-brief.md`
-- `specs/<module>/module-plan.md`
-- `specs/<module>/slice-map.md`
-- `specs/<module>/module-risks.md`
-- `specs/<module>/module-staging-readiness.md` before module release
-- `specs/<module>/spec/` — optional module-level working drafts (not authoritative)
+**Mode P (program tier — `docs/program/*`):** project-brief, architecture-overview, module-map; implementation-streams (when parallel delivery non-trivial); re-frame-authorization (on re-run). Plus initial `_ar/` registry skeletons and any program-wide foundational `_ar/BA/{EN,ARCH,BR}/` + `_ar/UX/IA/IA-<project>.md`. Optional working drafts: `docs/program/spec/`.
 
-Canonical authored content lives in `_ar/`, not `specs/<module>/`:
-- module-scope `_ar/BA/{EN,UC,BR,ARCH,FN,ES,JOB,QUERY,ACL,API,CS,MSG}/` with `modules:` frontmatter
-- module-scope `_ar/UX/{WIRE,COMP,COPY}/` with `modules:` frontmatter
+**Mode M (module orchestration — `specs/<module>/`):** module-brief, module-plan, slice-map, module-risks; module-staging-readiness (before release). Canonical authored content lives in `_ar/` (filtered by `modules:` frontmatter), not in `specs/<module>/`. Optional: `specs/<module>/spec/`.
 
-### For normal feature delivery (Mode B), keep visible:
-- `spec.md` (must include slice manifest `touches:` block in frontmatter)
-- `plan.md` when required
-- `tasks.md`
-- `handoff.md` — compact (≤ 30 lines) summary that the main session reads in place of the full spec/plan/tasks; authored by the spec-creator subagent (see § Subagent Policy → Spec creation)
-- `qa-checklist.md`
-- `runtime-notes.md`
-- `review.md` (must address each `_ar/` change declared in slice manifest)
-- `spec/` — optional per-slice working drafts subfolder (not authoritative)
+**Mode B (slice tier — `specs/<module>/slices/<slice>/`):** spec.md (with slice manifest `touches:` block), plan.md (when required), tasks.md, handoff.md (≤30 lines, by spec-creator subagent), qa-checklist.md, runtime-notes.md, review.md. Add when triggered: open-questions.md, schema-impact.md, contract-notes.md, acl-notes.md, query-notes.md, job-notes.md. Optional: per-slice `spec/` working drafts.
 
-Add when triggered:
-- `open-questions.md`
-- `schema-impact.md`
-- `contract-notes.md`
-- `acl-notes.md`
-- `query-notes.md`
-- `job-notes.md`
-
-### For Mode C, keep visible:
-- `comment-intake.md`
-- `source-amendment.md` or equivalent upstream amendment artifact
-- `slice-seed.md` when promoting future Mode B work
-- `mode-b-handoff.md` when handoff is prepared
-- `open-questions.md` when material ambiguity remains
-
-A delivery summary may help, but it does not replace required artifacts.
+**Mode C:** comment-intake.md, source-amendment.md (or equivalent), slice-seed.md (when promoting), mode-b-handoff.md (when prepared), open-questions.md (when ambiguity remains).
 
 ---
 
 ## Runtime Vocabulary
 
-Use these words precisely:
-- `buildable`
-- `runnable`
-- `locally verifiable`
-- `demoable`
-
-Never collapse them into “works”.
-
-State explicitly:
-- what was built,
-- what was run,
-- what was actually verified,
-- what environment assumptions apply,
-- what remains unverified,
-- what a human must still check.
-
-Do not hide missing credentials, missing infrastructure, manual seeding, or provider dependency.
+Distinguish: `buildable` / `runnable` / `locally verifiable` / `demoable`. Never collapse into "works". State what was built, run, verified; environment assumptions; what remains unverified; what a human must check. Do not hide missing credentials, infrastructure, seeding, or provider dependencies. Full rule: constitution §12.
 
 ---
 
 ## Confidence Vocabulary
 
-Use these labels when relevant:
-- `confirmed`
-- `partial`
-- `uncertain`
-- `blocked`
-
-Do not hide uncertainty behind confident language.
-
-Confidence labeling is required whenever:
-- contract impact is inferred,
-- runtime state is incomplete,
-- protected-area knowledge is incomplete,
-- review cannot honestly claim full confidence,
-- canonical layer resolution is inferred rather than confirmed,
-- FE evidence and prior analytical context do not fully align.
+Labels: `confirmed` / `partial` / `uncertain` / `blocked`. Required whenever contract impact is inferred, runtime state is incomplete, protected-area knowledge is incomplete, review cannot honestly claim full confidence, canonical layer resolution is inferred, or FE evidence and analytical context misalign. Full rule: constitution §13.
 
 ---
 
 ## Review and Done
 
-Every review must end with exactly one verdict:
-- `accept`
-- `revise`
-- `block`
+Review verdict: exactly one of `accept` | `revise` | `block`. Review checks: spec alignment, plan alignment, scope discipline, protected-area safety, contract consistency, runtime honesty, reviewability.
 
-Review must check:
-- spec alignment,
-- plan alignment,
-- scope discipline,
-- protected-area safety when relevant,
-- contract consistency when relevant,
-- runtime honesty,
-- whether the claimed result is actually reviewable.
+Feature done = required artifacts exist + implementation stayed in scope + specialist analysis exists + QA thinking visible + runtime status explicit + blockers visible + verdict `accept`. Code existence is not done. Mode C never produces "feature done" — only doc-fix outcome or Mode B handoff.
 
-A feature is not done because:
-- code exists,
-- tasks were checked off,
-- a branch exists,
-- a local path looked plausible.
-
-A feature is done only when:
-- required artifacts exist,
-- implementation stayed in scope,
-- required specialist analysis exists,
-- QA thinking is visible,
-- runtime status is explicit,
-- blockers and limitations are visible,
-- final review verdict is `accept`.
-
-Mode C does not produce “feature done”.
-Mode C produces either:
-- a closed documentation outcome,
-- or a prepared handoff into future Mode B work.
-
-Do not imply production readiness because code exists.
+Full rules: constitution §11 (review law), §16 (no-false-completion), §17 (DoD).
 
 ---
 
 ## Exceptions
 
-Exceptions are allowed only explicitly.
-
-Any exception record must state:
-- the rule being relaxed,
-- the reason,
-- the scope,
-- the duration,
-- the extra review required.
-
-Temporary exceptions must not silently become normal practice.
+Exceptions are allowed only explicitly. Record must state: rule relaxed, reason, scope, duration, extra review required. See constitution §18.
 
 ---
 
