@@ -19,7 +19,7 @@ Mode C is **not** allowed to bypass the repository authority hierarchy.
 
 ## Position in the Overall Operating Model
 
-The repository has four operating modes (Mode A was eliminated in v2.0.0):
+The repository has four operating modes:
 
 - **Mode P — Program Bootstrap**
 - **Mode B — Feature Delivery** (default)

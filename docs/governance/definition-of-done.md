@@ -347,7 +347,7 @@ Module-release readiness is not the same as program completion. A program contai
 
 ## 5e. Program-definition done (Mode P)
 
-A program is **bootstrap-ready** when downstream per-module Mode M may safely begin. (Pre-v2.0.0 had Mode A as an intermediate step; v2.0.0 absorbed it into Mode P Gate P1.)
+A program is **bootstrap-ready** when downstream per-module Mode M may safely begin.
 
 Per constitution § 17.1, all five criteria must hold:
 
@@ -503,7 +503,6 @@ Typical required outputs (Mode M Gate M1a — module scope):
 - module-scope conflicts surfaced (either resolved or recorded in `module-risks.md`),
 - `_REGISTRY.md` updates for touched layers.
 
-(Pre-v2.0.0 had a separate Mode A onboarding route producing repo-level baseline artifacts in `docs/baseline/`. v2.0.0 absorbed it.)
 
 ---
 

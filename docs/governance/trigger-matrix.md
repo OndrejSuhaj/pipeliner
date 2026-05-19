@@ -105,7 +105,7 @@ It must not automatically become a new feature slice.
 
 ## 4. Mode selection matrix
 
-The repository distinguishes four operating modes (Mode A was eliminated in v2.0.0; its responsibilities are absorbed by Mode P Gate P1 at program scope and Mode M Gate M1a at module scope).
+The repository distinguishes four operating modes.
 
 ### 4.0 Mode P — Program Bootstrap
 
@@ -117,7 +117,7 @@ Use when:
 
 Primary intent:
 - declare program-level artifacts in `docs/program/`,
-- establish program-wide baseline at Gate P1 (absorbed from pre-v2.0.0 Mode A),
+- establish program-wide baseline at Gate P1,
 - author project-level IA at Gate P-UX (when user-facing),
 - decompose the program into bounded modules,
 - enable downstream Mode M per module.
@@ -156,7 +156,7 @@ Use when:
 
 Primary intent:
 - declare the module as a bounded delivery stream,
-- establish module-scope baseline trust (Gate M1a — absorbed from pre-v2.0.0 Mode A module-level scope, now owned by `agents/modules/Module{Corpus,Terminology,Conflict}*` roles),
+- establish module-scope baseline trust (Gate M1a — owned by `agents/modules/Module{Corpus,Terminology,Conflict}*` roles),
 - coordinate analytical, UX, and architectural inputs into a coherent module-level plan,
 - author module-scope canonical content in `_ar/`,
 - author a slice map enabling parallel Mode B delivery,
@@ -212,8 +212,7 @@ Activated only when specific impact conditions exist.
 ### 6.4 Implementation lanes
 Activated when actual code work is in scope.
 
-### 6.5 Baseline roles (formerly Mode A onboarding — deprecated in v2.0.0)
-Pre-v2.0.0 framework had `agents/onboarding/*` for repository onboarding under Mode A. v2.0.0 retires Mode A and splits these duties:
+### 6.5 Baseline roles
 - **Program-wide baseline** → `agents/program/Program{Corpus,Terminology,Conflict}*` (Mode P Gate P1)
 - **Module-scope baseline** → `agents/modules/Module{Corpus,Terminology,Conflict}*` (Mode M Gate M1a)
 
@@ -414,7 +413,7 @@ Mode C must not open implementation lanes.
 
 ## 11. Baseline roles (Mode P Gate P1 + Mode M Gate M1a)
 
-Pre-v2.0.0 had `agents/onboarding/*` shared between Mode A (repo scope) and Mode M (module scope). In v2.0.0 Mode A is eliminated and these duties are split into two parallel role families:
+Baseline roles are split into two parallel families by tier:
 
 **Program-wide baseline (`agents/program/**`)** — invoked by Mode P Gate P1:
 - `ProgramCorpusCurator` (was `CorpusCurator` at repo scope)
@@ -581,8 +580,6 @@ Output expectation:
 - program-wide conflict visibility,
 - foundational `_ar/BA/{EN,ARCH,BR}/` seeds,
 - `_REGISTRY.md` skeletons initialized.
-
-(Pre-v2.0.0 frameworks had a separate Mode A Gate 0 for this. v2.0.0 absorbed it into Mode P Gate P1.)
 
 ---
 
@@ -1321,7 +1318,6 @@ Expected outputs (Mode M Gate M1a — module scope):
 - module-scope conflicts surfaced in affected `_ar/` docs or `module-risks.md`,
 - `_REGISTRY.md` updates for touched layers.
 
-(Pre-v2.0.0 frameworks had a separate Mode A onboarding route for this. v2.0.0 splits across Mode P and Mode M.)
 
 ## 21.7 Comment intake route (Mode C)
 

@@ -4,13 +4,7 @@
 **Status**: Stable
 **Scope**: AI delivery package for spec-driven feature delivery
 
-**v2.0.0 changes (Batch 2 — Canonical Truth Restructure, 2026-05-19):**
-- Mode A eliminated; its repo-level baseline duties absorbed into Mode P, module-level into Mode M Gate M1a.
-- `_ar/**` redefined from raw source corpus to canonical authored documentation library, flat by layer (BA/UX).
-- Slice manifest pattern introduced (`touches:` block in spec.md declares all `_ar/` docs the slice creates, updates, or references).
-- Mode B granted authority to author/amend `_ar/` docs declared in slice manifest.
-- New §17.5 `_ar/` authoring integrity rule.
-- Tier model: program (`docs/program/`) / canonical authored (`_ar/`) / module orchestration (`specs/<module>/`) / slice delivery (`specs/<module>/slices/<slice>/`).
+Version history: see [CHANGELOG.md](../../CHANGELOG.md).
 
 ---
 
@@ -175,15 +169,13 @@ It is not:
 * a comment intake mode (that is Mode C),
 * a continuous re-planning mode.
 
-(Pre-v2.0.0 had a separate Mode A for repository onboarding. v2.0.0 absorbed it into Mode P Gate P1 — see §5.1 below.)
-
 Mode P may:
 * create program-level artifacts in `docs/program/`,
 * declare modules in `docs/program/module-map.md`,
 * set program-level architectural assumptions,
-* establish program-wide terminology baseline (absorbed from pre-v2.0.0 Mode A),
-* establish program-wide source authority classification (absorbed from pre-v2.0.0 Mode A),
-* map program-wide canonical layer conflicts (absorbed from pre-v2.0.0 Mode A),
+* establish program-wide terminology baseline,
+* establish program-wide source authority classification,
+* map program-wide canonical layer conflicts,
 * author program-level canonical docs in `_ar/` (minimum: foundational EN, ARCH, BR in `_ar/BA/`, project-level IA in `_ar/UX/IA/`),
 * be re-run when structural program change is required (subject to Gate P-R re-frame authorization).
 
@@ -193,16 +185,6 @@ Mode P must not:
 * implement product code,
 * be confused with normal Mode B feature delivery,
 * silently overwrite existing program artifacts on re-run.
-
-### 5.1 Mode A — Deprecated (v2.0.0)
-
-Mode A is no longer part of this framework.
-
-Its responsibilities are absorbed as follows:
-* **Repository-level / program-wide baseline** (terminology stabilization, source authority classification, repo-wide canonical conflicts) → **Mode P**.
-* **Module-level baseline** (module-scope terminology refinements, module-scope source authority, module-scope conflicts) → **Mode M Gate M1a**.
-
-Pre-v2.0.0 artifacts produced under Mode A remain valid. Reading them is unaffected by Mode A's removal. No new Mode A invocations are permitted in v2.0.0+ aparatus.
 
 ### 5.2 Mode B — Feature Delivery
 
@@ -292,7 +274,7 @@ It is not:
 
 Mode M may:
 * create module orchestration artifacts in `specs/<module>/` (`module-brief.md`, `module-plan.md`, `slice-map.md`, `module-risks.md`, `module-staging-readiness.md`),
-* establish module-scope baseline at Gate M1a — module-scope terminology refinements, module-scope source authority verification, module-scope canonical conflict mapping (absorbed from pre-v2.0.0 Mode A module-level scope),
+* establish module-scope baseline at Gate M1a — module-scope terminology refinements, module-scope source authority verification, module-scope canonical conflict mapping,
 * author module-scope canonical docs in `_ar/BA/**` and `_ar/UX/**` (UC, FN, ES, WIRE, COMP, COPY refinements for the module),
 * coordinate analytical, UX, and architectural inputs,
 * produce a slice map enabling parallel Mode B execution,
@@ -377,7 +359,7 @@ Its governed sequence is:
 
 1. (when re-framing) re-frame authorization — explicit rationale, affected artifacts, downstream module impact (P-R),
 2. program declaration — business purpose, scope, key constraints (P0),
-3. program-level architecture overview — architectural assumptions, external systems, non-functional constraints (P1) — includes program-wide terminology, source authority, and canonical-conflict baseline (absorbed from pre-v2.0.0 Mode A),
+3. program-level architecture overview — architectural assumptions, external systems, non-functional constraints (P1) — includes program-wide terminology, source authority, and canonical-conflict baseline,
 4. program-level UX framing — project-level Information Architecture in `_ar/UX/IA/IA-<project>.md` (P-UX, optional when the project has no user-facing surfaces),
 5. module decomposition — module-map with named modules, dependencies, integration boundaries (P2),
 6. (optional) implementation streams — parallel delivery coordination model when non-trivial (P3).

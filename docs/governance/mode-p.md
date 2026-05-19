@@ -16,13 +16,11 @@ Mode P is **not** an implementation mode.
 Mode P is **not** a comment intake mode (that is Mode C).
 Mode P is **not** a continuous re-planning mode.
 
-In v2.0.0 Mode P absorbs the **program-wide baseline duties** that pre-v2.0.0 Mode A performed (program-level terminology, source authority, repo-wide canonical conflicts). Mode A has been eliminated.
-
 ---
 
 ## Position in the Overall Operating Model
 
-The repository has four operating modes (Mode A was eliminated in v2.0.0):
+The repository has four operating modes:
 
 - **Mode P — Program Bootstrap** (this document)
 - **Mode B — Feature Delivery** (default)
@@ -200,7 +198,7 @@ Mode P writes program-wide foundational docs into `_ar/` (P1 baseline, P-UX proj
 
 ### Gate P1 — Architecture Overview & Program-Wide Baseline
 
-**Purpose:** Establish program-level architectural assumptions, external systems, integration boundaries, non-functional constraints — **and** program-wide baseline (terminology, source authority, foundational canonical seeds), absorbed from pre-v2.0.0 Mode A.
+**Purpose:** Establish program-level architectural assumptions, external systems, integration boundaries, non-functional constraints — **and** program-wide baseline (terminology, source authority, foundational canonical seeds).
 
 **Owned by:** architekt + `ArchitectureOverviewAuthor` + `ProgramCorpusCurator` + `ProgramTerminologyResolver` + `ProgramConflictMapper`
 
@@ -330,13 +328,13 @@ Owns Gate P-R and Gate P0. Drives the operator through program declaration.
 Owns Gate P1 architecture half. Drafts the program-level architectural skeleton.
 
 #### `ProgramCorpusCurator`
-Owns Gate P1 baseline half — source authority classification, corpus shape verification (absorbed from pre-v2.0.0 Mode A `agents/onboarding/CorpusCurator`).
+Owns Gate P1 baseline half — source authority classification, corpus shape verification.
 
 #### `ProgramTerminologyResolver`
-Owns Gate P1 baseline half — program-wide terminology stabilization (absorbed from pre-v2.0.0 Mode A `agents/onboarding/TerminologyResolver`).
+Owns Gate P1 baseline half — program-wide terminology stabilization.
 
 #### `ProgramConflictMapper`
-Owns Gate P1 baseline half — program-wide canonical conflict mapping (absorbed from pre-v2.0.0 Mode A `agents/onboarding/ConflictMapper`).
+Owns Gate P1 baseline half — program-wide canonical conflict mapping.
 
 #### `ModuleMapAuthor`
 Owns Gate P2. Drafts the module decomposition with dependencies and integration boundaries.
@@ -409,8 +407,6 @@ After successful Mode P bootstrap:
 **Mode M — per-module orchestration** runs once per module declared in `module-map.md`, in the sequence implied by the dependency graph or explicit `entry sequence` in `module-map.md`.
 
 Mode M Gate M1a handles module-scope baseline (terminology refinements, source authority verification, module-scope conflicts) — building on the program-wide baseline that Mode P Gate P1 already established.
-
-(Prior versions of this framework had a separate Mode A step here for repository onboarding. v2.0.0 absorbed Mode A into Mode P Gate P1 — see [§5.1 of constitution.md](../../.specify/memory/constitution.md).)
 
 Mode P never creates branches.
 Mode P never opens implementation lanes.

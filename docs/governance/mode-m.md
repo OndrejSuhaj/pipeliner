@@ -17,13 +17,13 @@ Mode M is **not** a program bootstrap mode (that is Mode P).
 Mode M is **not** a comment intake mode (that is Mode C).
 Mode M is **not** a way to bypass slice-level governance.
 
-In v2.0.0 Mode M absorbs the **module-level baseline duties** (terminology, source authority, conflicts within the module's scope) that pre-v2.0.0 Mode A performed. Program-wide baseline is handled by Mode P Gate P1.
+Module-level baseline duties (terminology, source authority, conflicts within the module's scope) belong to Mode M Gate M1a. Program-wide baseline is handled by Mode P Gate P1.
 
 ---
 
 ## Position in the Overall Operating Model
 
-The repository has four operating modes (Mode A was eliminated in v2.0.0):
+The repository has four operating modes:
 
 - **Mode P — Program Bootstrap**
 - **Mode B — Feature Delivery** (default)
@@ -72,7 +72,7 @@ Mode M inherits the repository principles and adds the following local disciplin
    Mode M reads only the module-relevant subset of `_ar/**`. Program-wide baseline reading is a Mode P activity.
 
 7. **Mode M may author module-scope `_ar/` content**
-   Gate M1a authors module-scope canonical refinements; Gate M1b/M2/M3 author module-scope UC, FN, ES, WIRE, COMP, COPY in `_ar/`. Module-scope baseline roles live in `agents/modules/` (M-prefixed variants of the legacy onboarding roles).
+   Gate M1a authors module-scope canonical refinements; Gate M1b/M2/M3 author module-scope UC, FN, ES, WIRE, COMP, COPY in `_ar/`. Module-scope baseline roles live in `agents/modules/`.
 
 ---
 
@@ -193,9 +193,9 @@ Gate M1 has two sub-gates that must complete sequentially: M1a (baseline) before
 
 #### Gate M1a — Module Baseline
 
-**Purpose:** Establish module-scope baseline trust — module-scope terminology refinements (on top of program-wide glossary from Mode P), module-scope source authority verification, module-scope canonical conflicts. Absorbed from pre-v2.0.0 Mode A module-level scope.
+**Purpose:** Establish module-scope baseline trust — module-scope terminology refinements (on top of program-wide glossary from Mode P), module-scope source authority verification, module-scope canonical conflicts.
 
-**Owned by:** `ModuleCorpusCurator`, `ModuleTerminologyResolver`, `ModuleConflictMapper` (from `agents/modules/**` — v2.0.0 successors of legacy `agents/onboarding/*` with built-in module scope).
+**Owned by:** `ModuleCorpusCurator`, `ModuleTerminologyResolver`, `ModuleConflictMapper` (from `agents/modules/**`).
 
 **Required result:** Module-scope baseline refinements exist on top of program-wide baseline; module-scope conflicts are surfaced; module terminology is stable enough for analytical authoring.
 
@@ -359,13 +359,13 @@ Mode M uses a small, explicit set of module-level agents.
 Owns Gate M0 and M1b. Drives module declaration and framing.
 
 #### `ModuleCorpusCurator`
-Owns Gate M1a corpus subset reading (module-scope). v2.0.0 successor to legacy `agents/onboarding/CorpusCurator` with built-in module scope.
+Owns Gate M1a corpus subset reading (module-scope).
 
 #### `ModuleTerminologyResolver`
-Owns Gate M1a module-scope terminology refinements on top of program-wide glossary. v2.0.0 successor to legacy `agents/onboarding/TerminologyResolver`.
+Owns Gate M1a module-scope terminology refinements on top of program-wide glossary.
 
 #### `ModuleConflictMapper`
-Owns Gate M1a module-scope canonical conflict mapping. v2.0.0 successor to legacy `agents/onboarding/ConflictMapper`.
+Owns Gate M1a module-scope canonical conflict mapping.
 
 #### `ModulePlanAuthor`
 Owns Gate M3 architecture component. Authors `module-plan.md`.
@@ -519,8 +519,6 @@ Mode M must hand back to Mode P when:
 - program-wide `_ar/BA/**` is materially incomplete and refresh is needed.
 
 In these cases, Mode M stops, surfaces the baseline problem, and waits for Mode P re-frame (through Gate P-R or P1 refresh).
-
-(Pre-v2.0.0 frameworks had a separate Mode A handoff for repo baseline refresh. v2.0.0 absorbed Mode A into Mode P.)
 
 ---
 

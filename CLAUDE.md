@@ -58,14 +58,6 @@ Mode P runs once per project. Re-runs require Gate P-R authorization before any 
 
 Mode P does not author module-level or slice-level artifacts.
 
-### Mode A — Deprecated (v2.0.0)
-
-Mode A is eliminated. Its responsibilities split into:
-- **Program-wide baseline** (terminology, source authority, repo-wide canonical conflicts) → Mode P Gate P1
-- **Module-scope baseline** (module-scope terminology, source authority, conflicts within a module) → Mode M Gate M1a
-
-Pre-v2.0.0 artifacts authored under Mode A remain valid. No new Mode A invocations are permitted in v2.0.0+.
-
 ### Mode B — Feature Delivery (Default)
 
 Use for normal work on features, change requests, module enhancements, and bounded implementation slices.
@@ -106,7 +98,7 @@ Use when a new module declared in `module-map.md` is being established, when a m
 
 Purpose:
 - declare the module as a bounded delivery stream,
-- establish module-scope baseline trust (terminology, source authority, module-scope conflicts) at Gate M1a — owned by `agents/modules/Module{Corpus,Terminology,Conflict}*` roles (absorbed from pre-v2.0.0 `agents/onboarding/*`),
+- establish module-scope baseline trust (terminology, source authority, module-scope conflicts) at Gate M1a — owned by `agents/modules/Module{Corpus,Terminology,Conflict}*` roles,
 - frame analytical, UX, and architectural inputs into a coherent module-level plan,
 - author a slice map enabling safe parallel Mode B delivery,
 - verify module-release readiness.
@@ -303,7 +295,7 @@ Reading:
 - Never broad-scan `_ar/**` outside Mode P Gate P1 (program-wide baseline)
 - Cross-references between docs use `doc_id` (e.g. `references: [UC0001, EN0014]`) — must resolve to existing docs (no dangling refs)
 
-`docs/baseline/` from pre-v2.0.0 is removed — `_ar/**` IS the canonical authored truth, no derived baseline layer is needed.
+`_ar/**` IS the canonical authored truth; no derived baseline layer is used.
 
 ---
 
@@ -689,7 +681,7 @@ When starting a new project (or re-framing through Gate P-R), spawn the `program
 
 Use `description: "Program Bootstrap: {project-id}"`.
 
-The program-bootstrap subagent reads `docs/governance/mode-p.md` from disk in its own isolated context and drives Gates P-R / P0 / P1 (program-wide baseline absorbed from pre-v2.0.0 Mode A) / P-UX (project-level IA) / P2 / P3.
+The program-bootstrap subagent reads `docs/governance/mode-p.md` from disk in its own isolated context and drives Gates P-R / P0 / P1 (incl. program-wide baseline) / P-UX (project-level IA) / P2 / P3.
 
 ### Module orchestration
 
