@@ -22,7 +22,6 @@
 - **Mode B**: IA docs declared in slice manifest (`touches:` block in `spec.md`); **may not** introduce the first IA doc for a module — that is Mode M
 - **Mode C**: amendments via `source-amendment.md`
 
-**Note:** Authoring rules for IA layer details (sections, required fields, accessibility minimums, etc.) are introduced in Batch 4 of the foundation amendment (`toolingDocs/rules-IA.md` and `toolingTemplates/template-IA.md`). Until Batch 4 lands, this layer is registered but its authoring rules are pending.
 
 ## Naming convention
 
