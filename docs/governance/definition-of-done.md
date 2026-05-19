@@ -260,10 +260,10 @@ A slice is **ready to enter Mode B Gate B0** when its prerequisites recorded in 
 Per constitution § 17.3, all six criteria must hold:
 
 ### 5b.1 Analytical inputs are sufficient
-EN, UC, BR, QUERY, JOB analytical artifacts required by the slice exist at the module level (in `specs/<module>/analysis/`) and cover the slice's behavior.
+EN, UC, BR, QUERY, JOB analytical artifacts required by the slice exist in `_ar/BA/` (with `modules:` frontmatter listing the slice's module) and cover the slice's behavior.
 
 ### 5b.2 UX inputs are sufficient
-Wireframes covering the slice's screens exist in `specs/<module>/ux/wireframes.md`. Relevant component and copy coverage exists when applicable.
+Wireframes covering the slice's screens exist in `_ar/UX/WIRE/`. Project-level IA in `_ar/UX/IA/IA-<project>.md` references the relevant screens. Relevant component and copy coverage exists in `_ar/UX/COMP/` and `_ar/UX/COPY/` when applicable.
 
 ### 5b.3 Technical dependencies are explicit and resolved
 Dependencies on core and other modules are named in `slice-map.md`. Each is either resolved (target exists) or explicitly accepted as risk.
@@ -290,28 +290,31 @@ Slice-ready done is verified by `SliceReadinessVerifier` (read-only subagent) at
 
 A module is **delivery-ready** when slices in its slice map may safely begin entering Mode B Gate B0. This is a precondition for slice work, not the same as module release.
 
-Per constitution § 17.2, all seven criteria must hold:
+Per constitution § 17.2, all criteria must hold:
 
 ### 5c.1 Module-brief defines scope and boundaries
 `specs/<module>/module-brief.md` declares scope, dependencies on core and other modules, integration boundaries, non-goals.
 
-### 5c.2 Module baseline exists (Gate M1a)
-`specs/<module>/baseline/authority-map.md` and `specs/<module>/glossary/module-glossary.md` exist. Where module-scope conflicts exist, `specs/<module>/baseline/conflict-register.md` also exists.
+### 5c.2 Module-scope baseline exists (Gate M1a)
+Module-scope refinements on top of program-wide baseline (terminology, source authority, conflicts) are complete. Module-scope notes are embedded in `module-brief.md` § Baseline section; conflicts surface as open questions in affected `_ar/` docs or as risk entries in `module-risks.md`.
 
-### 5c.3 Initial analytical minimum exists
-EN, BR, UC analytical inputs sufficient for the module's central capability are in `specs/<module>/analysis/`. ES and ARCH are present when relevant.
+### 5c.3 Initial analytical minimum exists in `_ar/BA/`
+EN, BR, UC analytical inputs sufficient for the module's central capability exist in `_ar/BA/EN/`, `_ar/BA/BR/`, `_ar/BA/UC/` with `modules:` frontmatter listing this module. ES and ARCH are present when relevant.
 
-### 5c.4 IA and wireframes exist for user-facing modules
-When the module has user-facing surfaces, `specs/<module>/ux/ia.md` and `specs/<module>/ux/wireframes.md` exist and align with UC coverage.
+### 5c.4 IA and wireframes exist when user-facing
+Project-level IA (`_ar/UX/IA/IA-<project>.md`) authored by Mode P Gate P-UX is consumed and references this module's screens. WIRE coverage for in-scope module screens exists in `_ar/UX/WIRE/`.
 
 ### 5c.5 Module-plan and slice-map exist
-`specs/<module>/module-plan.md` records architecture, technologies, delivery sequence. `specs/<module>/slice-map.md` lists all slices with prerequisites per §5b.
+`specs/<module>/module-plan.md` records architecture, technologies, delivery sequence. `specs/<module>/slice-map.md` lists all slices with prerequisites per §5b (referencing required `_ar/` `doc_id`s).
 
 ### 5c.6 Module-risks records known risks
 `specs/<module>/module-risks.md` exists and records risks, unresolved dependencies, and mitigation plan.
 
 ### 5c.7 Slice-readiness prerequisites are explicit per slice
 Each slice in `slice-map.md` has its §5b prerequisites recorded, so Mode B Gate B0 can verify them.
+
+### 5c.8 `_REGISTRY.md` files are current
+For each canonical layer touched during module framing, `_REGISTRY.md` reflects the new `doc_id`s and their statuses (`reserved` | `draft` | `canonical`).
 
 Module-definition done is the precondition for **any** slice entering Mode B. It is not a release decision.
 
@@ -344,7 +347,7 @@ Module-release readiness is not the same as program completion. A program contai
 
 ## 5e. Program-definition done (Mode P)
 
-A program is **bootstrap-ready** when downstream Mode A and Mode M may safely begin.
+A program is **bootstrap-ready** when downstream per-module Mode M may safely begin. (Pre-v2.0.0 had Mode A as an intermediate step; v2.0.0 absorbed it into Mode P Gate P1.)
 
 Per constitution § 17.1, all five criteria must hold:
 
@@ -482,17 +485,25 @@ Additional required evidence:
 - retry or idempotency implications when relevant,
 - runtime notes that acknowledge async limits.
 
-## 7.6 Onboarding route
+## 7.6 Baseline route (Mode P Gate P1 / Mode M Gate M1a)
 
-Onboarding is done when the baseline is trustworthy enough for normal feature delivery.
+Baseline is done when the program-wide or module-scope baseline is trustworthy enough for downstream work.
 
-Typical required outputs:
-- source index,
-- authority map,
-- conflict register,
-- terminology baseline,
-- architecture baseline,
-- onboarding risk report.
+Typical required outputs (Mode P Gate P1 — program scope):
+- program-wide source authority section in `architecture-overview.md`,
+- program-wide terminology baseline section in `architecture-overview.md`,
+- program-wide conflict register (or resolved-decisions log),
+- foundational `_ar/BA/{EN,ARCH,BR}/` seeds,
+- `_REGISTRY.md` skeletons initialized for all canonical layers,
+- program-level baseline risk acknowledgments.
+
+Typical required outputs (Mode M Gate M1a — module scope):
+- module-scope baseline notes in `module-brief.md`,
+- module-scope EN/BR refinements in `_ar/BA/` with `modules:` frontmatter,
+- module-scope conflicts surfaced (either resolved or recorded in `module-risks.md`),
+- `_REGISTRY.md` updates for touched layers.
+
+(Pre-v2.0.0 had a separate Mode A onboarding route producing repo-level baseline artifacts in `docs/baseline/`. v2.0.0 absorbed it.)
 
 ---
 
@@ -661,11 +672,12 @@ Use these templates as standard completion checks at each tier.
 
 ## Analytical inputs
 - [ ] EN / UC / BR / QUERY / JOB inputs sufficient for slice behavior
-- [ ] Inputs live in `specs/<module>/analysis/`
+- [ ] Inputs live in `_ar/BA/` with `modules:` frontmatter listing this module
 
 ## UX inputs
-- [ ] Wireframes cover the slice's screens
-- [ ] Relevant components / copy coverage exists when applicable
+- [ ] Wireframes in `_ar/UX/WIRE/` cover the slice's screens
+- [ ] Project IA in `_ar/UX/IA/IA-<project>.md` references the relevant screens
+- [ ] Relevant components / copy coverage in `_ar/UX/COMP/` and `_ar/UX/COPY/` exists when applicable
 
 ## Technical dependencies
 - [ ] Cross-module dependencies named in `slice-map.md`

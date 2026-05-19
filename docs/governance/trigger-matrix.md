@@ -61,7 +61,7 @@ The package must avoid:
 
 - always-running every specialist,
 - routing by habit,
-- triggering onboarding for ordinary work,
+- triggering baseline roles (P1/M1a) for ordinary work,
 - or turning comment intake into hidden delivery work.
 
 ### 3.2 Highest risk wins
@@ -105,31 +105,22 @@ It must not automatically become a new feature slice.
 
 ## 4. Mode selection matrix
 
-The repository distinguishes five operating modes.
+The repository distinguishes four operating modes (Mode A was eliminated in v2.0.0; its responsibilities are absorbed by Mode P Gate P1 at program scope and Mode M Gate M1a at module scope).
 
 ### 4.0 Mode P — Program Bootstrap
 
 Use when:
 - a new project is being established within this framework,
 - program-level scope, architectural overview, or module decomposition must be declared,
+- program-wide baseline trust (terminology, source authority, conflicts) needs establishment or repair,
 - existing program requires structural re-framing (new module, split, scope rewrite).
 
 Primary intent:
 - declare program-level artifacts in `docs/program/`,
+- establish program-wide baseline at Gate P1 (absorbed from pre-v2.0.0 Mode A),
+- author project-level IA at Gate P-UX (when user-facing),
 - decompose the program into bounded modules,
-- enable downstream Mode A / Mode M.
-
-### 4.1 Mode A — Repository Onboarding
-
-Use when:
-- baseline trust is weak,
-- source authority is unclear,
-- terminology is unstable,
-- corpus conflict blocks safe work,
-- or baseline repair is required.
-
-Primary intent:
-- establish trustworthy baseline knowledge.
+- enable downstream Mode M per module.
 
 ### 4.2 Mode B — Feature Delivery (default)
 
@@ -165,8 +156,9 @@ Use when:
 
 Primary intent:
 - declare the module as a bounded delivery stream,
-- establish module-level baseline trust (reuse `agents/onboarding/*` with module scope),
+- establish module-scope baseline trust (Gate M1a — absorbed from pre-v2.0.0 Mode A module-level scope, now owned by `agents/modules/Module{Corpus,Terminology,Conflict}*` roles),
 - coordinate analytical, UX, and architectural inputs into a coherent module-level plan,
+- author module-scope canonical content in `_ar/`,
 - author a slice map enabling parallel Mode B delivery,
 - verify module-release readiness.
 
@@ -178,8 +170,9 @@ Primary intent:
 |---|---|
 | New project being established within the framework | Mode P |
 | Existing program requires structural re-framing | Mode P (through Gate P-R) |
-| New repository / weak baseline / unclear authority / terminology conflict | Mode A |
+| Program-wide baseline weak / unclear authority / terminology conflict across the program | Mode P Gate P1 (refresh) |
 | New module being declared from `module-map.md` | Mode M |
+| Module needs module-scope baseline trust | Mode M Gate M1a |
 | Module nearing release / module re-framing | Mode M |
 | Slice exists in `slice-map.md` and prerequisites are claimed met | Mode B (entering through Gate B0) |
 | Normal bounded feature request | Mode B |
@@ -187,7 +180,8 @@ Primary intent:
 | Comment already normalized into a bounded approved feature request | Mode B (through Gate B0) |
 | Comment challenges module-level artifact | Mode C → Mode M |
 | Comment challenges program-level artifact | Mode C → Mode P (through Gate P-R) |
-| Comment reveals baseline collapse or major source-authority conflict | Mode A or block until clarified |
+| Comment reveals program-wide baseline collapse | Mode P Gate P1 (refresh) or block until clarified |
+| Comment reveals module-scope baseline collapse | Mode M Gate M1a (refresh) or block until clarified |
 | "Just update docs" but documentation layer is unclear | Mode C first |
 | Slice-readiness check fails | back to Mode M (M1 / M2 / M3 depending on missing prerequisite) |
 
@@ -195,7 +189,7 @@ Primary intent:
 
 - Do not use Mode B when the real starting point is a selected issue/comment that challenges upstream truth.
 - Do not use Mode C to bypass normal feature delivery once the work has become a real feature.
-- Do not use Mode A merely because "more context would be nice."
+- Do not invoke baseline gates (P1 / M1a) merely because "more context would be nice."
 - Do not use Mode M when the work is genuinely program-level (escalate to Mode P).
 - Do not use Mode P for routine planning — re-runs require Gate P-R structural rationale.
 - Do not enter Mode B without Gate B0 pass — return to Mode M instead.
@@ -218,17 +212,19 @@ Activated only when specific impact conditions exist.
 ### 6.4 Implementation lanes
 Activated when actual code work is in scope.
 
-### 6.5 Onboarding-only roles
-Used in repository onboarding (Mode A) or invoked with module scope from Mode M Gate M1a.
+### 6.5 Baseline roles (formerly Mode A onboarding — deprecated in v2.0.0)
+Pre-v2.0.0 framework had `agents/onboarding/*` for repository onboarding under Mode A. v2.0.0 retires Mode A and splits these duties:
+- **Program-wide baseline** → `agents/program/Program{Corpus,Terminology,Conflict}*` (Mode P Gate P1)
+- **Module-scope baseline** → `agents/modules/Module{Corpus,Terminology,Conflict}*` (Mode M Gate M1a)
 
 ### 6.6 Program-level roles (`agents/program/**`)
-Used only in Mode P program bootstrap and re-frame.
+Used only in Mode P program bootstrap, re-frame, and program-wide baseline (Gate P1).
 
 ### 6.7 Module-level orchestration roles (`agents/modules/**`)
-Used only in Mode M module declaration, framing, planning, and release readiness.
+Used only in Mode M module declaration, framing, planning, module-scope baseline (Gate M1a), and release readiness.
 
 ### 6.8 UX canonical roles (`agents/ux/**`)
-Used in Mode M Gate M2 and M3 for IA, wireframe, component, and copy authoring.
+Used in Mode P Gate P-UX (IAAuthor) and Mode M Gate M2 / M3 (WireframeAuthor, ComponentSpecAuthor, CopySpecAuthor).
 
 ---
 
@@ -416,26 +412,30 @@ Mode C must not open implementation lanes.
 
 ---
 
-## 11. Onboarding roles (Mode A + Mode M Gate M1a reuse)
+## 11. Baseline roles (Mode P Gate P1 + Mode M Gate M1a)
 
-The following roles belong to repository onboarding or baseline repair, and are also invoked with **module scope** from Mode M Gate M1a:
+Pre-v2.0.0 had `agents/onboarding/*` shared between Mode A (repo scope) and Mode M (module scope). In v2.0.0 Mode A is eliminated and these duties are split into two parallel role families:
 
-- `CorpusCurator`
-- `ConflictMapper`
-- `TerminologyResolver`
-- `ArchitectureBaselineMapper`
+**Program-wide baseline (`agents/program/**`)** — invoked by Mode P Gate P1:
+- `ProgramCorpusCurator` (was `CorpusCurator` at repo scope)
+- `ProgramTerminologyResolver` (was `TerminologyResolver` at repo scope)
+- `ProgramConflictMapper` (was `ConflictMapper` at repo scope)
+- `ArchitectureOverviewAuthor` (was `ArchitectureBaselineMapper`, refocused on program-level)
 
-Trigger these roles when:
-- the project is being onboarded (Mode A, repo scope),
-- baseline trust is weak,
-- artifact authority is unclear,
-- terminology is unstable,
-- a major documentation conflict blocks normal feature delivery,
-- or Mode M Gate M1a needs module-scope baseline trust (terminology, source authority, conflict register within the module's scope).
+**Module-scope baseline (`agents/modules/**`)** — invoked by Mode M Gate M1a:
+- `ModuleCorpusCurator`
+- `ModuleTerminologyResolver`
+- `ModuleConflictMapper`
+
+Trigger program-wide baseline roles when:
+- Mode P Gate P1 is being executed (initial program bootstrap),
+- program-wide terminology, source authority, or canonical conflicts need re-establishment.
+
+Trigger module-scope baseline roles when:
+- Mode M Gate M1a is being executed (per-module),
+- module-scope terminology refinements, source authority, or conflicts need resolution within a module.
 
 They must not be activated for ordinary feature work just because more context would be nice to have.
-
-The roles themselves are shared. Mode A invokes them with **repo scope**; Mode M Gate M1a invokes them with **module scope** (explicit `scope: module:<name>` parameter). No duplicate `Module*Onboarding` agent catalog.
 
 ## 11.5 Program-level roles (`agents/program/**`)
 
@@ -560,29 +560,29 @@ Note: rules and templates for IA, WIRE, COMP, COPY layers arrive in Batch 4 of t
 
 ---
 
-## 12. Gate routing matrix — Mode A
-
-## 12.1 Gate 0 — Intake Gate
+## 12. Gate routing matrix — Mode P Gate P1 (program-wide baseline)
 
 Primary question:
-- do we trust the baseline enough for normal work?
+- is the program-wide baseline trustworthy enough for downstream module work?
 
 Trigger in:
-- onboarding mode,
-- baseline repair,
-- major corpus conflict situations.
+- Mode P bootstrap (initial run),
+- Mode P re-frame when program-wide terminology, source authority, or conflicts need re-establishment.
 
 Typical roles:
-- `CorpusCurator`
-- `ConflictMapper`
-- `TerminologyResolver`
-- `ArchitectureBaselineMapper`
+- `ProgramCorpusCurator`
+- `ProgramConflictMapper`
+- `ProgramTerminologyResolver`
+- `ArchitectureOverviewAuthor`
 
 Output expectation:
-- baseline trust decision,
-- source authority map,
-- conflict visibility,
-- onboarding artifacts.
+- program-wide baseline trust decision,
+- program-wide source authority map,
+- program-wide conflict visibility,
+- foundational `_ar/BA/{EN,ARCH,BR}/` seeds,
+- `_REGISTRY.md` skeletons initialized.
+
+(Pre-v2.0.0 frameworks had a separate Mode A Gate 0 for this. v2.0.0 absorbed it into Mode P Gate P1.)
 
 ---
 
@@ -834,7 +834,7 @@ Primary role:
 Typical inputs:
 - module slug from `docs/program/module-map.md`
 - operator confirmation of module scope
-- existing repo baseline (`docs/baseline/*`)
+- program-wide baseline from Mode P Gate P1 (foundational `_ar/BA/` seeds)
 
 Output expectation:
 - `specs/<module>/module-brief.md` § Declaration section
@@ -843,24 +843,24 @@ Output expectation:
 Stop if:
 - the module is not in `module-map.md` (run Mode P first),
 - `module-map.md` does not exist,
-- module-level Mode A baseline (`docs/baseline/*`) is required but missing.
+- program-wide baseline (Mode P Gate P1) is missing or incomplete.
 
 ### 14.5.1 Gate M1a — Module Baseline
 
-Primary roles (invoked with module scope):
-- `CorpusCurator`
-- `TerminologyResolver`
-- `ConflictMapper`
-- `ArchitectureBaselineMapper` (optional)
+Primary roles (module scope, from `agents/modules/**`):
+- `ModuleCorpusCurator`
+- `ModuleTerminologyResolver`
+- `ModuleConflictMapper`
 
 Output expectation:
-- `specs/<module>/baseline/authority-map.md`
-- `specs/<module>/glossary/module-glossary.md`
-- `specs/<module>/baseline/conflict-register.md` (when module-scope conflicts exist)
+- module-scope refinement notes embedded in `specs/<module>/module-brief.md` § Baseline section
+- module-scope EN/BR seed authoring in `_ar/BA/{EN,BR}/` with `modules:` frontmatter
+- module-scope conflicts surfaced as open questions in affected `_ar/` docs or as risk entries in `module-risks.md`
+- `_REGISTRY.md` updates for each touched canonical layer
 
 Stop if:
-- module-scope `_ar/<module>/**` content cannot be safely read,
-- module-scope conflicts cannot be resolved.
+- module-scope `_ar/` content cannot be safely authored,
+- module-scope conflicts cannot be resolved without program-wide refresh (escalate to Mode P).
 
 ### 14.5.2 Gate M1b — Module Framing
 
@@ -1128,8 +1128,8 @@ The following signal-based routing rules supplement class-based routing.
 | New project being established | Mode P + `ProgramBootstrapper` |
 | Existing program needs structural change | Mode P Gate P-R + `ProgramBootstrapper` |
 | New module declared in `module-map.md` | Mode M + `ModuleFramer` |
-| Module needs baseline trust | Mode M Gate M1a + onboarding roles (module scope) |
-| Module needs IA / screen map | Mode M Gate M2 + `IAAuthor` |
+| Module needs baseline trust | Mode M Gate M1a + `Module{Corpus,Terminology,Conflict}*` roles |
+| Project needs IA / screen map | Mode P Gate P-UX + `IAAuthor` |
 | Module needs wireframe authoring | Mode M Gate M2 + `WireframeAuthor` |
 | Module needs reusable component vocabulary | Mode M Gate M3 + `ComponentSpecAuthor` |
 | Module needs UX copy authoring | Mode M Gate M3 + `CopySpecAuthor` |
@@ -1147,8 +1147,8 @@ The following signal-based routing rules supplement class-based routing.
 | New queue, retry rule, import/export, scheduler, background correctness | `JobPlanner` |
 | Mobile scope or cross-client shared-contract consequence | `MobileImplementer` |
 | Ambiguity that affects planning, safe execution, or safe amendment | clarification role |
-| Baseline conflict or unclear source authority (repo scope) | Mode A onboarding roles |
-| Baseline conflict or unclear source authority (module scope) | Mode M Gate M1a (onboarding roles with module scope) |
+| Baseline conflict or unclear source authority (program scope) | Mode P Gate P1 + `Program{Corpus,Terminology,Conflict}*` roles |
+| Baseline conflict or unclear source authority (module scope) | Mode M Gate M1a + `Module{Corpus,Terminology,Conflict}*` roles |
 
 ---
 
@@ -1239,7 +1239,7 @@ Escalate when any of the following occurs:
 | Comment intake becoming hidden feature delivery | stop and hand off explicitly to Mode B |
 | Slice-readiness check fails (Gate B0) | route back to Mode M (M1 / M2 / M3 depending on missing prerequisite) |
 | Module work reveals program-level structural issue | escalate to Mode P Gate P-R |
-| Module work reveals repo-wide baseline collapse | escalate to Mode A |
+| Module work reveals program-wide baseline collapse | escalate to Mode P Gate P1 (refresh) |
 | Mode P re-run without explicit structural rationale | block until Gate P-R authorization |
 | Module declared but not in `module-map.md` | block; run Mode P first |
 | Cross-module dependency cycle detected | block; resolve at Mode P level |
@@ -1306,15 +1306,22 @@ Additional expected outputs:
 - `job-notes.md`
 - retry/idempotency notes when relevant
 
-## 21.6 Onboarding route (Mode A)
+## 21.6 Baseline route (Mode P Gate P1 — program scope, Mode M Gate M1a — module scope)
 
-Expected outputs may include:
-- source index,
-- authority map,
-- conflict register,
-- glossary baseline,
-- architecture baseline,
-- onboarding risk report.
+Expected outputs (Mode P Gate P1 — program scope):
+- program-wide source authority section in `architecture-overview.md`,
+- program-wide glossary baseline section in `architecture-overview.md`,
+- program-wide conflict register or resolved-decisions log,
+- foundational `_ar/BA/{EN,ARCH,BR}/` seeds,
+- `_REGISTRY.md` skeletons for all canonical layers.
+
+Expected outputs (Mode M Gate M1a — module scope):
+- module-scope baseline notes in `module-brief.md`,
+- module-scope EN/BR seeds in `_ar/BA/` with `modules:` frontmatter,
+- module-scope conflicts surfaced in affected `_ar/` docs or `module-risks.md`,
+- `_REGISTRY.md` updates for touched layers.
+
+(Pre-v2.0.0 frameworks had a separate Mode A onboarding route for this. v2.0.0 splits across Mode P and Mode M.)
 
 ## 21.7 Comment intake route (Mode C)
 
@@ -1340,8 +1347,8 @@ The package assumes ambiguity is harmless when it actually affects permissions, 
 ### 22.3 Treating shared schema as local scope
 A field added for one screen is routed as if only one client mattered.
 
-### 22.4 Triggering onboarding roles for ordinary feature work
-The package reopens corpus analysis instead of using the established baseline.
+### 22.4 Triggering baseline roles for ordinary feature work
+The package reopens program-wide or module-scope baseline analysis instead of using the established baseline already authored in `_ar/`.
 
 ### 22.5 Forgetting QA/runtime as real lanes
 Implementation is treated as complete before testability and runtime evidence are visible.
@@ -1375,7 +1382,7 @@ Until real pilot runs suggest refinement:
 - apply this matrix conservatively,
 - prefer specialist activation over optimistic omission when contract or permissions are unclear,
 - prefer Mode C when issue/comment intake is the real starting point,
-- but do not trigger onboarding-only roles for ordinary feature delivery.
+- but do not trigger baseline-only roles (Mode P Gate P1 or Mode M Gate M1a) for ordinary feature delivery.
 
 ---
 

@@ -19,10 +19,9 @@ Mode C is **not** allowed to bypass the repository authority hierarchy.
 
 ## Position in the Overall Operating Model
 
-The repository has five operating modes:
+The repository has four operating modes (Mode A was eliminated in v2.0.0):
 
 - **Mode P — Program Bootstrap**
-- **Mode A — Repository Onboarding**
 - **Mode B — Feature Delivery** (default)
 - **Mode C — Comment Intake / Documentation Amendment / Slice Seeding** (this document)
 - **Mode M — Module Orchestration**
@@ -42,7 +41,7 @@ Mode C is appropriate when:
 
 Mode C is **not** appropriate when:
 - the work is already a clean feature request with enough scope clarity for normal Mode B (entering through Gate B0),
-- the problem is baseline trust, corpus conflict, or terminology instability across the repository — use Mode A,
+- the problem is program-wide baseline trust, source authority, or terminology instability across the program — use Mode P Gate P1,
 - the problem is module-scope baseline (terminology, source authority within a module) — use Mode M Gate M1a,
 - the problem is program-level structural change — use Mode P Gate P-R,
 - the operator wants implementation directly — that still belongs to Mode B.
@@ -605,15 +604,18 @@ Mode C produces the amendment draft; Mode P authorizes and applies it through Ga
 
 ---
 
-## Relationship to the Source Corpus
+## Relationship to Canonical Authored Documentation (`_ar/`)
 
-Mode C may use `_ar/**` only in a bounded way.
+`_ar/**` in v2.0.0 is canonical authored truth, not raw source corpus.
+
+Mode C uses `_ar/**` only in a bounded way and may **author amendments** into it via `source-amendment.md`:
 
 Rules:
 - read only the subset needed for the selected issue/comment,
-- treat FE/runtime evidence carefully,
+- amend a canonical `_ar/` doc only when `source-amendment.md` declares the change (analogous to slice manifest in Mode B),
+- update `_REGISTRY.md` atomically when a new `doc_id` is introduced,
 - preserve inconsistencies and open questions,
-- do not use broad corpus reading unless the work has actually turned into a baseline problem.
+- do not use broad corpus reading unless the work has actually turned into a baseline problem (in which case escalate to Mode P or Mode M, not Mode C).
 
 When the affected layer is `CS`, keep FE evidence primary and avoid overclaiming backend truth from UI alone.
 

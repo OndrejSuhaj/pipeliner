@@ -1,8 +1,16 @@
 # Constitution
 
-**Version**: 1.0.0
+**Version**: 2.0.0
 **Status**: Stable
 **Scope**: AI delivery package for spec-driven feature delivery
+
+**v2.0.0 changes (Batch 2 — Canonical Truth Restructure, 2026-05-19):**
+- Mode A eliminated; its repo-level baseline duties absorbed into Mode P, module-level into Mode M Gate M1a.
+- `_ar/**` redefined from raw source corpus to canonical authored documentation library, flat by layer (BA/UX).
+- Slice manifest pattern introduced (`touches:` block in spec.md declares all `_ar/` docs the slice creates, updates, or references).
+- Mode B granted authority to author/amend `_ar/` docs declared in slice manifest.
+- New §17.5 `_ar/` authoring integrity rule.
+- Tier model: program (`docs/program/`) / canonical authored (`_ar/`) / module orchestration (`specs/<module>/`) / slice delivery (`specs/<module>/slices/<slice>/`).
 
 ---
 
@@ -48,9 +56,10 @@ Priority order:
 8. `mode-p.md` (when Mode P is active)
 9. `local-tooling-contract.md` (when local tooling is used)
 10. program-level artifacts (`docs/program/*`)
-11. module-level artifacts (`specs/<module>/{module-brief,module-plan,slice-map,…}.md`)
-12. slice-level feature artifacts (`spec.md`, `plan.md`, `tasks.md`, `review.md`, `runtime-notes.md`)
-13. agent-specific instructions
+11. canonical authored documentation (`_ar/**`)
+12. module-level orchestration artifacts (`specs/<module>/{module-brief,module-plan,slice-map,module-risks,…}.md`)
+13. slice-level artifacts (`specs/<module>/slices/<slice>/{spec.md,plan.md,tasks.md,review.md,runtime-notes.md,…}`)
+14. agent-specific instructions
 
 No agent may weaken or reinterpret this constitution silently.
 
@@ -161,40 +170,39 @@ Goal:
 Mode P is a governed program-level bootstrap mode.
 
 It is not:
-* a repository onboarding mode (that is Mode A),
 * a module orchestration mode (that is Mode M),
 * an implementation mode,
 * a comment intake mode (that is Mode C),
 * a continuous re-planning mode.
 
+(Pre-v2.0.0 had a separate Mode A for repository onboarding. v2.0.0 absorbed it into Mode P Gate P1 — see §5.1 below.)
+
 Mode P may:
 * create program-level artifacts in `docs/program/`,
 * declare modules in `docs/program/module-map.md`,
 * set program-level architectural assumptions,
+* establish program-wide terminology baseline (absorbed from pre-v2.0.0 Mode A),
+* establish program-wide source authority classification (absorbed from pre-v2.0.0 Mode A),
+* map program-wide canonical layer conflicts (absorbed from pre-v2.0.0 Mode A),
+* author program-level canonical docs in `_ar/` (minimum: foundational EN, ARCH, BR in `_ar/BA/`, project-level IA in `_ar/UX/IA/`),
 * be re-run when structural program change is required (subject to Gate P-R re-frame authorization).
 
 Mode P must not:
-* author module-level artifacts (that is Mode M),
-* author repository baseline artifacts (that is Mode A),
+* author module-level orchestration artifacts (that is Mode M),
+* author module-scope canonical refinements (that is Mode M Gate M1a),
 * implement product code,
 * be confused with normal Mode B feature delivery,
 * silently overwrite existing program artifacts on re-run.
 
-### 5.1 Mode A — Repository Onboarding
+### 5.1 Mode A — Deprecated (v2.0.0)
 
-Used when:
+Mode A is no longer part of this framework.
 
-* a repository is being adopted,
-* the documentation baseline is unclear,
-* terminology is unstable,
-* or artifact authority is uncertain.
+Its responsibilities are absorbed as follows:
+* **Repository-level / program-wide baseline** (terminology stabilization, source authority classification, repo-wide canonical conflicts) → **Mode P**.
+* **Module-level baseline** (module-scope terminology refinements, module-scope source authority, module-scope conflicts) → **Mode M Gate M1a**.
 
-Goal:
-
-* establish trustworthy baseline knowledge,
-* classify sources,
-* identify conflicts,
-* and stabilize terminology and ownership understanding.
+Pre-v2.0.0 artifacts produced under Mode A remain valid. Reading them is unaffected by Mode A's removal. No new Mode A invocations are permitted in v2.0.0+ aparatus.
 
 ### 5.2 Mode B — Feature Delivery
 
@@ -206,6 +214,15 @@ Used for normal work on:
 * and bounded implementation slices.
 
 Mode B is the default mode.
+
+Mode B may:
+* author or amend canonical authored docs in `_ar/**` if and only if those changes are declared in the slice manifest (`touches:` block in `spec.md`),
+* create new `doc_ids` in existing canonical layers (e.g. add `UC0014` to `_ar/BA/UC/`), with corresponding `_REGISTRY.md` update in the same commit.
+
+Mode B must not:
+* introduce the first doc in a canonical layer for a module (that is Mode M Gate M1a — establishing a new layer presence is a module-level decision, not slice-level),
+* amend `_ar/**` outside of the slice manifest declaration,
+* widen slice scope through hidden `_ar/` edits.
 
 ### 5.3 Mode C — Comment Intake / Documentation Amendment / Slice Seeding
 
@@ -236,12 +253,14 @@ Mode C may:
 * close a documentation issue,
 * record an open question,
 * route work to an existing slice,
-* or seed a future slice.
+* seed a future slice,
+* author or amend canonical authored docs in `_ar/**` via `source-amendment.md` artifact.
 
 Mode C must not:
 * implement product changes,
 * create branches,
 * claim delivery completion,
+* amend `_ar/**` without recording the change in `source-amendment.md`,
 * or silently turn comment intake into hidden feature delivery.
 
 ### 5.4 Mode M — Module Orchestration
@@ -267,14 +286,14 @@ Mode M is a governed module-level orchestration mode.
 It is not:
 * a slice-level implementation mode (that is Mode B),
 * a replacement for Mode B,
-* a repository onboarding mode (that is Mode A),
 * a program bootstrap mode (that is Mode P),
 * a comment intake mode (that is Mode C),
 * a way to bypass slice-level governance.
 
 Mode M may:
-* create module-level artifacts in `specs/<module>/`,
-* invoke onboarding roles (`agents/onboarding/*`) with module scope during Gate M1a (module baseline),
+* create module orchestration artifacts in `specs/<module>/` (`module-brief.md`, `module-plan.md`, `slice-map.md`, `module-risks.md`, `module-staging-readiness.md`),
+* establish module-scope baseline at Gate M1a — module-scope terminology refinements, module-scope source authority verification, module-scope canonical conflict mapping (absorbed from pre-v2.0.0 Mode A module-level scope),
+* author module-scope canonical docs in `_ar/BA/**` and `_ar/UX/**` (UC, FN, ES, WIRE, COMP, COPY refinements for the module),
 * coordinate analytical, UX, and architectural inputs,
 * produce a slice map enabling parallel Mode B execution,
 * verify module-release readiness.
@@ -284,7 +303,8 @@ Mode M must not:
 * merge code to delivery branches,
 * claim slice completion (that is Mode B per slice),
 * silently turn module framing into hidden feature delivery,
-* re-author repository baseline (that is Mode A).
+* author program-wide baseline (that is Mode P),
+* author orchestrational metadata in `_ar/` (it belongs in `specs/<module>/`).
 
 ---
 
@@ -296,17 +316,18 @@ The package follows the following governed paths:
 
 1. slice-readiness check (B0) — verify the slice meets §17.3 slice-ready prerequisites recorded in `slice-map.md`,
 2. constitution check,
-3. specify,
+3. specify (including slice manifest `touches:` block listing all `_ar/` docs the slice creates, updates, or references),
 4. clarify,
 5. plan,
 6. tasks,
-7. implement,
+7. implement (may author/amend `_ar/` docs declared in slice manifest),
 8. QA and runtime verification,
-9. independent review.
+9. independent review (must address each declared `_ar/` change).
 
 Gate B0 is a hard prerequisite. If slice-readiness is not satisfied, the slice returns to Mode M (M1 / M2 / M3 depending on the missing prerequisite) before Mode B may begin.
 
 Implementation without an existing specification is prohibited.
+Slice manifest declaration is required before Mode B may write to `_ar/**`. Undeclared `_ar/` changes within a slice are scope violations.
 
 ### 6.2 Mode C — Pre-Delivery Intake
 
@@ -344,7 +365,9 @@ Each downstream slice continues through Mode B, entering through Gate B0 (slice-
 
 Program-level framing (project-brief, architecture-overview, module-map) is a Mode P activity, not Mode M. Mode M requires those program-level artifacts to exist before it begins.
 
-Repository-level baseline (full `_ar/**` reading, repo terminology) is a Mode A activity, not Mode M. Mode M scope is bounded to one module.
+Program-wide baseline (program-level terminology, source authority, repo-wide canonical conflicts) is a Mode P activity, not Mode M. Mode M Gate M1a addresses module-scope baseline refinements only.
+
+Mode M may author canonical docs in `_ar/BA/**` and `_ar/UX/**` within the module's scope. Cross-module canonical docs (or docs intended as program-wide truth, e.g. project-level IA, foundational EN) are Mode P territory.
 
 ### 6.4 Mode P — Program Bootstrap
 
@@ -354,11 +377,14 @@ Its governed sequence is:
 
 1. (when re-framing) re-frame authorization — explicit rationale, affected artifacts, downstream module impact (P-R),
 2. program declaration — business purpose, scope, key constraints (P0),
-3. program-level architecture overview — architectural assumptions, external systems, non-functional constraints (P1),
-4. module decomposition — module-map with named modules, dependencies, integration boundaries (P2),
-5. (optional) implementation streams — parallel delivery coordination model when non-trivial (P3).
+3. program-level architecture overview — architectural assumptions, external systems, non-functional constraints (P1) — includes program-wide terminology, source authority, and canonical-conflict baseline (absorbed from pre-v2.0.0 Mode A),
+4. program-level UX framing — project-level Information Architecture in `_ar/UX/IA/IA-<project>.md` (P-UX, optional when the project has no user-facing surfaces),
+5. module decomposition — module-map with named modules, dependencies, integration boundaries (P2),
+6. (optional) implementation streams — parallel delivery coordination model when non-trivial (P3).
 
-Mode P must not author module-level artifacts directly. Each declared module continues through Mode M.
+Mode P must not author module-level orchestration artifacts directly. Each declared module continues through Mode M.
+
+Mode P may author program-wide minimum canonical docs in `_ar/` (foundational EN, ARCH, BR in `_ar/BA/`, project-level IA in `_ar/UX/IA/`). Module-scope canonical content is Mode M territory.
 
 Mode P is typically run once per project. Re-runs are explicit structural events (new module, module split, scope rewrite) and must not be normalized into routine planning. Re-runs require Gate P-R authorization before any existing program artifact may be amended.
 
@@ -427,9 +453,9 @@ Protected-area changes must not be hidden inside:
 
 ## 9. Artifact law
 
-Artifact law applies at three tiers, each owned by its respective mode.
+Artifact law applies at four layers: program tier, canonical authored layer, module tier, slice tier. Each layer is owned by the modes authorized to write into it.
 
-**Program tier** (Mode P, once per project) must produce or update:
+**Program tier** — `docs/program/` (Mode P, once per project + on re-frame):
 
 * `docs/program/project-brief.md`
 * `docs/program/architecture-overview.md`
@@ -443,31 +469,55 @@ When Mode P is re-run for structural change:
 
 * `docs/program/re-frame-authorization.md`
 
-**Module tier** (Mode M, once per module + once per release) must produce or update:
+When working drafts exist (workshops, research):
+
+* `docs/program/spec/` — optional working drafts subfolder (not authoritative).
+
+**Canonical authored layer** — `_ar/**` (Mode P / Mode M / Mode B / Mode C per authority):
+
+Flat by layer, organized as `_ar/<tier>/<layer>/<doc>.md`:
+
+* `_ar/BA/EN/`, `_ar/BA/UC/`, `_ar/BA/BR/`, `_ar/BA/ARCH/`, `_ar/BA/FN/`, `_ar/BA/ES/`, `_ar/BA/JOB/`, `_ar/BA/QUERY/`, `_ar/BA/ACL/`, `_ar/BA/API/`, `_ar/BA/CS/`, `_ar/BA/MSG/`
+* `_ar/UX/IA/`, `_ar/UX/WIRE/`, `_ar/UX/COMP/`, `_ar/UX/COPY/`
+
+Each layer folder has `_REGISTRY.md` tracking reserved `doc_ids`, their status (`reserved` | `draft` | `canonical` | `deprecated`), and authoring mode.
+
+Each canonical doc has frontmatter declaring `doc_id`, `canonical_layer`, `status`, `modules:` (list of module slugs the doc is referenced from), and `references:` (cross-layer references via `doc_id`).
+
+Authority to author:
+
+* **Mode P**: program-wide foundational docs (project-level IA, foundational EN/ARCH/BR shared by all modules),
+* **Mode M**: module-scope docs (UC, FN, ES, WIRE, COMP, COPY for the module),
+* **Mode B**: docs declared in slice manifest (`touches:` block in `spec.md`) — may create new `doc_ids` and amend existing docs, but may not introduce the first doc in a layer for a module,
+* **Mode C**: amendments via `source-amendment.md` artifact.
+
+**Module tier** — `specs/<module>/` (Mode M):
+
+Orchestrational metadata only. Canonical authored content lives in `_ar/`.
 
 * `specs/<module>/module-brief.md`
 * `specs/<module>/module-plan.md`
 * `specs/<module>/slice-map.md`
 * `specs/<module>/module-risks.md`
-* `specs/<module>/baseline/authority-map.md`
-* `specs/<module>/glossary/module-glossary.md`
 * `specs/<module>/module-staging-readiness.md` (before module release)
 
-When the module has user-facing surfaces, the module tier must also produce:
+When working drafts exist (module-level workshops, research):
 
-* `specs/<module>/ux/ia.md`
-* `specs/<module>/ux/wireframes.md`
-* `specs/<module>/ux/components.md` (when reusable components exist)
-* `specs/<module>/ux/copy.md` (when non-trivial text content exists)
+* `specs/<module>/spec/` — optional working drafts subfolder (not authoritative).
 
-**Slice tier** (Mode B, per slice) must produce or update:
+**Slice tier** — `specs/<module>/slices/<slice>/` (Mode B):
 
-* `spec.md`
+* `spec.md` (must include slice manifest `touches:` block in frontmatter)
 * `plan.md`
 * `tasks.md`
 * `qa-checklist.md`
 * `runtime-notes.md`
 * `review.md`
+* `handoff.md` (compact orchestration summary)
+
+When working drafts exist (slice-specific workshops, debugging notes):
+
+* `specs/<module>/slices/<slice>/spec/` — optional working drafts subfolder (not authoritative).
 
 When relevant, it must also produce or update:
 
@@ -479,6 +529,8 @@ When relevant, it must also produce or update:
 Artifacts must not contradict one another silently, neither within a tier nor across tiers.
 
 If contradiction is found, it must be documented and resolved or escalated.
+
+Working drafts subfolders (`docs/program/spec/`, `specs/<module>/spec/`, `specs/<module>/slices/<slice>/spec/`) are never read by reviewers for verdict purposes. They exist for traceability only.
 
 ---
 
@@ -638,12 +690,13 @@ A program is bootstrap-ready when:
 A module is delivery-ready when:
 
 1. `module-brief.md` defines scope, boundaries, dependencies on core and other modules,
-2. module baseline exists (`baseline/authority-map.md`, `glossary/module-glossary.md`) per Mode M Gate M1a,
-3. initial analytical minimum exists (EN/BR/UC inputs as relevant),
-4. `ia.md` and `wireframes.md` exist when the module has user-facing surfaces,
-5. `module-plan.md` and `slice-map.md` exist,
-6. `module-risks.md` records known risks and open dependencies,
-7. each planned slice has explicit slice-readiness prerequisites recorded in `slice-map.md`.
+2. module-scope baseline is complete per Mode M Gate M1a — module-scope terminology stabilized, module-scope source authority verified, module-scope canonical conflicts resolved or recorded,
+3. initial analytical minimum exists in `_ar/BA/**` for the module's scope (EN/BR/UC as relevant, with `modules:` frontmatter listing this module),
+4. project-level IA exists in `_ar/UX/IA/` (authored by Mode P; module references it),
+5. WIRE coverage for in-scope module screens exists in `_ar/UX/WIRE/`,
+6. `module-plan.md` and `slice-map.md` exist,
+7. `module-risks.md` records known risks and open dependencies,
+8. each planned slice has explicit slice-readiness prerequisites recorded in `slice-map.md`.
 
 ### 17.3 Slice-ready done
 
@@ -665,6 +718,22 @@ A module is release-ready when:
 3. open risks and known gaps are visible in `module-risks.md`,
 4. cross-module integration is verified (when applicable),
 5. release recommendation is explicit (`release` | `defer` | `block`).
+
+### 17.5 `_ar/` authoring integrity
+
+A change to any `_ar/**` document is well-formed when:
+
+1. the originating mode has authority to author at that layer (Mode P for program-wide baseline + project-level IA, Mode M for module-scope, Mode B per slice manifest, Mode C per `source-amendment.md`),
+2. the change is declared in the corresponding upstream artifact:
+   * `module-plan.md` or `module-brief.md` for Mode M scope,
+   * slice manifest `touches:` block in `spec.md` for Mode B scope,
+   * `source-amendment.md` for Mode C scope,
+   * `architecture-overview.md` or program-level brief for Mode P scope,
+3. `_REGISTRY.md` for the affected layer is updated atomically with the change (new `doc_id` entry, status transition, or deprecation),
+4. cross-references to other `_ar/` docs remain valid (no dangling `doc_id` references) — verified at slice / module DoD time,
+5. `modules:` frontmatter on the doc reflects current module association(s).
+
+Undeclared `_ar/` changes are scope violations and must be blocked at review.
 
 ---
 
@@ -732,6 +801,9 @@ The following artifacts are expected to derive from this document:
 * module orchestration role specs (`agents/modules/**`)
 * UX canonical role specs (`agents/ux/**`)
 * program bootstrap role specs (`agents/program/**`)
+* `_ar/<tier>/<layer>/_REGISTRY.md` per canonical layer (numbering and status tracking)
+* `.specify/templates/slice-manifest-template.md` (slice manifest schema)
+* `.specify/templates/source-amendment-template.md` (Mode C amendment schema)
 
 These documents must align with this constitution and carry the operational detail that this constitution intentionally does not contain.
 

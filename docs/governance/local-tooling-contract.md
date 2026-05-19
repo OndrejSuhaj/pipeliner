@@ -237,7 +237,7 @@ Local tooling must therefore stay:
 
 Mode B may occasionally use local tooling for bounded documentation work, but Mode B should not rely on it by default.
 
-Mode A should not use local tooling as a substitute for source authority analysis.
+Mode P Gate P1 (program-wide baseline) and Mode M Gate M1a (module-scope baseline) should not use local tooling as a substitute for source authority analysis.
 
 ---
 

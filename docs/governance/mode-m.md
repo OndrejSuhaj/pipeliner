@@ -13,19 +13,19 @@ It exists to:
 
 Mode M is **not** a slice-level implementation mode (that is Mode B).
 Mode M is **not** a replacement for Mode B.
-Mode M is **not** a repository onboarding mode (that is Mode A).
 Mode M is **not** a program bootstrap mode (that is Mode P).
 Mode M is **not** a comment intake mode (that is Mode C).
 Mode M is **not** a way to bypass slice-level governance.
+
+In v2.0.0 Mode M absorbs the **module-level baseline duties** (terminology, source authority, conflicts within the module's scope) that pre-v2.0.0 Mode A performed. Program-wide baseline is handled by Mode P Gate P1.
 
 ---
 
 ## Position in the Overall Operating Model
 
-The repository has five operating modes:
+The repository has four operating modes (Mode A was eliminated in v2.0.0):
 
 - **Mode P — Program Bootstrap**
-- **Mode A — Repository Onboarding**
 - **Mode B — Feature Delivery** (default)
 - **Mode C — Comment Intake / Documentation Amendment / Slice Seeding**
 - **Mode M — Module Orchestration** (this document)
@@ -34,7 +34,7 @@ Mode M sits **between Mode P and Mode B** for each module. It is the natural car
 
 Typical flow:
 
-`Mode P (program bootstrap) → Mode A (repo baseline) → Mode M (per module) → Mode B (per slice, entering through Gate B0)`
+`Mode P (program bootstrap + program-wide baseline) → Mode M (per module, incl. module-scope baseline) → Mode B (per slice, entering through Gate B0)`
 
 Mode M is appropriate when:
 - a new module declared in `module-map.md` is being established,
@@ -44,7 +44,6 @@ Mode M is appropriate when:
 
 Mode M is **not** appropriate when:
 - the work is program-level — use Mode P,
-- the work is repository-level baseline — use Mode A,
 - the work is a single bounded slice with module-level prerequisites already met — go straight to Mode B Gate B0,
 - the work is a comment or issue intake — use Mode C.
 
@@ -70,10 +69,10 @@ Mode M inherits the repository principles and adds the following local disciplin
    Mode M never implements product code, never opens implementation lanes, and never claims slice completion.
 
 6. **Module baseline scope is bounded**
-   Mode M reads only the module-relevant subset of `_ar/**`. Full corpus reading is a Mode A activity.
+   Mode M reads only the module-relevant subset of `_ar/**`. Program-wide baseline reading is a Mode P activity.
 
-7. **Reuse, not duplicate, onboarding roles**
-   Gate M1a invokes existing `agents/onboarding/*` roles with module scope. No `agents/modules/Module*Onboarding` duplication.
+7. **Mode M may author module-scope `_ar/` content**
+   Gate M1a authors module-scope canonical refinements; Gate M1b/M2/M3 author module-scope UC, FN, ES, WIRE, COMP, COPY in `_ar/`. Module-scope baseline roles live in `agents/modules/` (M-prefixed variants of the legacy onboarding roles).
 
 ---
 
@@ -107,11 +106,12 @@ Mode M must not become:
 
 Mode M may start only when all of the following are true:
 - `docs/program/module-map.md` exists and declares the target module,
+- `docs/program/architecture-overview.md` exists with program-wide baseline complete (terminology, source authority, conflicts),
+- foundational `_ar/BA/` content from Mode P exists (program-level EN/ARCH/BR seeds),
 - the operator explicitly invokes Mode M for a named module (`Mode M for module:<name>`),
-- (when applicable) `docs/baseline/*` from Mode A exists for the repository,
 - the run can stay bounded to one module.
 
-If these conditions are not met, stop and ask for clarification or route elsewhere (Mode P for missing module declaration, Mode A for missing repo baseline).
+If these conditions are not met, stop and ask for clarification or route elsewhere (Mode P for missing module declaration or program-wide baseline).
 
 ---
 
@@ -119,8 +119,9 @@ If these conditions are not met, stop and ask for clarification or route elsewhe
 
 Typical Mode M inputs:
 - `docs/program/*` artifacts (program context, dependency graph),
+- program-wide `_ar/BA/**` and `_ar/UX/IA/**` (foundational canonical content from Mode P),
 - existing `specs/<module>/*` artifacts (if refresh, not initial),
-- corpus subset `_ar/<module>/**` (if such organization exists),
+- existing module-scope subset of `_ar/**` (filtered via `modules:` frontmatter field),
 - operator intent (initial framing vs refresh vs slice-readiness check vs release readiness).
 
 Optional supporting inputs:
@@ -143,8 +144,11 @@ Read next only as needed:
 - `docs/governance/impact-classes.md`
 - `docs/governance/local-tooling-contract.md` when local tooling is used
 - relevant `docs/program/*` artifacts
+- program-wide `_ar/BA/**` foundational seeds (read selectively per module relevance)
+- `_ar/UX/IA/IA-<project>.md` (project IA — required reading when module has user-facing surfaces)
 - existing `specs/<module>/*` artifacts (when refreshing)
-- relevant role files in `agents/modules/**`, `agents/ux/**`, `agents/onboarding/**` (M1a only), `agents/optional/**` (specialist routing)
+- module-scope subset of `_ar/**` (filter by `modules:` frontmatter)
+- relevant role files in `agents/modules/**`, `agents/ux/**`, `agents/optional/**` (specialist routing)
 - exact layer-specific rules/template files only after canonical layer resolution
 
 Do not broad-scan the repository.
@@ -175,7 +179,7 @@ Do not broad-scan `toolingDocs/` or `toolingTemplates/`.
 **Stop if:**
 - the module is not declared in `module-map.md`,
 - `module-map.md` does not exist (run Mode P first),
-- module-level Mode A baseline is required but missing (`docs/baseline/*`),
+- program-wide baseline (Mode P Gate P1) is missing or incomplete,
 - scope overlaps with an existing module without explicit resolution,
 - operator did not actually invoke for this specific module.
 
@@ -189,31 +193,30 @@ Gate M1 has two sub-gates that must complete sequentially: M1a (baseline) before
 
 #### Gate M1a — Module Baseline
 
-**Purpose:** Establish module-level baseline trust — bounded corpus reading, module terminology, source authority within the module, module-scope conflicts.
+**Purpose:** Establish module-scope baseline trust — module-scope terminology refinements (on top of program-wide glossary from Mode P), module-scope source authority verification, module-scope canonical conflicts. Absorbed from pre-v2.0.0 Mode A module-level scope.
 
-**Owned by:** invoked `agents/onboarding/*` roles with **module scope** (CorpusCurator, TerminologyResolver, ConflictMapper, ArchitectureBaselineMapper). No duplication into `agents/modules/Module*Onboarding`.
+**Owned by:** `ModuleCorpusCurator`, `ModuleTerminologyResolver`, `ModuleConflictMapper` (from `agents/modules/**` — v2.0.0 successors of legacy `agents/onboarding/*` with built-in module scope).
 
-**Required result:** Module baseline artifacts exist; module terminology is stable enough for analytical authoring; module-scope conflicts are surfaced.
+**Required result:** Module-scope baseline refinements exist on top of program-wide baseline; module-scope conflicts are surfaced; module terminology is stable enough for analytical authoring.
 
-**Minimum output artifacts:**
-- `specs/<module>/baseline/authority-map.md` (which `_ar/<module>/**` sources are authoritative for which topic)
-- `specs/<module>/glossary/module-glossary.md` (module-scope terminology — entities, processes, key terms)
-- `specs/<module>/baseline/conflict-register.md` (only when module-scope conflicts exist)
+**Minimum output artifacts (module orchestration tier):**
+- module-scope refinement notes embedded in `specs/<module>/module-brief.md` § Baseline section, OR
+- `specs/<module>/module-brief.md` may delegate baseline summary to dedicated section, with conflicts surfaced as risk entries in `specs/<module>/module-risks.md`.
 
-**Required contents (authority-map):**
-- source-path → topic mapping
-- conflicting sources flagged
-- authority resolution rationale
+**Minimum output artifacts (canonical authored tier — `_ar/`):**
+- module-scope EN/BR/ARCH refinements in `_ar/BA/{EN,BR,ARCH}/` with `modules:` frontmatter listing this module,
+- module-scope conflict register entries in `_ar/BA/{EN,UC,BR}/<doc>.md` via `open_questions:` frontmatter or body sections,
+- `_REGISTRY.md` updates in each touched canonical layer.
 
-**Required contents (module-glossary):**
-- canonical term per concept
-- aliases (with disallowed/ambiguous flags)
-- source basis (which `_ar/<module>/**` file)
+**Required reading:**
+- relevant program-wide `_ar/BA/**` foundational docs (filtered by potential module relevance),
+- `docs/program/architecture-overview.md` § program-wide terminology and source authority sections.
 
 **Stop if:**
-- module-scope `_ar/<module>/**` content cannot be safely read,
+- program-wide baseline (Mode P Gate P1) is incomplete — return to Mode P,
+- module-scope `_ar/` content cannot be safely authored,
 - module-scope conflicts cannot be resolved (block until clarification),
-- terminology is unstable across module sources without resolution path.
+- terminology refinements collide with program-wide canonical without resolution path.
 
 **Hands off to:** M1b
 
@@ -223,18 +226,19 @@ Gate M1 has two sub-gates that must complete sequentially: M1a (baseline) before
 
 **Owned by:** `ModuleFramer` + analytical role calls (EN/BR/ES/ARCH authors from `agents/core/` and `agents/optional/`)
 
-**Required result:** `module-brief.md` complete; central analytical entities and rules drafted; module architecture rámec aligned with `architecture-overview.md`.
+**Required result:** `module-brief.md` complete; central analytical entities and rules drafted in `_ar/BA/`; module architecture rámec aligned with `architecture-overview.md`.
 
 **Minimum output artifacts:**
 - `specs/<module>/module-brief.md` (full sections: purpose, scope, business value, key entities, key invariants, dependencies, non-goals)
-- `specs/<module>/analysis/EN/*` — central entities
-- `specs/<module>/analysis/BR/*` — key cross-entity rules (when relevant)
-- `specs/<module>/analysis/ES/*` — external systems / integrations (when relevant)
-- `specs/<module>/analysis/ARCH/*` — initial architecture rámec (when relevant)
+- `_ar/BA/EN/<EN-id>-<name>.md` — central entities (with `modules:` frontmatter listing this module)
+- `_ar/BA/BR/<BR-id>-<name>.md` — key cross-entity rules (when relevant)
+- `_ar/BA/ES/<ES-id>-<name>.md` — external systems / integrations (when relevant)
+- `_ar/BA/ARCH/<ARCH-id>-<name>.md` — module-scope architecture views (when relevant)
+- `_REGISTRY.md` updates for each touched canonical layer
 
 **Stop if:**
 - module has no clear business purpose,
-- central entities conflict with existing EN in neighboring modules without resolution,
+- central entities conflict with existing EN in `_ar/BA/EN/` (cross-module conflict) without resolution,
 - ARCH rámec conflicts with `docs/program/architecture-overview.md`.
 
 **Hands off to:** M2
@@ -243,50 +247,58 @@ Gate M1 has two sub-gates that must complete sequentially: M1a (baseline) before
 
 ### Gate M2 — Behavior & UX Framing
 
-**Purpose:** Build the user-facing model of the module. IA provides skeleton screen map, wireframes show layout, UC connects UI to deterministic behavior, QUERY/JOB cover read-side and background contracts.
+**Purpose:** Build the user-facing model of the module. Project-level IA (from Mode P Gate P-UX) is consumed and module-scope screens are detailed via wireframes. UC connects UI to deterministic behavior; QUERY/JOB cover read-side and background contracts.
 
-**Owned by:** `IAAuthor`, `WireframeAuthor` (from `agents/ux/`) + analytical role calls (UC, QUERY, JOB, CS authors)
+**Owned by:** `WireframeAuthor` (from `agents/ux/`) + analytical role calls (UC, QUERY, JOB, CS authors)
 
-**Required result:** IA final version; first wireframe pass for key screens; UC coverage for every interactive screen; QUERY/JOB for every non-trivial read/background contract.
+**Required result:** Module-scope wireframes authored; UC coverage for every interactive screen; QUERY/JOB for every non-trivial read/background contract.
 
-**Minimum output artifacts:**
-- `specs/<module>/ux/ia.md` (canonical IA layer)
-- `specs/<module>/ux/wireframes.md` (canonical WIRE layer, screen-level)
-- `specs/<module>/analysis/UC/*` — actor-triggered flows
-- `specs/<module>/analysis/QUERY/*` — read-side semantics (when relevant)
-- `specs/<module>/analysis/JOB/*` — background contracts (when relevant)
-- `specs/<module>/analysis/CS/*` — FE-first scenarios (when relevant)
+**Minimum output artifacts (canonical authored tier — `_ar/`):**
+- `_ar/UX/WIRE/<WIRE-id>-<screen>.md` — per-screen wireframe specs (with `modules:` frontmatter and `realizes_uc:` cross-reference)
+- `_ar/BA/UC/<UC-id>-<name>.md` — actor-triggered flows
+- `_ar/BA/QUERY/<QUERY-id>-<name>.md` — read-side semantics (when relevant)
+- `_ar/BA/JOB/<JOB-id>-<name>.md` — background contracts (when relevant)
+- `_ar/BA/CS/<CS-id>-<name>.md` — FE-first scenarios (when relevant)
+- `_REGISTRY.md` updates for `_ar/UX/WIRE/`, `_ar/BA/UC/`, `_ar/BA/QUERY/`, `_ar/BA/JOB/`, `_ar/BA/CS/`
+
+**Required reading:**
+- `_ar/UX/IA/IA-<project>.md` (project-level IA from Mode P — wireframes must align with IA screen map)
 
 **Stop if:**
-- IA has no link to UC (a screen exists without interaction coverage in UC),
-- wireframe shows element without data or function backing in `analysis/`,
+- IA from Mode P has no entry for screens being wireframed (return to Mode P Gate P-UX),
+- WIRE shows element without data or function backing in `_ar/BA/` (UC, QUERY, EN coverage missing),
 - critical happy path is missing.
 
 **Hands off to:** M3
 
-**Note:** Components and copy (`components.md`, `copy.md`) are authored in M3, not M2. M2 ends at wireframe + behavior framing.
+**Note:** Components and copy are authored in M3, not M2. M2 ends at wireframe + behavior framing.
 
 ---
 
 ### Gate M3 — Module Architecture & Slice Map
 
-**Purpose:** Architect decides technical boundaries, technology choices, delivery sequencing. Slice map decomposes the module into bounded slices respecting slice sizing discipline. Components and copy are finalized at module-level abstraction (per-slice details emerge in Mode B).
+**Purpose:** Architect decides technical boundaries, technology choices, delivery sequencing. Slice map decomposes the module into bounded slices respecting slice sizing discipline. Components and copy are finalized at module-scope abstraction (per-slice details emerge in Mode B).
 
 **Owned by:** architekt + `ModulePlanAuthor` + `SliceMapAuthor` + `ComponentSpecAuthor` + `CopySpecAuthor`
 
-**Required result:** `module-plan.md` approved; `slice-map.md` has all slices declared with explicit prerequisites and dependencies; `components.md` and `copy.md` exist when relevant.
+**Required result:** `module-plan.md` approved; `slice-map.md` has all slices declared with explicit prerequisites and dependencies; module-scope COMP and COPY exist in `_ar/UX/` when relevant.
 
-**Minimum output artifacts:**
+**Minimum output artifacts (module orchestration tier):**
 - `specs/<module>/module-plan.md` (architecture, technologies, delivery sequence, integration points)
 - `specs/<module>/slice-map.md` (list of slices with impact-class estimate, dependencies, sequencing constraints, slice-readiness prerequisites)
 - `specs/<module>/module-risks.md` (known risks, unresolved dependencies, mitigation plan)
-- `specs/<module>/ux/components.md` (canonical COMP layer — when module has reusable components)
-- `specs/<module>/ux/copy.md` (canonical COPY layer — when module has non-trivial text content)
+
+**Minimum output artifacts (canonical authored tier — `_ar/`):**
+- `_ar/UX/COMP/<COMP-id>-<name>.md` — module-scope reusable components (when module has reusable components; cross-module shared components may be authored here with `modules:` listing all consumers)
+- `_ar/UX/COPY/<COPY-id>-<scope>.md` — module-scope copy (labels, validation, microcopy)
+- `_ar/BA/API/<API-id>-<name>.md` — interface contracts (when relevant)
+- `_ar/BA/ACL/<ACL-id>-<name>.md` — access model (when relevant)
+- `_REGISTRY.md` updates for each touched layer
 
 **Required contents (slice-map):**
 - slice-id and slug per slice
 - impact-class estimate (IC0–IC5)
-- explicit prerequisites (analytical, UX, technical) per slice
+- explicit prerequisites (analytical, UX, technical) per slice — references to `_ar/` `doc_id`s
 - dependencies on other slices in the same module
 - dependencies on other modules
 - sequencing constraints (parallel-safe vs sequential)
@@ -346,6 +358,15 @@ Mode M uses a small, explicit set of module-level agents.
 #### `ModuleFramer`
 Owns Gate M0 and M1b. Drives module declaration and framing.
 
+#### `ModuleCorpusCurator`
+Owns Gate M1a corpus subset reading (module-scope). v2.0.0 successor to legacy `agents/onboarding/CorpusCurator` with built-in module scope.
+
+#### `ModuleTerminologyResolver`
+Owns Gate M1a module-scope terminology refinements on top of program-wide glossary. v2.0.0 successor to legacy `agents/onboarding/TerminologyResolver`.
+
+#### `ModuleConflictMapper`
+Owns Gate M1a module-scope canonical conflict mapping. v2.0.0 successor to legacy `agents/onboarding/ConflictMapper`.
+
 #### `ModulePlanAuthor`
 Owns Gate M3 architecture component. Authors `module-plan.md`.
 
@@ -366,34 +387,18 @@ Mode M Gate M2 and M3 invoke UX canonical-layer roles.
 
 ### Required
 
-#### `IAAuthor`
-Owns IA authoring at Gate M2. Drafts `ia.md`.
-
 #### `WireframeAuthor`
-Owns wireframe authoring at Gate M2. Drafts `wireframes.md`.
+Owns wireframe authoring at Gate M2. Drafts `_ar/UX/WIRE/<WIRE-id>-<screen>.md` per screen.
 
 ### Conditional
 
 #### `ComponentSpecAuthor`
-Owns component spec authoring at Gate M3. Drafts `components.md` when module has reusable components.
+Owns component spec authoring at Gate M3. Drafts `_ar/UX/COMP/<COMP-id>-<name>.md` per component.
 
 #### `CopySpecAuthor`
-Owns copy spec authoring at Gate M3. Drafts `copy.md` when module has non-trivial text content.
+Owns copy spec authoring at Gate M3. Drafts `_ar/UX/COPY/<COPY-id>-<scope>.md`.
 
----
-
-## Reuse of `agents/onboarding/**` in Gate M1a
-
-Gate M1a does **not** introduce duplicate "module onboarding" roles. Instead, it invokes existing onboarding roles with **module scope**:
-
-- `CorpusCurator` reads only `_ar/<module>/**` subset
-- `TerminologyResolver` produces `module-glossary.md` (module-scope, not repo-scope)
-- `ConflictMapper` produces module-scope `conflict-register.md`
-- `ArchitectureBaselineMapper` (optional) when module ARCH framing benefits from baseline scan
-
-Invocation pattern: `ModuleFramer` delegates to onboarding roles with explicit `scope: module:<name>` parameter. The roles themselves remain shared between Mode A (repo scope) and Mode M (module scope).
-
-This avoids agent catalog duplication and keeps onboarding logic in one place.
+**Note:** `IAAuthor` is owned by Mode P Gate P-UX (project-level IA). Mode M consumes the project IA but does not author it.
 
 ---
 
@@ -401,23 +406,26 @@ This avoids agent catalog duplication and keeps onboarding logic in one place.
 
 These artifacts are Mode M-specific and do not replace artifacts of other modes.
 
-### Always when declaring module
+### Always when declaring module (module orchestration tier)
 - `specs/<module>/module-brief.md`
-- `specs/<module>/baseline/authority-map.md`
-- `specs/<module>/glossary/module-glossary.md`
 
-### Always when framing complete
+### Always when M1 complete (canonical authored tier)
+- module-scope EN/BR seeds in `_ar/BA/EN/`, `_ar/BA/BR/`
+- module-scope refinements applied to relevant `_REGISTRY.md` files
+
+### Always when framing complete (M3)
 - `specs/<module>/module-plan.md`
 - `specs/<module>/slice-map.md`
 - `specs/<module>/module-risks.md`
-- `specs/<module>/ux/ia.md` (when module has user-facing surfaces)
-- `specs/<module>/ux/wireframes.md` (when module has user-facing surfaces)
+- WIRE coverage in `_ar/UX/WIRE/` (when module has user-facing surfaces)
 
 ### When relevant
-- `specs/<module>/ux/components.md`
-- `specs/<module>/ux/copy.md`
-- `specs/<module>/baseline/conflict-register.md` (when conflicts exist)
-- `specs/<module>/analysis/*` (per analytical layer needed)
+- `_ar/UX/COMP/<COMP-id>-<name>.md` (reusable components)
+- `_ar/UX/COPY/<COPY-id>-<scope>.md` (non-trivial text content)
+- `_ar/BA/UC/`, `_ar/BA/QUERY/`, `_ar/BA/JOB/`, `_ar/BA/ES/`, `_ar/BA/FN/`, `_ar/BA/API/`, `_ar/BA/ACL/`, `_ar/BA/MSG/`, `_ar/BA/CS/` (per analytical layer needed)
+
+### Optional working drafts
+- `specs/<module>/spec/` — module-level workshop notes, research, drafts (not authoritative)
 
 ### Before module release
 - `specs/<module>/module-staging-readiness.md`
@@ -425,7 +433,7 @@ These artifacts are Mode M-specific and do not replace artifacts of other modes.
 Mode M must not create:
 - `spec.md`, `plan.md`, `tasks.md`, `qa-checklist.md`, `runtime-notes.md`, `review.md` (those are Mode B)
 - `comment-intake.md`, `source-amendment.md`, `slice-seed.md` (those are Mode C)
-- `project-brief.md`, `architecture-overview.md`, `module-map.md` (those are Mode P)
+- `project-brief.md`, `architecture-overview.md`, `module-map.md`, `_ar/UX/IA/IA-<project>.md` (those are Mode P)
 
 ---
 
@@ -454,6 +462,8 @@ If protected areas are implicated, Mode M may identify them but must not silentl
 Stop or block when:
 - the target module is not declared in `module-map.md` (run Mode P),
 - `docs/program/*` artifacts are missing or incomplete (run Mode P),
+- program-wide baseline (Mode P Gate P1) is missing or incomplete,
+- project-level IA (`_ar/UX/IA/IA-<project>.md`) is missing when module has user-facing surfaces (run Mode P Gate P-UX),
 - module-scope baseline (Gate M1a) is being skipped or weakly executed,
 - Gate M2 is being started before Gate M1 is complete,
 - Gate M3 is being started before Gate M2 is complete (with declared scope of user-facing surfaces),
@@ -502,13 +512,15 @@ In all these cases, Mode M stops, surfaces the program-level issue, and waits fo
 
 ---
 
-## Handoff back to Mode A
+## Handoff back to Mode P (program-wide baseline refresh)
 
-Mode M must hand back to Mode A when:
-- module-level baseline (M1a) reveals repo-wide baseline problem (terminology unstable across multiple modules, source authority unclear across the corpus),
-- `_ar/**` corpus is materially incomplete for the module and repo-scope refresh is needed.
+Mode M must hand back to Mode P when:
+- module-scope baseline (M1a) reveals **program-wide** baseline problem (terminology unstable across multiple modules, source authority unclear across the program, foundational EN conflicts that affect multiple modules),
+- program-wide `_ar/BA/**` is materially incomplete and refresh is needed.
 
-In these cases, Mode M stops, surfaces the baseline problem, and waits for Mode A repo refresh.
+In these cases, Mode M stops, surfaces the baseline problem, and waits for Mode P re-frame (through Gate P-R or P1 refresh).
+
+(Pre-v2.0.0 frameworks had a separate Mode A handoff for repo baseline refresh. v2.0.0 absorbed Mode A into Mode P.)
 
 ---
 
@@ -525,17 +537,26 @@ Cross-module comment routing detail is governed by `docs/governance/mode-c.md` (
 
 ---
 
-## Relationship to Source Corpus
+## Relationship to Canonical Authored Documentation (`_ar/`)
+
+`_ar/**` in v2.0.0 is canonical authored truth (flat per layer: BA/UX), not raw source corpus.
 
 Mode M reads `_ar/**` only in a bounded way:
-- Gate M1a reads only the module-relevant subset (`_ar/<module>/**` if organized that way, or filtered subset),
-- analytical authoring in M1b and M2 reads only the subset needed for each analytical artifact,
-- broad corpus reading is a Mode A activity, not Mode M.
+- Gate M1a reads program-wide foundational seeds (filtered by potential module relevance via `modules:` frontmatter),
+- analytical authoring in M1b/M2/M3 reads only the docs cross-referenced from authored module content,
+- broad corpus reading is a Mode P activity (program-wide baseline), not Mode M.
 
-Module-scope corpus reading must preserve:
+Mode M writes `_ar/**` for:
+- module-scope EN/BR refinements (M1a/M1b),
+- module-scope UC/QUERY/JOB/ES/FN/API/ACL/MSG/CS authoring (M2/M3),
+- module-scope WIRE/COMP/COPY authoring (M2/M3),
+- `_REGISTRY.md` updates atomically with each new `doc_id`.
+
+Module-scope authoring must preserve:
+- explicit `modules:` frontmatter listing the modules that reference this doc,
+- cross-references to other `_ar/` docs via `doc_id` (no dangling references),
 - inconsistencies and open questions (do not smooth them away),
-- evidence boundaries (do not overclaim from partial sources),
-- module-specific terminology (do not import repo-wide terms without alignment).
+- evidence boundaries (do not overclaim from partial sources).
 
 ---
 

@@ -196,15 +196,18 @@ Examples:
 
 The phase number changes only when the module's Mode M Gate M3 declares a new phase in `slice-map.md`.
 
-Module-level artifacts live directly in `specs/<module>/` (not in `slices/`):
+Module-level orchestrational artifacts live directly in `specs/<module>/` (not in `slices/`):
 - `specs/<module>/module-brief.md`
 - `specs/<module>/module-plan.md`
 - `specs/<module>/slice-map.md`
 - `specs/<module>/module-risks.md`
-- `specs/<module>/baseline/`
-- `specs/<module>/glossary/`
-- `specs/<module>/analysis/`
-- `specs/<module>/ux/`
+- `specs/<module>/module-staging-readiness.md` (before module release)
+
+Canonical authored content (analytical + UX) lives in `_ar/`, not in `specs/<module>/`:
+- `_ar/BA/{EN,UC,BR,ARCH,FN,ES,JOB,QUERY,ACL,API,CS,MSG}/` — analytical canonical layer
+- `_ar/UX/{IA,WIRE,COMP,COPY}/` — UX canonical layer
+- each layer has `_REGISTRY.md` tracking reserved `doc_ids`
+- each doc has `modules:` frontmatter declaring which modules reference it
 
 Existing spec folders created before this convention are not renamed.
 
@@ -370,7 +373,7 @@ Slices not declared in `specs/<module>/slice-map.md` may not enter Mode B. If a 
 
 ### 8c.3 No Gate M1a skip on fresh module
 
-Mode M Gate M1a (module baseline) is mandatory for new modules. Even if repo-level baseline (`docs/baseline/*`) is strong, module-scope terminology and authority must be established.
+Mode M Gate M1a (module-scope baseline) is mandatory for new modules. Even if program-wide baseline (Mode P Gate P1) is strong, module-scope terminology refinements and source authority must be established at module level.
 
 ### 8c.4 No silent contract change between modules
 
@@ -383,6 +386,34 @@ When module A exposes contract to module B, contract changes in A's `module-plan
 ### 8c.6 No mixed-tier amendment
 
 A single Mode M run may amend module-level artifacts. It may not silently amend program-level (Mode P territory) or slice-level (Mode B territory) artifacts.
+
+---
+
+## 8d. Canonical authored documentation (`_ar/`) guardrails
+
+### 8d.1 No undeclared `_ar/` change in Mode B
+
+Mode B may only author or amend `_ar/**` docs declared in slice manifest (`touches:` frontmatter block in `spec.md`). Any other `_ar/` change within a slice is a scope violation and must be blocked at review.
+
+### 8d.2 `_REGISTRY.md` atomicity
+
+A new `doc_id` in any canonical layer requires `_REGISTRY.md` update in the same commit. A `doc_id` without registry entry, or a registry entry without doc, is malformed and blocks merge.
+
+### 8d.3 No dangling cross-references
+
+Cross-references between `_ar/` docs (e.g. `references: [UC0001, EN0014]`) must resolve to existing doc_ids at slice DoD time. Dangling references block slice DoD.
+
+### 8d.4 `modules:` frontmatter accuracy
+
+Each `_ar/` doc's `modules:` frontmatter must reflect the modules that currently reference the doc. When a slice in module X starts referencing an `_ar/` doc that doesn't list X, the slice must update `modules:` as part of its manifest.
+
+### 8d.5 No first-layer-doc authoring in Mode B
+
+Introducing the first doc in a canonical layer for a module (e.g. first ACL doc in a module that had no ACL coverage) is Mode M Gate M1a territory. Mode B may add subsequent docs in an established layer but may not establish a new layer presence for the module.
+
+### 8d.6 No Mode P authoring of module-scope canonical content
+
+Mode P authors program-wide foundational docs only (project-level IA, foundational EN/ARCH/BR shared by all modules). Module-scope UC/FN/ES/WIRE/COMP/COPY refinements are Mode M territory. Mode P may not silently produce module-scope canonical content.
 
 ---
 

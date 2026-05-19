@@ -11,29 +11,29 @@ It exists to:
 - declare cross-module dependencies and integration boundaries,
 - and produce the program-level artifacts that all subsequent modes depend on.
 
-Mode P is **not** a repository onboarding mode (that is Mode A).
 Mode P is **not** a module orchestration mode (that is Mode M).
 Mode P is **not** an implementation mode.
 Mode P is **not** a comment intake mode (that is Mode C).
 Mode P is **not** a continuous re-planning mode.
 
+In v2.0.0 Mode P absorbs the **program-wide baseline duties** that pre-v2.0.0 Mode A performed (program-level terminology, source authority, repo-wide canonical conflicts). Mode A has been eliminated.
+
 ---
 
 ## Position in the Overall Operating Model
 
-The repository has five operating modes:
+The repository has four operating modes (Mode A was eliminated in v2.0.0):
 
 - **Mode P — Program Bootstrap** (this document)
-- **Mode A — Repository Onboarding**
 - **Mode B — Feature Delivery** (default)
 - **Mode C — Comment Intake / Documentation Amendment / Slice Seeding**
 - **Mode M — Module Orchestration**
 
-Mode P sits **at the start of project lifecycle**, before any module-level or repository-level work begins.
+Mode P sits **at the start of project lifecycle**, before any module-level or slice-level work begins.
 
 Typical flow:
 
-`new project request → Mode P bootstrap → Mode A repo onboarding → per-module Mode M → per-slice Mode B`
+`new project request → Mode P bootstrap (incl. program baseline + project IA) → per-module Mode M → per-slice Mode B`
 
 Mode P is appropriate when:
 - a new project is being established within this framework,
@@ -83,10 +83,11 @@ Every Mode P run must end in exactly one explicit outcome:
 Mode P must not become:
 - a module-level planning mode,
 - a slice-level implementation mode,
-- an onboarding replacement (Mode A still owns repo baseline),
 - a way to bypass canonical layer rules,
 - a continuous re-planning loop,
-- a place to author business rules, use cases, or entity definitions.
+- a place to author module-scope business rules, use cases, or entity definitions (those are Mode M).
+
+Mode P **may** author foundational program-wide canonical docs in `_ar/` (project-level IA, foundational EN/ARCH/BR shared across all modules). Module-scope canonical content remains Mode M territory.
 
 ---
 
@@ -131,10 +132,11 @@ Read next only as needed:
 - `docs/governance/impact-classes.md`
 - (re-frame variant) existing `docs/program/*` artifacts
 - (re-frame variant) existing `specs/<module>/module-brief.md` for each affected module
+- (re-frame variant) existing program-wide `_ar/BA/**` and `_ar/UX/IA/**` (foundational docs may need amendment)
 - relevant role files in `agents/program/**`
 
 Do not broad-scan the repository.
-Do not read `_ar/**` corpus (that belongs to Mode A and Mode M).
+Mode P writes program-wide foundational docs into `_ar/` (P1 baseline, P-UX project IA). Module-scope `_ar/` content is Mode M territory — do not author it from Mode P.
 
 ---
 
@@ -196,28 +198,67 @@ Do not read `_ar/**` corpus (that belongs to Mode A and Mode M).
 
 ---
 
-### Gate P1 — Architecture Overview
+### Gate P1 — Architecture Overview & Program-Wide Baseline
 
-**Purpose:** Establish program-level architectural assumptions, external systems, integration boundaries, and non-functional constraints.
+**Purpose:** Establish program-level architectural assumptions, external systems, integration boundaries, non-functional constraints — **and** program-wide baseline (terminology, source authority, foundational canonical seeds), absorbed from pre-v2.0.0 Mode A.
 
-**Owned by:** architekt + `ArchitectureOverviewAuthor`
+**Owned by:** architekt + `ArchitectureOverviewAuthor` + `ProgramCorpusCurator` + `ProgramTerminologyResolver` + `ProgramConflictMapper`
 
-**Required result:** `architecture-overview.md` records the program-level architectural skeleton.
+**Required result:** `architecture-overview.md` records the program-level architectural skeleton, and foundational program-wide canonical docs exist in `_ar/`.
 
-**Minimum output artifact:** `docs/program/architecture-overview.md`
+**Minimum output artifacts:**
+- `docs/program/architecture-overview.md`
+- `_ar/BA/EN/` — foundational entities shared by all modules (e.g. User, Organization, if applicable)
+- `_ar/BA/ARCH/` — program-wide ARCH docs (system view, deployment topology)
+- `_ar/BA/BR/` — program-wide business rules shared by all modules
+- `_ar/BA/{EN,UC,BR,ARCH,FN,ES,JOB,QUERY,ACL,API,CS,MSG}/_REGISTRY.md` — registry skeletons initialized
+- `_ar/UX/{IA,WIRE,COMP,COPY}/_REGISTRY.md` — registry skeletons initialized
 
-**Required contents:**
+**Required contents (architecture-overview.md):**
 - architectural style (monolith, modular monolith, service-oriented, …)
 - external systems and integration boundaries
 - shared infrastructure assumptions (persistence, messaging, identity, …)
 - non-functional requirements (performance, availability, security posture)
 - architectural decisions log (ADR-style entries for irreversible choices)
 - known architectural risks
+- program-wide source authority classification (where authoritative knowledge lives — code, docs, external systems)
+- program-wide terminology baseline (canonical glossary seed, conflicts that must be resolved before modules begin)
 
 **Stop if:**
 - architectural style is undecided,
 - external system boundaries are vague,
-- non-functional requirements are unspecified for protected-area-sensitive systems.
+- non-functional requirements are unspecified for protected-area-sensitive systems,
+- program-wide terminology has unresolved conflicts that would invalidate downstream module baselines,
+- foundational EN entities have unresolved authority disputes.
+
+**Hands off to:** P-UX (if program has user-facing surfaces) or P2 (otherwise).
+
+---
+
+### Gate P-UX — Project-Level Information Architecture (optional)
+
+**Purpose:** Author project-level Information Architecture before module decomposition. IA may influence module boundaries, so it precedes P2.
+
+**Trigger:** Program has user-facing surfaces. Skip when project is headless / API-only.
+
+**Owned by:** UX lead + `IAAuthor` (from `agents/ux/**`)
+
+**Required result:** Project-level IA exists in `_ar/UX/IA/`.
+
+**Minimum output artifact:** `_ar/UX/IA/IA-<project-slug>.md`
+
+**Required contents:**
+- top-level navigation across the entire product
+- screen map (high-level — module-scope screen detail comes in Mode M)
+- entry points (anonymous, post-auth, deep links)
+- cross-module flows (onboarding, upgrade, recovery)
+- information hierarchy (account / workspace / domain levels)
+- preliminary module boundaries on the UX layer (which screens likely belong to which module)
+- open IA questions
+
+**Stop if:**
+- project IA cannot be authored without first deciding more architecture (return to P1),
+- IA implies module boundaries materially different from preliminary breakdown (escalate to P2 with adjusted decomposition).
 
 **Hands off to:** P2
 
@@ -286,12 +327,24 @@ Mode P uses a small, explicit set of program-level agents.
 Owns Gate P-R and Gate P0. Drives the operator through program declaration.
 
 #### `ArchitectureOverviewAuthor`
-Owns Gate P1. Drafts the program-level architectural skeleton.
+Owns Gate P1 architecture half. Drafts the program-level architectural skeleton.
+
+#### `ProgramCorpusCurator`
+Owns Gate P1 baseline half — source authority classification, corpus shape verification (absorbed from pre-v2.0.0 Mode A `agents/onboarding/CorpusCurator`).
+
+#### `ProgramTerminologyResolver`
+Owns Gate P1 baseline half — program-wide terminology stabilization (absorbed from pre-v2.0.0 Mode A `agents/onboarding/TerminologyResolver`).
+
+#### `ProgramConflictMapper`
+Owns Gate P1 baseline half — program-wide canonical conflict mapping (absorbed from pre-v2.0.0 Mode A `agents/onboarding/ConflictMapper`).
 
 #### `ModuleMapAuthor`
 Owns Gate P2. Drafts the module decomposition with dependencies and integration boundaries.
 
 ### Optional
+
+#### `IAAuthor` (from `agents/ux/**`)
+Owns Gate P-UX. Used when the project has user-facing surfaces.
 
 #### `ImplementationStreamsAuthor`
 Owns Gate P3. Used only when parallel delivery across modules is non-trivial.
@@ -306,6 +359,16 @@ These artifacts are Mode P-specific and do not replace artifacts of other modes.
 - `docs/program/project-brief.md`
 - `docs/program/architecture-overview.md`
 - `docs/program/module-map.md`
+- `_ar/BA/{EN,UC,BR,ARCH,FN,ES,JOB,QUERY,ACL,API,CS,MSG}/_REGISTRY.md` — 12 registry skeletons (initialized empty)
+- `_ar/UX/{IA,WIRE,COMP,COPY}/_REGISTRY.md` — 4 registry skeletons (initialized empty)
+
+### When program-wide foundational canonical content is identified
+- `_ar/BA/EN/<EN-id>-<name>.md` — foundational entities (e.g. EN0001-User if User is program-wide)
+- `_ar/BA/ARCH/<ARCH-id>-<name>.md` — program-wide architecture views
+- `_ar/BA/BR/<BR-id>-<name>.md` — program-wide business rules
+
+### When program has user-facing surfaces (Gate P-UX)
+- `_ar/UX/IA/IA-<project-slug>.md`
 
 ### When parallel delivery is non-trivial
 - `docs/program/implementation-streams.md`
@@ -313,10 +376,14 @@ These artifacts are Mode P-specific and do not replace artifacts of other modes.
 ### When re-running on existing program
 - `docs/program/re-frame-authorization.md`
 
+### Optional working drafts
+- `docs/program/spec/` — program-level workshop notes, research, drafts (not authoritative)
+
 Mode P must not create:
 - `module-brief.md`, `module-plan.md`, `slice-map.md` (those are Mode M)
 - `spec.md`, `plan.md`, `tasks.md` (those are Mode B)
 - `source-amendment.md`, `comment-intake.md` (those are Mode C)
+- module-scope `_ar/` content (UC, FN, ES, WIRE, COMP, COPY refinements for individual modules — those are Mode M)
 
 ---
 
@@ -335,12 +402,15 @@ Blocked is a valid Mode P state.
 
 ---
 
-## Handoff to Mode A and Mode M
+## Handoff to Mode M
 
 After successful Mode P bootstrap:
 
-1. **Mode A — repository onboarding** runs once (if `_ar/**` exists and repo baseline trust is required).
-2. **Mode M — per-module orchestration** runs once per module declared in `module-map.md`, in the sequence implied by the dependency graph or explicit `entry sequence` in `module-map.md`.
+**Mode M — per-module orchestration** runs once per module declared in `module-map.md`, in the sequence implied by the dependency graph or explicit `entry sequence` in `module-map.md`.
+
+Mode M Gate M1a handles module-scope baseline (terminology refinements, source authority verification, module-scope conflicts) — building on the program-wide baseline that Mode P Gate P1 already established.
+
+(Prior versions of this framework had a separate Mode A step here for repository onboarding. v2.0.0 absorbed Mode A into Mode P Gate P1 — see [§5.1 of constitution.md](../../.specify/memory/constitution.md).)
 
 Mode P never creates branches.
 Mode P never opens implementation lanes.
@@ -374,7 +444,7 @@ A good Mode P result is:
 - explicit about module scope and dependencies,
 - honest about architectural risks and constraints,
 - traceable through Gate P-R for any re-frame,
-- easy to hand off to Mode A and Mode M.
+- easy to hand off to per-module Mode M.
 
 A bad Mode P result is:
 - vague program scope,

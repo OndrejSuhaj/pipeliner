@@ -35,9 +35,10 @@ Priority order:
 8. `mode-p.md` when Mode P is active
 9. `local-tooling-contract.md` when local tooling is used
 10. program-level artifacts (`docs/program/*`)
-11. module-level artifacts (`specs/<module>/*`)
-12. slice-level feature artifacts
-13. agent instructions
+11. canonical authored documentation (`_ar/**`)
+12. module-level orchestration (`specs/<module>/{module-brief,module-plan,slice-map,…}.md`)
+13. slice-level feature artifacts
+14. agent instructions
 
 If this document conflicts with a higher artifact, the higher artifact wins.
 

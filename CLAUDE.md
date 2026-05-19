@@ -31,9 +31,10 @@ Follow this order:
 8. `docs/governance/mode-p.md` when Mode P is active
 9. `docs/governance/local-tooling-contract.md` when local tooling is used
 10. program-level artifacts (`docs/program/*`)
-11. module-level artifacts (`specs/<module>/{module-brief,module-plan,slice-map,…}.md`)
-12. slice-level feature artifacts (`specs/<module>/slices/<slice>/*`)
-13. `agents/**`
+11. canonical authored documentation (`_ar/**`)
+12. module-level orchestration (`specs/<module>/{module-brief,module-plan,slice-map,module-risks,…}.md`)
+13. slice-level artifacts (`specs/<module>/slices/<slice>/*`)
+14. `agents/**`
 
 If artifacts conflict, the higher artifact wins.
 Do not silently reinterpret or weaken a higher artifact.
@@ -57,18 +58,13 @@ Mode P runs once per project. Re-runs require Gate P-R authorization before any 
 
 Mode P does not author module-level or slice-level artifacts.
 
-### Mode A — Repository Onboarding
+### Mode A — Deprecated (v2.0.0)
 
-Use when baseline trust is weak, source authority is unclear, terminology is unstable, or corpus conflict blocks safe feature work.
+Mode A is eliminated. Its responsibilities split into:
+- **Program-wide baseline** (terminology, source authority, repo-wide canonical conflicts) → Mode P Gate P1
+- **Module-scope baseline** (module-scope terminology, source authority, conflicts within a module) → Mode M Gate M1a
 
-Purpose:
-- establish trustworthy baseline knowledge,
-- classify source authority,
-- identify material conflicts,
-- stabilize terminology,
-- produce baseline artifacts needed for later delivery work.
-
-Do not reopen onboarding during ordinary feature delivery unless a real baseline problem exists.
+Pre-v2.0.0 artifacts authored under Mode A remain valid. No new Mode A invocations are permitted in v2.0.0+.
 
 ### Mode B — Feature Delivery (Default)
 
@@ -110,14 +106,14 @@ Use when a new module declared in `module-map.md` is being established, when a m
 
 Purpose:
 - declare the module as a bounded delivery stream,
-- establish module-level baseline trust (terminology, source authority, module-scope conflicts) — Gate M1a reuses `agents/onboarding/*` roles with module scope,
+- establish module-scope baseline trust (terminology, source authority, module-scope conflicts) at Gate M1a — owned by `agents/modules/Module{Corpus,Terminology,Conflict}*` roles (absorbed from pre-v2.0.0 `agents/onboarding/*`),
 - frame analytical, UX, and architectural inputs into a coherent module-level plan,
 - author a slice map enabling safe parallel Mode B delivery,
 - verify module-release readiness.
 
 Mode M sits between Mode P and Mode B for each module. It does not implement product code. Each downstream slice continues through Mode B, entering through Gate B0 (slice-readiness check).
 
-Mode M reads only the module-relevant subset of `_ar/**`. Full corpus reading is a Mode A activity.
+Mode M reads only the module-relevant subset of `_ar/**` (filtered by `modules:` frontmatter). Program-wide corpus reading is a Mode P Gate P1 activity.
 
 ---
 
@@ -137,11 +133,11 @@ Read next only as needed:
 - `docs/governance/mode-m.md` when Mode M is active
 - `docs/governance/mode-p.md` when Mode P is active
 - `docs/governance/local-tooling-contract.md` when local tooling is relevant
-- relevant `docs/program/*` for module-level work
-- relevant `specs/<module>/module-brief.md`, `module-plan.md`, `slice-map.md` for slice-level work
+- relevant `docs/program/*` for program or module-level work
+- relevant `_ar/BA/**` and `_ar/UX/**` canonical authored docs (filter by slice manifest `touches:` or module `modules:` frontmatter; never broad-scan)
+- relevant `specs/<module>/module-brief.md`, `module-plan.md`, `slice-map.md`, `module-risks.md` for module / slice-level work
 - relevant files in `specs/<module>/slices/<slice>/`
-- relevant baseline docs in `docs/baseline/` (repo scope) or `specs/<module>/baseline/` (module scope)
-- relevant role files in `agents/**` (`agents/program/**`, `agents/modules/**`, `agents/ux/**`, plus existing `agents/core/**`, `agents/onboarding/**`, `agents/issues/**`, `agents/optional/**`)
+- relevant role files in `agents/**` (`agents/program/**`, `agents/modules/**`, `agents/ux/**`, plus existing `agents/core/**`, `agents/issues/**`, `agents/optional/**`)
 
 Do not scan the repo broadly by default.
 Do not replace missing knowledge with guesses.
@@ -221,10 +217,10 @@ Re-runs require Gate P-R before any existing program artifact may be amended.
 Follow this sequence:
 
 1. Gate M0 — module declaration against `module-map.md`
-2. Gate M1a — module baseline (reuse `agents/onboarding/*` with module scope)
-3. Gate M1b — module framing (`module-brief.md` + initial analysis: EN, BR, ES, ARCH)
-4. Gate M2 — behavior & UX framing (`ia.md`, `wireframes.md`, UC, QUERY, JOB, CS)
-5. Gate M3 — module architecture and slice map (`module-plan.md`, `slice-map.md`, `module-risks.md`, `components.md`, `copy.md`)
+2. Gate M1a — module-scope baseline (owned by `agents/modules/Module{Corpus,Terminology,Conflict}*` roles)
+3. Gate M1b — module framing (`module-brief.md` + initial canonical seeds: EN, BR, ES, ARCH in `_ar/BA/`)
+4. Gate M2 — behavior & UX framing (WIRE in `_ar/UX/WIRE/`, UC/QUERY/JOB/CS in `_ar/BA/`)
+5. Gate M3 — module architecture and slice map (`module-plan.md`, `slice-map.md`, `module-risks.md`, plus COMP/COPY in `_ar/UX/`, API/ACL in `_ar/BA/` when relevant)
 6. Gate M4 — module release readiness (`module-staging-readiness.md`) — only when all slices are merged or deferred
 
 Mode M never implements product code.
@@ -238,20 +234,21 @@ Follow this sequence:
 1. Gate B0 — slice-readiness check (verify §17.3 prerequisites from `slice-map.md`)
 2. classify the request and confirm Mode B
 3. run constitution check
-4. create or refine `spec.md`
+4. create or refine `spec.md` (must include slice manifest `touches:` block in frontmatter listing all `_ar/` docs the slice creates, updates, or references)
 5. resolve or record material ambiguity
 6. create or refine `plan.md` when required
 7. trigger specialist analysis when required
 8. create or refine `tasks.md`
-9. implement only approved scoped tasks
+9. implement only approved scoped tasks (may author/amend `_ar/` docs declared in slice manifest; `_REGISTRY.md` updates atomic with new doc_ids)
 10. create or refine `qa-checklist.md`
 11. create or refine `runtime-notes.md`
-12. produce `review.md` with explicit verdict
+12. produce `review.md` with explicit verdict (must address each declared `_ar/` change)
 
 Gate B0 is a hard prerequisite. If slice-readiness fails, the slice returns to Mode M (M1 / M2 / M3 depending on missing prerequisite).
 Implementation without specification is forbidden.
 Implementation without plan is forbidden when plan is required.
 Implementation without required specialist artifacts is forbidden.
+`_ar/` changes outside slice manifest declaration are scope violations and must be blocked at review.
 
 ### Mode C — Comment Intake / Slice Seeding Workflow
 
@@ -279,17 +276,34 @@ Mode C must not:
 
 ---
 
-## Source Corpus
+## Canonical Authored Documentation (`_ar/**`)
 
-`_ar/**` is the source corpus for repository onboarding and evidence-backed feature work.
+`_ar/**` is the canonical authored documentation library for the project. It is the **single source of truth** for analytical and UX canonical content.
 
-Rules:
-- Treat `_ar/**` as input documentation, not as derived governance output.
-- Use full-corpus reading only in Mode A or baseline repair.
-- In normal feature delivery, read only the relevant subset of `_ar/**`.
-- In Mode C, read only the subset needed to understand the selected issue/comment and the affected upstream artifact.
-- Do not reopen corpus-wide analysis for ordinary feature work unless baseline trust, source authority, or terminology stability is in doubt.
-- `docs/baseline/*` are derived artifacts built from `_ar/**`, not replacements for it.
+Structure:
+- `_ar/BA/<layer>/` — business analysis canonical layer (EN, UC, BR, ARCH, FN, ES, JOB, QUERY, ACL, API, CS, MSG)
+- `_ar/UX/<layer>/` — user experience canonical layer (IA, WIRE, COMP, COPY)
+- each layer folder has `_REGISTRY.md` tracking reserved `doc_ids`, status (`reserved` | `draft` | `canonical` | `deprecated`), and owning mode
+
+Each canonical doc has frontmatter declaring:
+- `doc_id` (e.g. `EN0001`, `WIRE0014`)
+- `canonical_layer` (e.g. `EN`, `WIRE`)
+- `status`
+- `modules:` (list of module slugs that reference this doc)
+- `references:` (list of cross-layer `doc_id`s this doc points to)
+
+Authority to author:
+- **Mode P** (Gate P1): program-wide foundational docs (project-level IA in `_ar/UX/IA/`, foundational EN/ARCH/BR shared by all modules)
+- **Mode M** (Gate M1a / M1b / M2 / M3): module-scope docs (UC, FN, ES, WIRE, COMP, COPY refinements for the module)
+- **Mode B**: docs declared in slice manifest (`touches:` block in `spec.md`) — may create new `doc_ids` and amend existing docs, **may not** introduce the first doc in a canonical layer for a module
+- **Mode C**: amendments via `source-amendment.md` artifact
+
+Reading:
+- Filter by slice manifest `touches:` or module `modules:` frontmatter
+- Never broad-scan `_ar/**` outside Mode P Gate P1 (program-wide baseline)
+- Cross-references between docs use `doc_id` (e.g. `references: [UC0001, EN0014]`) — must resolve to existing docs (no dangling refs)
+
+`docs/baseline/` from pre-v2.0.0 is removed — `_ar/**` IS the canonical authored truth, no derived baseline layer is needed.
 
 ---
 
@@ -430,12 +444,14 @@ Stop or block the affected lane when:
 ### Program-level hard stops
 
 - Mode M cannot start without `docs/program/module-map.md` containing the target module
+- Mode M cannot start without Mode P Gate P1 baseline complete (program-wide terminology, source authority, foundational `_ar/BA/` seeds)
 - Mode P re-run cannot proceed without Gate P-R authorization when existing program artifacts will be amended
 
 ### Module-level hard stops
 
-- Mode M Gate M1b cannot start without Gate M1a completion (baseline before framing)
+- Mode M Gate M1b cannot start without Gate M1a completion (module-scope baseline before framing)
 - Mode M Gate M2 cannot start without Gate M1 completion
+- Mode M Gate M2 cannot start without project-level IA (`_ar/UX/IA/IA-<project>.md`) when module has user-facing surfaces
 - Mode M Gate M3 cannot start without Gate M2 completion (when module has user-facing surfaces)
 - Mode M Gate M4 cannot start with any open slice work in `slice-map.md`
 - Slice map violating slice sizing discipline without split decomposition
@@ -443,6 +459,10 @@ Stop or block the affected lane when:
 ### Slice-level hard stops
 
 - Mode B Gate 2 (constitution check) cannot start without Gate B0 pass
+- Mode B implementation cannot proceed without slice manifest (`touches:` block in spec.md)
+- `_ar/` change without declaration in slice manifest, module-plan, or source-amendment is a scope violation and must be blocked at review
+- New `_ar/` `doc_id` without `_REGISTRY.md` update in same commit is malformed and blocks merge
+- Dangling cross-references between `_ar/` docs (referenced `doc_id` does not exist) block slice DoD
 - No branch may be created before the slice has passed Gate B0
 - No commit may be made without the gate sequence preceding it
 
@@ -457,34 +477,37 @@ Do not continue through a blocked dependency as if it were resolved.
 
 ### For program initialization (Mode P), keep visible:
 - `docs/program/project-brief.md`
-- `docs/program/architecture-overview.md`
+- `docs/program/architecture-overview.md` (includes program-wide baseline section — terminology, source authority, conflicts)
 - `docs/program/module-map.md`
 - `docs/program/implementation-streams.md` when parallel delivery is non-trivial
 - `docs/program/re-frame-authorization.md` when Mode P is re-run
+- `_ar/BA/{EN,UC,BR,ARCH,FN,ES,JOB,QUERY,ACL,API,CS,MSG}/_REGISTRY.md` — registry skeletons (initialized empty)
+- `_ar/UX/{IA,WIRE,COMP,COPY}/_REGISTRY.md` — registry skeletons (initialized empty)
+- foundational `_ar/BA/EN/`, `_ar/BA/ARCH/`, `_ar/BA/BR/` content when program-wide entities/architecture/rules are identified
+- `_ar/UX/IA/IA-<project>.md` when program has user-facing surfaces (Gate P-UX)
+- `docs/program/spec/` — optional program-level working drafts (not authoritative)
 
 ### For module orchestration (Mode M), keep visible:
 - `specs/<module>/module-brief.md`
 - `specs/<module>/module-plan.md`
 - `specs/<module>/slice-map.md`
 - `specs/<module>/module-risks.md`
-- `specs/<module>/baseline/authority-map.md`
-- `specs/<module>/glossary/module-glossary.md`
 - `specs/<module>/module-staging-readiness.md` before module release
+- `specs/<module>/spec/` — optional module-level working drafts (not authoritative)
 
-When the module has user-facing surfaces, also keep visible:
-- `specs/<module>/ux/ia.md`
-- `specs/<module>/ux/wireframes.md`
-- `specs/<module>/ux/components.md` when reusable components exist
-- `specs/<module>/ux/copy.md` when non-trivial text content exists
+Canonical authored content lives in `_ar/`, not `specs/<module>/`:
+- module-scope `_ar/BA/{EN,UC,BR,ARCH,FN,ES,JOB,QUERY,ACL,API,CS,MSG}/` with `modules:` frontmatter
+- module-scope `_ar/UX/{WIRE,COMP,COPY}/` with `modules:` frontmatter
 
 ### For normal feature delivery (Mode B), keep visible:
-- `spec.md`
+- `spec.md` (must include slice manifest `touches:` block in frontmatter)
 - `plan.md` when required
 - `tasks.md`
 - `handoff.md` — compact (≤ 30 lines) summary that the main session reads in place of the full spec/plan/tasks; authored by the spec-creator subagent (see § Subagent Policy → Spec creation)
 - `qa-checklist.md`
 - `runtime-notes.md`
-- `review.md`
+- `review.md` (must address each `_ar/` change declared in slice manifest)
+- `spec/` — optional per-slice working drafts subfolder (not authoritative)
 
 Add when triggered:
 - `open-questions.md`
@@ -616,10 +639,19 @@ Keep in `CLAUDE.md`:
 - shared vocabulary
 
 Keep in `agents/core/**`:
-- core delivery roles for Mode B
+- core delivery roles for Mode B (cross-mode reusable)
 
-Keep in `agents/onboarding/**`:
-- Mode A onboarding roles
+Keep in `agents/program/**`:
+- Mode P program bootstrap and Gate P1 program-wide baseline roles (ProgramBootstrapper, ArchitectureOverviewAuthor, ModuleMapAuthor, ImplementationStreamsAuthor, ProgramCorpusCurator, ProgramTerminologyResolver, ProgramConflictMapper)
+
+Keep in `agents/modules/**`:
+- Mode M module orchestration and Gate M1a module-scope baseline roles (ModuleFramer, ModulePlanAuthor, SliceMapAuthor, ModuleStagingVerifier, ModuleRiskAuditor, ModuleCorpusCurator, ModuleTerminologyResolver, ModuleConflictMapper)
+
+Keep in `agents/ux/**`:
+- UX canonical-layer roles (IAAuthor for Mode P Gate P-UX; WireframeAuthor, ComponentSpecAuthor, CopySpecAuthor for Mode M Gate M2/M3)
+
+Keep in `agents/onboarding/**` (deprecated v2.0.0):
+- legacy roles from pre-v2.0.0 Mode A; superseded by agents/program/ and agents/modules/ Module/Program-prefixed variants. Folder retained until Batch 5 cleanup.
 
 Keep in `agents/issues/**`:
 - Mode C roles for comment intake, canonical layer resolution, documentation amendment, and slice seeding
@@ -660,7 +692,7 @@ When starting a new project (or re-framing through Gate P-R), spawn the `program
 
 Use `description: "Program Bootstrap: {project-id}"`.
 
-The program-bootstrap subagent reads `docs/governance/mode-p.md` from disk in its own isolated context and drives Gates P0–P3 (and P-R when applicable).
+The program-bootstrap subagent reads `docs/governance/mode-p.md` from disk in its own isolated context and drives Gates P-R / P0 / P1 (program-wide baseline absorbed from pre-v2.0.0 Mode A) / P-UX (project-level IA) / P2 / P3.
 
 ### Module orchestration
 
@@ -670,7 +702,7 @@ When starting a new module or refreshing module framing, spawn the `module-orche
 
 Use `description: "Module Orchestrator: {module-id}"`.
 
-The module-orchestrator produces `module-brief.md`, `module-plan.md`, `slice-map.md`, `module-risks.md`, and invokes existing onboarding roles (with module scope) for Gate M1a baseline work. UX artifact authoring (ia, wireframes, components, copy) uses dedicated UX subagents in `agents/ux/**` invoked separately.
+The module-orchestrator produces `module-brief.md`, `module-plan.md`, `slice-map.md`, `module-risks.md`, and authors module-scope canonical content in `_ar/BA/**` and `_ar/UX/**`. Gate M1a module-scope baseline uses `ModuleCorpusCurator`, `ModuleTerminologyResolver`, `ModuleConflictMapper` from `agents/modules/`. UX artifact authoring (wireframes, components, copy) uses dedicated UX subagents in `agents/ux/**` invoked separately. Project-level IA is consumed from `_ar/UX/IA/IA-<project>.md` (authored by Mode P Gate P-UX, not Mode M).
 
 ### Slice-readiness verification
 
