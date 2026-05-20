@@ -1,5 +1,7 @@
 # Query / Report Documentation Rules (QUERY)
 
+**See also:** [cross-layer-discipline.md](cross-layer-discipline.md) — shared discipline for all `_ar/**` canonical docs.
+
 ## Purpose
 
 QUERY documents define read-side specifications.

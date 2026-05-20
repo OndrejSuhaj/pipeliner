@@ -1,5 +1,7 @@
 # Business Rule Documentation Rules (BR)
 
+**See also:** [cross-layer-discipline.md](cross-layer-discipline.md) — shared discipline for all `_ar/**` canonical docs.
+
 ## Purpose
 
 BR documents define rules that constrain system behavior across entities or use cases.

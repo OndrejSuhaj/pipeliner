@@ -1,5 +1,7 @@
 # Copy Documentation Rules (COPY)
 
+**See also:** [cross-layer-discipline.md](cross-layer-discipline.md) — shared discipline for all `_ar/**` canonical docs.
+
 ## Purpose
 
 COPY documents define user-facing text content: labels, helper texts, empty states, loading texts, error/validation messages, CTAs, and microcopy conventions.

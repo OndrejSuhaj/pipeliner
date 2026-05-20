@@ -1,5 +1,7 @@
 # API Contract Documentation Rules (API)
 
+**See also:** [cross-layer-discipline.md](cross-layer-discipline.md) — shared discipline for all `_ar/**` canonical docs.
+
 ## Purpose
 
 API documents define stable system-facing contracts.

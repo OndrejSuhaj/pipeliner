@@ -1,5 +1,7 @@
 # Access Control Documentation Rules (ACL)
 
+**See also:** [cross-layer-discipline.md](cross-layer-discipline.md) — shared discipline for all `_ar/**` canonical docs.
+
 ## Purpose
 
 ACL documents define who can do what on which resource and under what scope.

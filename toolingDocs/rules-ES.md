@@ -1,5 +1,7 @@
 # External System Documentation Rules (ES)
 
+**See also:** [cross-layer-discipline.md](cross-layer-discipline.md) — shared discipline for all `_ar/**` canonical docs.
+
 ## Purpose
 
 ES documents describe external systems that interact with the platform.

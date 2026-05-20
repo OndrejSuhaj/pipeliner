@@ -1,5 +1,7 @@
 # Transactional Message Documentation Rules (MSG)
 
+**See also:** [cross-layer-discipline.md](cross-layer-discipline.md) — shared discipline for all `_ar/**` canonical docs.
+
 ## Purpose
 
 MSG documents describe transactional messages sent to users.

@@ -1,5 +1,7 @@
 # Functional Capability Documentation Rules (FN)
 
+**See also:** [cross-layer-discipline.md](cross-layer-discipline.md) — shared discipline for all `_ar/**` canonical docs.
+
 ## Purpose
 
 FN documents describe internal system capabilities that support use cases.

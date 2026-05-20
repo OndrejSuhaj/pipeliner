@@ -1,5 +1,7 @@
 # Wireframe Spec Documentation Rules (WIRE)
 
+**See also:** [cross-layer-discipline.md](cross-layer-discipline.md) — shared discipline for all `_ar/**` canonical docs.
+
 ## Purpose
 
 WIRE documents define **screen-level** layout, interaction, and state coverage
