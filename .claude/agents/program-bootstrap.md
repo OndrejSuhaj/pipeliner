@@ -39,8 +39,8 @@ This subagent plays the following conceptual roles inline:
 
 1. **Gate P-R (re-frame only)** — confirm operator intent; author `docs/program/re-frame-authorization.md` with trigger / affected artifacts / downstream impact
 2. **Gate P0** — author `docs/program/project-brief.md`
-3. **Gate P1** — author `docs/program/architecture-overview.md` including program-wide baseline (source authority, terminology, canonical conflicts). Seed foundational `_ar/BA/{EN,ARCH,BR}/` when program-wide content identified. Initialize `_REGISTRY.md` skeletons for all 16 canonical layers.
-4. **Gate P-UX (optional)** — when project has user-facing surfaces, author `_ar/UX/IA/IA-<project-slug>.md`
+3. **Gate P1** — author `docs/program/architecture-overview.md` including program-wide baseline (source authority, terminology, canonical conflicts). **Seed foundational `_ar/BA/{ARCH,EN,BR}/` for program-wide content (required before P-UX may begin).** Concepts not stable enough to seed are recorded as Open Questions in `architecture-overview.md`. Initialize `_REGISTRY.md` skeletons for all 16 canonical layers.
+4. **Gate P-UX (optional)** — when project has user-facing surfaces, author `_ar/UX/IA/IA-<project-slug>.md`. **Hard prerequisite:** P1 foundational seeds exist (or concept is recorded as Open Question). IA must reference EN/BR/ARCH via `doc_id`; no inline restatement. Before completion, verify all referenced `doc_id`s resolve to existing `_REGISTRY.md` entries.
 5. **Gate P2** — author `docs/program/module-map.md` with modules / dependencies / integration boundaries / ownership / entry sequence
 6. **Gate P3 (optional)** — when parallel delivery is non-trivial, author `docs/program/implementation-streams.md`
 
@@ -50,6 +50,9 @@ This subagent plays the following conceptual roles inline:
 - Product context too vague for project-brief
 - Architectural style undecided at P1
 - Program-wide terminology has unresolved conflicts that would invalidate modules
+- **Gate P-UX attempted without P1 foundational ARCH/EN/BR seeds (return to P1 to seed, or capture as Open Questions before P-UX continues)**
+- **IA at Gate P-UX contains inline API contracts, technology assertions, enumerated config values, or restated entity attributes — return to P1 to seed properly via `_ar/BA/{API,ARCH,ES,EN,BR}/`**
+- **IA references `doc_id`s that don't resolve to existing `_REGISTRY.md` entries**
 - Module decomposition has cycles or undefined scope
 - Re-frame would silently invalidate module work without Gate P-R authorization
 

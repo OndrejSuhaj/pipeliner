@@ -144,7 +144,7 @@ If the operator-selected input is a comment/issue rather than a delivery request
 
 Detailed gate sequences live in `docs/governance/mode-{p,m,c}.md`. Quick reference:
 
-**Mode P:** Gate P-R (re-frame, when applicable) → P0 (project-brief) → P1 (architecture-overview + program-wide baseline) → P-UX (project IA, when user-facing) → P2 (module-map) → P3 (implementation-streams, optional).
+**Mode P:** Gate P-R (re-frame, when applicable) → P0 (project-brief) → P1 (architecture-overview + program-wide baseline **+ foundational ARCH/EN/BR seeds in `_ar/BA/`**) → P-UX (project IA, when user-facing; **requires P1 seeds**) → P2 (module-map) → P3 (implementation-streams, optional).
 
 **Mode M:** M0 (module declaration) → M1a (module-scope baseline) → M1b (module-brief + initial `_ar/BA/` seeds) → M2 (WIRE + UC/QUERY/JOB/CS) → M3 (module-plan + slice-map + module-risks + module-scope COMP/COPY/API/ACL) → M4 (module release readiness).
 

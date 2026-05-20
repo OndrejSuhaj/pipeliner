@@ -35,10 +35,12 @@ Use the Agent tool with:
 - prompt: brief the subagent on operator intent (bootstrap vs. re-frame), product context, preliminary module breakdown if known
 
 The subagent drives Gates P-R / P0 / P1 / P-UX / P2 / P3 and returns:
-- list of artifacts created
+- list of artifacts created (incl. foundational `_ar/BA/{ARCH,EN,BR}/` seeds at P1)
 - declared modules with owner + entry sequence
-- Open Questions
+- Open Questions (both program-wide in `architecture-overview.md` and IA-specific when P-UX runs)
 - recommendation for first Mode M target
+
+**Note on P1 → P-UX sequencing:** Gate P-UX (project IA) has a hard prerequisite on Gate P1 producing foundational `_ar/BA/{ARCH,EN,BR}/` seeds. Concepts not stable enough to seed are recorded as Open Questions in `architecture-overview.md` — P-UX may proceed but IA must mark those concepts as Open IA Questions, not inline assertions.
 
 ### 4. Report to operator
 
@@ -58,3 +60,4 @@ Present subagent's report. Confirm next action:
 - Re-frame attempted without Gate P-R authorization
 - Module decomposition has cycles
 - Program-wide terminology has unresolved conflicts that would block module work
+- Gate P-UX (project IA) attempted before P1 produces foundational ARCH/EN/BR seeds — return to P1 first

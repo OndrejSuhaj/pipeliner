@@ -206,11 +206,16 @@ Mode P writes program-wide foundational docs into `_ar/` (P1 baseline, P-UX proj
 
 **Minimum output artifacts:**
 - `docs/program/architecture-overview.md`
-- `_ar/BA/EN/` — foundational entities shared by all modules (e.g. User, Organization, if applicable)
-- `_ar/BA/ARCH/` — program-wide ARCH docs (system view, deployment topology)
-- `_ar/BA/BR/` — program-wide business rules shared by all modules
-- `_ar/BA/{EN,UC,BR,ARCH,FN,ES,JOB,QUERY,ACL,API,CS,MSG}/_REGISTRY.md` — registry skeletons initialized
+- **Foundational seeds in `_ar/BA/` (required before P-UX can begin):**
+  - `_ar/BA/EN/<EN-id>-<name>.md` — at least one foundational entity per program-wide concept (e.g. User, Organization) when applicable
+  - `_ar/BA/ARCH/<ARCH-id>-<name>.md` — at least one program-wide ARCH doc (system view / deployment topology) when applicable
+  - `_ar/BA/BR/<BR-id>-<name>.md` — program-wide business rules when applicable
+- `_ar/BA/{EN,UC,BR,ARCH,FN,ES,JOB,QUERY,ACL,API,CS,MSG}/_REGISTRY.md` — registry skeletons initialized; touched layers reflect new doc_ids atomically
 - `_ar/UX/{IA,WIRE,COMP,COPY}/_REGISTRY.md` — registry skeletons initialized
+
+**Why foundational seeds are required for P-UX:** project-level IA at Gate P-UX must reference these via `doc_id` (per `toolingDocs/rules-IA.md`) rather than restating their content inline. Without seeds, IA either becomes a duplicate of architecture-overview (drift risk) or speculates about entities/rules that haven't been authored yet.
+
+If a program-wide concept is not yet stable enough to seed (e.g. open question about whether to model "User" or "PartnerUser" at the program level), declare it as an Open Question in `architecture-overview.md` and defer to module-scope authoring in Mode M Gate M1b. P-UX may still proceed but IA must mark those concepts as Open IA Questions instead of asserting them.
 
 **Required contents (architecture-overview.md):**
 - architectural style (monolith, modular monolith, service-oriented, …)
@@ -241,22 +246,39 @@ Mode P writes program-wide foundational docs into `_ar/` (P1 baseline, P-UX proj
 
 **Owned by:** UX lead + `IAAuthor` (from `docs/roles/ux/**`)
 
+**Entry conditions (hard prerequisites):**
+- Gate P1 completed with all required outputs
+- Foundational seeds in `_ar/BA/{ARCH,EN,BR}/` exist for program-wide content (per Gate P1 minimum outputs); concepts not stable enough to seed are recorded as Open Questions in `architecture-overview.md`
+- IA author has verified relevant doc_ids exist in `_ar/BA/{ARCH,EN,BR}/_REGISTRY.md`
+
 **Required result:** Project-level IA exists in `_ar/UX/IA/`.
 
 **Minimum output artifact:** `_ar/UX/IA/IA-<project-slug>.md`
 
-**Required contents:**
+**Required contents (per `toolingDocs/rules-IA.md`):**
 - top-level navigation across the entire product
-- screen map (high-level — module-scope screen detail comes in Mode M)
+- screen map (high-level — module-scope screen detail comes in Mode M Gate M2)
 - entry points (anonymous, post-auth, deep links)
 - cross-module flows (onboarding, upgrade, recovery)
-- information hierarchy (account / workspace / domain levels)
+- information hierarchy (account / workspace / domain levels) — **reference EN doc_ids, do not enumerate entity attributes**
 - preliminary module boundaries on the UX layer (which screens likely belong to which module)
-- open IA questions
+- open IA questions (mandatory section — capture every unresolved behavior or assumption)
+- sources / authority (which docs back which claims)
+- explicit "What this IA does NOT cover" section
+
+**Cross-layer discipline (mandatory):**
+- All entity / business rule / architecture claims reference `_ar/BA/{EN,BR,ARCH}/` doc_ids; no inline restatement
+- No API contracts, HTTP endpoints, or path strings (those belong in `_ar/BA/API/`)
+- No technology stack assertions (provider names, library names) without `_ar/BA/{ARCH,ES}/` reference
+- No configuration value enumeration (pricing tiers, status enums, etc.) — reference EN/BR doc
+- See [cross-layer-discipline.md](../../toolingDocs/cross-layer-discipline.md)
 
 **Stop if:**
-- project IA cannot be authored without first deciding more architecture (return to P1),
-- IA implies module boundaries materially different from preliminary breakdown (escalate to P2 with adjusted decomposition).
+- foundational ARCH/EN/BR seeds from Gate P1 are missing or unstable (return to P1 to seed or to capture Open Questions),
+- IA would require inline restatement of entity attributes / business rules (return to P1 to seed those layers properly),
+- IA implies module boundaries materially different from preliminary breakdown (escalate to P2 with adjusted decomposition),
+- IA contains two unresolved behavior paths as if both operational (capture as Open IA Question and pick one with evidence or block),
+- referenced `doc_id`s don't resolve to existing `_REGISTRY.md` entries.
 
 **Hands off to:** P2
 

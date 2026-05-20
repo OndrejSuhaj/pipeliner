@@ -359,8 +359,8 @@ Its governed sequence is:
 
 1. (when re-framing) re-frame authorization — explicit rationale, affected artifacts, downstream module impact (P-R),
 2. program declaration — business purpose, scope, key constraints (P0),
-3. program-level architecture overview — architectural assumptions, external systems, non-functional constraints (P1) — includes program-wide terminology, source authority, and canonical-conflict baseline,
-4. program-level UX framing — project-level Information Architecture in `_ar/UX/IA/IA-<project>.md` (P-UX, optional when the project has no user-facing surfaces),
+3. program-level architecture overview — architectural assumptions, external systems, non-functional constraints (P1) — includes program-wide terminology, source authority, canonical-conflict baseline, **and foundational seeds in `_ar/BA/{ARCH,EN,BR}/` for program-wide architectural views, entities, and business rules**,
+4. program-level UX framing — project-level Information Architecture in `_ar/UX/IA/IA-<project>.md` (P-UX, optional when the project has no user-facing surfaces). **REQUIRES Gate P1 foundational ARCH/EN/BR seeds to exist** — IA must reference these via `doc_id` rather than restating their content,
 5. module decomposition — module-map with named modules, dependencies, integration boundaries (P2),
 6. (optional) implementation streams — parallel delivery coordination model when non-trivial (P3).
 

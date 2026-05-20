@@ -349,21 +349,33 @@ Module-release readiness is not the same as program completion. A program contai
 
 A program is **bootstrap-ready** when downstream per-module Mode M may safely begin.
 
-Per constitution § 17.1, all five criteria must hold:
+Per constitution § 17.1, all criteria must hold:
 
 ### 5e.1 Project-brief exists
 `docs/program/project-brief.md` declares scope, business purpose, key constraints, success criteria.
 
-### 5e.2 Architecture-overview exists
-`docs/program/architecture-overview.md` records architectural assumptions, external systems, integration boundaries, non-functional constraints, ADR-style decisions.
+### 5e.2 Architecture-overview exists with program-wide baseline
+`docs/program/architecture-overview.md` records architectural assumptions, external systems, integration boundaries, non-functional constraints, ADR-style decisions, plus program-wide source authority + terminology baseline + canonical conflict resolutions.
 
-### 5e.3 Module-map exists
+### 5e.3 Foundational `_ar/BA/{ARCH,EN,BR}/` seeds exist
+Program-wide concepts identified at Gate P1 have foundational docs in `_ar/BA/ARCH/`, `_ar/BA/EN/`, `_ar/BA/BR/` with valid frontmatter and `_REGISTRY.md` entries. Concepts not stable enough to seed are recorded as Open Questions in `architecture-overview.md`.
+
+This is a hard prerequisite for Gate P-UX (project IA) — IA must reference foundational seeds via `doc_id` rather than restating their content. See `toolingDocs/cross-layer-discipline.md`.
+
+### 5e.4 Project-level IA exists when user-facing
+When the program has user-facing surfaces, `_ar/UX/IA/IA-<project-slug>.md` exists with:
+- all sections per `toolingDocs/rules-IA.md` (Sources, Entry Points, Top-Level Nav, Screen Map, Cross-Module Flows, Information Hierarchy, Module Boundaries, Open IA Questions, NOT-COVER)
+- all `references:` resolve in target `_REGISTRY.md` files
+- no inline cross-layer content (no API contracts, no provider names, no enumerated config values, no restated entity attributes)
+- Open IA Questions section captures every unresolved behavior with named decider
+
+### 5e.5 Module-map exists
 `docs/program/module-map.md` declares all modules with their slugs, scope summaries, dependencies, integration boundaries, ownership, and entry sequence.
 
-### 5e.4 Implementation-streams exists when parallel delivery is non-trivial
+### 5e.6 Implementation-streams exists when parallel delivery is non-trivial
 `docs/program/implementation-streams.md` exists when modules will be delivered in parallel and coordination is non-trivial.
 
-### 5e.5 All declared modules have a clear owner and entry path
+### 5e.7 All declared modules have a clear owner and entry path
 Each module in `module-map.md` has a named owner (the role / person leading its Mode M) and a declared entry sequence (which module's Mode M starts first).
 
 Program-definition done is a precondition for **any** module entering Mode M. It is not a delivery completion claim.
